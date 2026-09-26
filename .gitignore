@@ -8,3 +8,10 @@ tools/
 # Local tooling and assistant notes, kept off the repo.
 .impeccable/
 CLAUDE.md
+# Nuxt: dependencies, build output, and the data build-data.ts writes before every dev and build.
+node_modules/
+.nuxt/
+.output/
+.data/
+dist/
+server/data/

@@ -1,0 +1,53 @@
+/* Chrome shared by every page. main.css imports this into the utilities layer ahead of Tailwind's generated
+   utilities, the order the play CDN gave the static pages: a more specific rule here (a pressed state) beats a
+   utility, and a utility wins a tie. */
+/* The page title and section headings take the chapter colour; card titles stay ink under them. */
+.chapter { color: var(--chapter); }
+.font-display { font-weight: 600; }
+.nav-dot { width: 8px; height: 8px; border-radius: 9999px; flex-shrink: 0; }
+/* Site bar: chapter tabs in fog; the current chapter takes ink, like a pressed chip. */
+.nav-link { color: var(--fog); }
+.nav-link[aria-current="page"] { background: var(--ink); color: var(--on); }
+.brand { border-radius: 8px; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+[tabindex="-1"]:focus { outline: none; }
+/* Fields and dropdowns take the focus ring on their own edge, with no gap around them. */
+input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--focus); outline-offset: -1px; }
+
+.press { transition: transform 160ms var(--ease-out), border-color 150ms ease, background-color 150ms ease; }
+.press:active { transform: scale(0.98); }
+.press:focus-visible:active { transform: none; }
+
+/* Theme switch: the pressed pick takes ink, like a pressed chip. */
+.theme-btn[aria-pressed="true"] { background: var(--ink); color: var(--on); }
+/* A theme switch repaints in one frame; the colour transitions would otherwise stagger it. */
+.theme-snap *, .theme-snap *::before, .theme-snap *::after { transition: none !important; }
+
+@media (hover: hover) and (pointer: fine) {
+  .nav-link:not([aria-current]):hover { background: var(--card); color: var(--ink); }
+  .theme-btn[aria-pressed="false"]:hover { background: var(--leaf); color: var(--ink); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .press:active { transform: none; }
+}
+
+/* Dropdowns: a drawn chevron in fog; where the browser allows it, the open list is a rounded sheet like the pickers. */
+select:not([multiple]) { appearance: none; padding-right: 2.25rem; background-image: var(--chevron); background-repeat: no-repeat; background-position: right .75rem center; background-size: 1rem; }
+@supports (appearance: base-select) {
+  select:not([multiple]), ::picker(select) { appearance: base-select; }
+  select::picker-icon { display: none; }
+  ::picker(select) {
+    margin-block: 4px; padding: 4px; max-height: min(22rem, 60vh);
+    border: 1px solid var(--line); border-radius: 16px; background: var(--card); color: var(--ink);
+    box-shadow: 0 12px 32px -12px rgb(var(--shade) / .35);
+  }
+  select optgroup { padding-top: 6px; font-size: .75rem; font-weight: 700; color: var(--fog); }
+  select option { padding: 6px 10px; border-radius: 12px; font-size: .875rem; font-weight: 400; color: var(--ink); }
+  select option::checkmark { color: var(--ink); }
+  select option:checked { font-weight: 700; }
+  select option:hover { background: var(--leaf); }
+  select option:focus-visible { background: var(--leaf); outline: none; box-shadow: inset 0 0 0 2px var(--focus); }
+}
+
+@keyframes fade { from { opacity: 0; } }
+@keyframes fade-out { to { opacity: 0; } }

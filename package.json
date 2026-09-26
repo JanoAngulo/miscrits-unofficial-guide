@@ -1,0 +1,30 @@
+{
+  "name": "miscripedia",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "data": "tsx scripts/build-data.ts",
+    "data:offline": "tsx scripts/build-data.ts --offline",
+    "predev": "npm run data:offline",
+    "dev": "nuxt dev",
+    "prebuild": "npm run data:offline",
+    "build": "nuxt build",
+    "pregenerate": "npm run data:offline",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "typecheck": "nuxt typecheck"
+  },
+  "dependencies": {
+    "@nuxtjs/color-mode": "^4.0.1",
+    "@tailwindcss/vite": "^4.3.3",
+    "nuxt": "^4.4.5",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.3",
+    "tsx": "^4.23.15",
+    "typescript": "~5.9.3",
+    "vue-tsc": "^3.3.11"
+  }
+}
