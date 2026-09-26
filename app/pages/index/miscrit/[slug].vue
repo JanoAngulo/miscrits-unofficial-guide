@@ -173,7 +173,9 @@ onMounted(() => guide.shownDetail())
                 <ul class="flex min-w-0 flex-wrap gap-x-3 gap-y-0.5 font-display text-[15px]">
                   <li v-for="s in g.spots" :key="place(s)" class="flex items-center gap-1"><PinIcon class="h-3.5 w-3.5" />{{ place(s) }}</li>
                 </ul>
-                <span v-if="g.days.length" class="shrink-0 text-right text-xs font-bold text-rust">Not on {{ missingDays(g.days).map(d => DAYS[d]!.slice(0, 3)).join(', ') }}</span>
+                <!-- Whichever list is shorter: "Only Wed, Sat" beats five days it is not on. -->
+                <span v-if="g.days.length && g.days.length < 4" class="shrink-0 text-right text-xs font-bold text-some">Only {{ WEEK.filter(d => g.days.includes(d)).map(d => DAYS[d]!.slice(0, 3)).join(', ') }}</span>
+                <span v-else-if="g.days.length" class="shrink-0 text-right text-xs font-bold text-rust">Not on {{ missingDays(g.days).map(d => DAYS[d]!.slice(0, 3)).join(', ') }}</span>
                 <span v-else class="shrink-0 rounded-full bg-wash-yes px-2 py-0.5 text-xs font-bold text-moss">Every day</span>
               </div>
               <WeekStrip :days="g.days.length ? g.days : WEEK" />
