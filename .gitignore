@@ -1,0 +1,8 @@
+# Re-downloaded by build.py; the page falls back to the game's CDN without it.
+assets/
+__pycache__/
+# The Real-ESRGAN and libwebp builds upscale.py downloads.
+tools/
+# Local tooling and assistant notes, kept off the repo.
+.impeccable/
+CLAUDE.md

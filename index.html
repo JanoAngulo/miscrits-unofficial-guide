@@ -1,0 +1,859 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+  // Dark is the default; a light pick is kept for every page.
+  try { if (localStorage.getItem('miscripedia.theme') === 'light') document.documentElement.dataset.theme = 'light'; } catch {}
+</script>
+<title>Miscrits Field Guide</title>
+<meta name="description" content="Where every miscrit spawns, the weekdays it doesn't, and its evolutions, stats and moves. An unofficial Miscrits field guide.">
+<link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAFyGlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS4wLWMwNjEgNjQuMTQwOTQ5LCAyMDEwLzEyLzA3LTEwOjU3OjAxICAgICAgICAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iCiAgICB4bWxuczpzdFJlZj0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlUmVmIyIKICAgIHhtbG5zOnN0RXZ0PSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VFdmVudCMiCiAgICB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iCiAgIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo5QzkzNUREMTI2MjA2ODExOTdBNUFERUVDMTIxMTUzRCIKICAgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDpDQUI1MDhGRkZDRDgxMURGQTVDREU4OEFFQkYyMDA5RSIKICAgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpGOTdGMTE3NDA3MjA2ODExODA4M0U5ODg0QjI3QUZEMSIKICAgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IFdpbmRvd3MiCiAgIHhtcDpNZXRhZGF0YURhdGU9IjIwMTEtMTEtMDhUMTE6MzU6MzAtMDc6MDAiCiAgIHhtcDpSYXRpbmc9IjQiPgogICA8eG1wTU06RGVyaXZlZEZyb20KICAgIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6QUM2RTg5RjFFQ0ZCREYxMTk2RUNDRjk4REExMERFNjEiCiAgICBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjlDOTM1REQxMjYyMDY4MTE5N0E1QURFRUMxMjExNTNEIi8+CiAgIDx4bXBNTTpIaXN0b3J5PgogICAgPHJkZjpTZXE+CiAgICAgPHJkZjpsaQogICAgICBzdEV2dDphY3Rpb249InNhdmVkIgogICAgICBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOkY3N0YxMTc0MDcyMDY4MTE4MDgzRTk4ODRCMjdBRkQxIgogICAgICBzdEV2dDp3aGVuPSIyMDExLTExLTA4VDExOjM1OjE1LTA3OjAwIgogICAgICBzdEV2dDpjaGFuZ2VkPSIvbWV0YWRhdGEiLz4KICAgICA8cmRmOmxpCiAgICAgIHN0RXZ0OmFjdGlvbj0ic2F2ZWQiCiAgICAgIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6Rjk3RjExNzQwNzIwNjgxMTgwODNFOTg4NEIyN0FGRDEiCiAgICAgIHN0RXZ0OndoZW49IjIwMTEtMTEtMDhUMTE6MzU6MzAtMDc6MDAiCiAgICAgIHN0RXZ0OmNoYW5nZWQ9Ii9tZXRhZGF0YSIvPgogICAgPC9yZGY6U2VxPgogICA8L3htcE1NOkhpc3Rvcnk+CiAgPC9yZGY6RGVzY3JpcHRpb24+CiA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgo8P3hwYWNrZXQgZW5kPSJyIj8+9tBYJAAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAImSURBVHjaYmCAADcgXg/E/4H4PhCXMWACNSCeBlVzHojTkCXXz5iX+v/es8n/D51s/O/mofcfqhgG0vj4OP/XNAaB1WzZXQ4zhIEZquD9lo3neD9/+qFh7SjF4OyuxvDuzS/Ta1efigPlXgNx48oNeRJGlsIMP779Y/B372X4+fNPPVD8LMyAu0C84fy5BzkBYeocb748YLCyk2X48oHF9Ma1Z6wN7b4eMqo/GL58f8+wc+N9hn27r08Aqm8DaWRBcuZPIL5w7/YHB17JdwwfPr9giMqSYJBXM0tQN/7J8OrDGwZ+blGG79/+gtR+hGliQgsoB2MzOQYmJhaGP39/M3z+9pbByJaD4esPiHo2Vg4GRkZmFA3oBjCwsrAz8HEJM6yc+ZZBQkiRQVRAjuHzax6Gozu/MnBzCGBEDYYBzMysDAK84gz7tj9kmNB0hYGbSZWhvvAYA+M/XgYuTn4iDAA6n5dLEMzeteNSuZ15/YNPn743crBxMbAwsRA2gJGRkYEF6Aoo6AJiRSDmFxDgZeBk52WQlhECicvjNODv3z8Mv//8QhYSACaigpBwC4bfv1gYZGSFGID8BJA4ltTK8P/M9ar/J6+W/rewUv0PTa4gA/5racuA+O+BeD8Qh2HTrAA0/f/F2w1A3IiSXKG2GWDThOyFADcPfQZebmGG1csuMkQFTwKJTYfKfQAlMgYCYP+yNXkwp0+D5j6SQBg+/+ECAAEGAPvZtkvsKGElAAAAAElFTkSuQmCC">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+{
+  // Colours are theme tokens, so opacity modifiers like border-ink/10 follow the theme.
+  const v = n => `color-mix(in srgb, var(--${n}) calc(<alpha-value> * 100%), transparent)`;
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          display: ['Fredoka', 'system-ui', 'sans-serif'],
+          body: ['"Atkinson Hyperlegible"', 'system-ui', 'sans-serif'],
+        },
+        colors: {
+          paper: v('paper'), card: v('card'), leaf: v('leaf'), ink: v('ink'), on: v('on'), moss: v('moss'), fog: v('fog'), line: v('line'), rust: v('rust'),
+          'wash-yes': v('wash-yes'), 'wash-some': v('wash-some'), some: v('some'), 'wash-no': v('wash-no'),
+          // Text on the game's fixed fills (tier colours, a white rolled stat) stays dark in both themes.
+          'ink-fixed': '#1B2E2A',
+        },
+      },
+    },
+  };
+}
+</script>
+<script src="data.js"></script>
+<style>
+  /* The page title and section headings take the chapter colour; card titles stay ink under them. */
+  .chapter { color: var(--chapter); }
+  .nav-dot { width: 8px; height: 8px; border-radius: 9999px; flex-shrink: 0; }
+  /* Site bar: chapter tabs in fog; the current chapter takes ink, like a pressed chip. */
+  .nav-link { color: var(--fog); }
+  .nav-link[aria-current="page"] { background: var(--ink); color: var(--on); }
+  .brand { border-radius: 8px; }
+  /* The site bar sticks (and on the field guide the filters under it); --stick-h is their height, set by the page,
+     so focus and jumps land clear of them. */
+  html { scroll-padding-top: calc(var(--stick-h, 0px) + 1rem); }
+
+  :root {
+    color-scheme: light;
+    /* Chapter colours: each page is a chapter of the guidebook, tabbed in its own colour. Text values clear 4.5:1 on
+       paper and card in both themes; the fills mark the nav tabs only. Moss and rust stay out: they mean yes and no. */
+    --ch-field: #1C6A6E; --ch-relics: #8A5E00; --ch-catch: #1D628A; --ch-teams: #6E2E96; --ch-breed: #A12F63;
+    --chf-field: #2A9D9F; --chf-relics: #E0A21B; --chf-catch: #2E8BC0; --chf-teams: #9B4DCA; --chf-breed: #E0508F;
+    --chapter: var(--ch-field);
+    --paper: #EEF3EF; --card: #FFFFFF; --leaf: #E1EAE4; --ink: #1B2E2A; --on: #FFFFFF; --moss: #3E6B57;
+    /* fog clears 4.5:1 on leaf, line clears 3:1 against card for control edges. */
+    --fog: #4F605A; --line: #83928C; --rust: #A0422A; --rust-hatch: #C7735D;
+    --wash-yes: #DDEDE3; --wash-some: #E4ECF4; --some: #2B587A; --wash-no: #F7E4DE;
+    --hatch-light: #F7F9F8; --hatch-dark: #E3E9E6; --hatch-edge: #C9D3CE;
+    --focus: #2E8BC0; --select: #CFE3D7; --scroll: #A9BAB3; --count-on-ink: var(--count-on-ink); --warn-on-ink: #F2B8A8;
+    --shade: 27 46 42; --scrim: rgb(27 46 42 / .55);
+    --r-common-text: #4E5A56; --r-common-wash: #EEF1EF; --r-rare-text: #1D628A; --r-rare-wash: #E3F1F9;
+    --r-epic-text: #237140; --r-epic-wash: #E4F4E9; --r-exotic-text: #6E2E96; --r-exotic-wash: #F2E8F8;
+    --r-legendary-text: #8A5E00; --r-legendary-wash: #FCF1D6;
+    /* Stat colours: the fills are the game's and never change; the text and unfilled tints follow the theme. */
+    --s-core: #2F6E16; --s-speed: #8A5E00; --s-physical: #1D4F94; --s-elemental: #9E1F24;
+    --s-core-empty: #DDEFD3; --s-speed-empty: #FCEDC8; --s-physical-empty: #D9E5F5; --s-elemental-empty: #F7DADB;
+    --q-green-text: #2F6E16;
+    --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234F605A' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  /* Night trail: near-black pine ground, pine surfaces a step up. Every text pair still clears 4.5:1, edges 3:1. */
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --ch-field: #7FD0CB; --ch-relics: #F0C766; --ch-catch: #8CCBF0; --ch-teams: #D6ACF2; --ch-breed: #F4A3C4;
+    --paper: #070E0C; --card: #0F1A17; --leaf: #172622; --ink: #E2ECE6; --on: #070E0C; --moss: #7FC49F;
+    --fog: #9FB3AA; --line: #5F766D; --rust: #F0927B; --rust-hatch: #B35F4B;
+    --wash-yes: #11291E; --wash-some: #0E1F2C; --some: #9CC6E8; --wash-no: #2A1611;
+    --hatch-light: #111D1A; --hatch-dark: #1B2B26; --hatch-edge: #2C3F37;
+    --focus: #5FB4E6; --select: #264436; --scroll: #344943; --count-on-ink: #4A6159; --warn-on-ink: #9A3A24;
+    --shade: 0 0 0; --scrim: rgb(0 0 0 / .72);
+    --r-common-text: #B7C3BE; --r-common-wash: #18241F; --r-rare-text: #8CCBF0; --r-rare-wash: #0B2333;
+    --r-epic-text: #86D6A0; --r-epic-wash: #0D2819; --r-exotic-text: #D6ACF2; --r-exotic-wash: #241634;
+    --r-legendary-text: #F0C766; --r-legendary-wash: #271E07;
+    --s-core: #8FD66A; --s-speed: #F5C84E; --s-physical: #8DB6F2; --s-elemental: #F58F93;
+    --s-core-empty: #16280F; --s-speed-empty: #2C240B; --s-physical-empty: #121E33; --s-elemental-empty: #301114;
+    --q-green-text: #8FD66A;
+    --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239FB3AA' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  }
+  body { background: var(--paper); color: var(--ink); caret-color: var(--moss); font-variant-numeric: tabular-nums; }
+  ::selection { background: var(--select); color: var(--ink); }
+  * { scrollbar-color: var(--scroll) transparent; }
+  .font-display { font-weight: 600; }
+  /* A day the miscrit is missing: hatched and struck, so it reads without colour. */
+  .day-off {
+    background: repeating-linear-gradient(135deg, var(--hatch-light) 0 3px, var(--hatch-dark) 3px 5px);
+    color: var(--fog);
+    box-shadow: inset 0 0 0 1px var(--hatch-edge);
+    text-decoration: line-through;
+  }
+  .day-on { background: var(--moss); color: var(--on); }
+  /* Centre the letter by its cap height, not the font's uneven ascent and descent. */
+  .day-l { line-height: 1; text-box: trim-both cap alphabetic; }
+  /* Today: a thin ink ring flush against the cell. */
+  .day-today { box-shadow: 0 0 0 2px var(--ink); }
+  .day-off.day-today { box-shadow: inset 0 0 0 1px var(--hatch-edge), 0 0 0 2px var(--ink); }
+  .chip[aria-pressed="true"] { background: var(--ink); color: var(--on); border-color: var(--ink); }
+  .chip[aria-pressed="true"] .chip-count { color: var(--count-on-ink); }
+  .stage[aria-pressed="true"] { border-color: var(--ink); background: var(--card); }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  [tabindex="-1"]:focus { outline: none; }
+  /* content-visibility clips paint to the item, so the item reaches 5px past the card to hold its focus ring. */
+  #grid > li { content-visibility: auto; contain-intrinsic-size: auto 186px; padding: 5px; margin: -5px; }
+
+  .press { transition: transform 160ms var(--ease-out), border-color 150ms ease, background-color 150ms ease; }
+  .press:active { transform: scale(0.98); }
+  .press:focus-visible:active { transform: none; }
+  @media (hover: hover) and (pointer: fine) {
+    .card:hover { border-color: currentColor !important; box-shadow: 0 6px 16px -8px rgb(var(--shade) / .25); }
+  }
+
+  dialog { width: min(100% - 2rem, 56rem); max-width: none; max-height: min(92vh, 900px); border-radius: 1.5rem; }
+  dialog::backdrop { background: var(--scrim); }
+  body:has(dialog[open]) { overflow: hidden; }
+  /* On a phone the detail is a bottom sheet, which is how a tap-to-open reads there. */
+  @media (max-width: 639px) {
+    dialog { width: 100%; max-width: 100%; margin: auto 0 0; max-height: 92dvh; border-radius: 1.5rem 1.5rem 0 0; }
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .stage[aria-pressed="false"]:hover { background: var(--card); }
+    .icon-btn:not(:disabled):hover { background: var(--leaf); }
+    .nav-link:not([aria-current]):hover { background: var(--card); color: var(--ink); }
+  }
+  /* Move facts: quiet tags so the numbers scan down the list. */
+  .fact { border-radius: 6px; background: var(--leaf); padding: 1px 6px; font-size: .75rem; font-weight: 700; color: var(--fog); }
+  .fact-key { background: var(--card); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line); }
+  .fact-enchant { display: inline-flex; align-items: center; gap: 4px; background: none; padding-left: 0; }
+  .fact-enchant svg { width: 12px; height: 12px; flex-shrink: 0; color: var(--moss); }
+  /* Moves: a ruled table, one hairline between rows. The learn order is a badge on the icon's corner. */
+  .move { display: grid; grid-template-columns: 40px 1fr; gap: 12px; padding: 14px 0; border-top: 1px solid color-mix(in srgb, var(--ink) 10%, transparent); }
+  .move-icon { position: relative; align-self: start; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: var(--leaf); }
+  .move-no { position: absolute; right: -5px; bottom: -5px; display: grid; place-items: center; min-width: 18px; height: 18px; padding: 0 4px;
+    border-radius: 9999px; background: var(--card); box-shadow: 0 0 0 1px var(--line); font-size: 10px; font-weight: 700; line-height: 1; color: var(--fog); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    dialog[open] { animation: rise 240ms var(--ease-out); }
+    dialog[open]::backdrop { animation: fade 240ms ease; }
+    @media (max-width: 639px) { dialog[open] { animation: sheet 320ms var(--ease-drawer); } }
+    /* Leaving is quicker than arriving. */
+    dialog.closing { animation: sink 160ms var(--ease-out) forwards; }
+    dialog.closing::backdrop { animation: fade-out 160ms ease forwards; }
+    @media (max-width: 639px) { dialog.closing { animation: sheet-out 200ms var(--ease-drawer) forwards; } }
+    .art-swap { animation: swap 200ms var(--ease-out); }
+    @keyframes rise { from { opacity: 0; transform: translateY(8px) scale(0.98); } }
+    @keyframes sink { to { opacity: 0; transform: translateY(4px) scale(0.99); } }
+    @keyframes sheet { from { transform: translateY(100%); } }
+    @keyframes sheet-out { to { transform: translateY(100%); } }
+    @keyframes swap { from { opacity: 0; filter: blur(4px); transform: scale(0.97); } }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    dialog[open], dialog[open]::backdrop { animation: fade 150ms ease; }
+    dialog.closing, dialog.closing::backdrop { animation: fade-out 120ms ease forwards; }
+    .press:active { transform: none; }
+  }
+  @keyframes fade { from { opacity: 0; } }
+  @keyframes fade-out { to { opacity: 0; } }
+  /* Theme switch: the pressed pick takes ink, like a pressed chip. */
+  .theme-btn[aria-pressed="true"] { background: var(--ink); color: var(--on); }
+  @media (hover: hover) and (pointer: fine) { .theme-btn[aria-pressed="false"]:hover { background: var(--leaf); color: var(--ink); } }
+  /* A theme switch repaints in one frame; the colour transitions would otherwise stagger it. */
+  .theme-snap *, .theme-snap *::before, .theme-snap *::after { transition: none !important; }
+  /* Fields and dropdowns take the focus ring on their own edge, with no gap around them. */
+  input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--focus); outline-offset: -1px; }
+  /* Dropdowns: a drawn chevron in fog; where the browser allows it, the open list is a rounded sheet like the pickers. */
+  select:not([multiple]) { appearance: none; padding-right: 2.25rem; background-image: var(--chevron); background-repeat: no-repeat; background-position: right .75rem center; background-size: 1rem; }
+  @supports (appearance: base-select) {
+    select:not([multiple]), ::picker(select) { appearance: base-select; }
+    select::picker-icon { display: none; }
+    ::picker(select) {
+      margin-block: 4px; padding: 4px; max-height: min(22rem, 60vh);
+      border: 1px solid var(--line); border-radius: 16px; background: var(--card); color: var(--ink);
+      box-shadow: 0 12px 32px -12px rgb(var(--shade) / .35);
+    }
+    select optgroup { padding-top: 6px; font-size: .75rem; font-weight: 700; color: var(--fog); }
+    select option { padding: 6px 10px; border-radius: 12px; font-size: .875rem; font-weight: 400; color: var(--ink); }
+    select option::checkmark { color: var(--ink); }
+    select option:checked { font-weight: 700; }
+    select option:hover { background: var(--leaf); }
+    select option:focus-visible { background: var(--leaf); outline: none; box-shadow: inset 0 0 0 2px var(--focus); }
+    /* Rich options: each filter's list draws what it filters by, in the page's own marks. The closed field shows
+       the pick through <selectedcontent>; parts marked for one place only are hidden in the other. */
+    select > button { display: flex; align-items: center; width: 100%; min-width: 0; padding: 0; border: 0; background: none; color: inherit; font: inherit; text-align: start; }
+    selectedcontent { display: flex; align-items: center; gap: 6px; min-width: 0; white-space: nowrap; }
+    select option { display: flex; align-items: center; gap: 8px; }
+    .opt-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+    .opt-icon { width: 20px; height: 20px; flex-shrink: 0; }
+    /* A findable day is a lit week-strip cell; today keeps the strip's ink ring. */
+    .opt-day { display: grid; place-items: center; width: 20px; height: 20px; flex-shrink: 0; border-radius: 6px; font-size: 11px; font-weight: 700; line-height: 1; }
+    .opt-day::before { content: attr(data-l); text-box: trim-both cap alphabetic; }
+    .opt-tag { margin-left: auto; padding: 0 6px; border: 1px solid var(--line); border-radius: 9999px; font-size: .75rem; font-weight: 700; line-height: 1.33; color: var(--fog); text-transform: capitalize; }
+    .opt-paren { display: none; }
+    /* A minimum stat is the dialog's five-segment bar, filled to the level asked for. */
+    .opt-tile { display: grid; place-items: center; width: 20px; height: 20px; flex-shrink: 0; border-radius: 6px; }
+    .opt-tile svg { width: 14px; height: 14px; }
+    .opt-short::before { content: attr(data-t); }
+    .opt-meter { display: inline-grid; grid-auto-flow: column; gap: 2px; flex-shrink: 0; }
+    .opt-meter > span { width: 8px; height: 12px; border-radius: 2px; }
+    selectedcontent .opt-meter > span { width: 5px; height: 10px; }
+    .opt-more { color: var(--fog); font-weight: 400; }
+    select legend { display: flex; align-items: center; gap: 6px; }
+    option .opt-tile, option .opt-short, selectedcontent .opt-level, selectedcontent .opt-tag { display: none; }
+  }
+</style>
+</head>
+<body class="font-body text-ink antialiased">
+
+<header id="site-bar" class="sticky top-0 z-20 border-b border-ink/10 bg-paper/95 backdrop-blur">
+  <div class="mx-auto flex max-w-7xl flex-wrap items-center gap-x-6 gap-y-1 px-4 py-2 text-sm sm:px-6 md:grid md:grid-cols-[1fr_auto_1fr] md:py-3">
+    <a href="index.html" class="brand flex items-center justify-self-start"><img src="assets/brand/miscrits-logo.png" onerror="this.onerror=null;this.src='https://www.worldofmiscrits.com/images/d1b7b11f-e431-4c85-b851-dfa7b9407505.png'" alt="Miscripedia home" width="443" height="196" class="h-9 w-auto"></a>
+    <nav aria-label="Pages" class="order-last w-full md:order-none md:w-auto">
+      <ul class="grid grid-cols-5 gap-1 md:flex">
+        <li><a href="index.html" aria-current="page" class="nav-link flex min-h-11 flex-col items-center justify-center gap-1 rounded-xl px-1 text-xs font-bold md:min-h-0 md:flex-row md:gap-1.5 md:rounded-full md:px-3 md:py-1.5 md:text-sm"><span class="nav-dot" style="background:var(--chf-field)" aria-hidden="true"></span><span class="lg:hidden">Guide</span><span class="hidden lg:inline">Field guide</span></a></li>
+        <li><a href="relics.html" class="nav-link press flex min-h-11 flex-col items-center justify-center gap-1 rounded-xl px-1 text-xs font-bold md:min-h-0 md:flex-row md:gap-1.5 md:rounded-full md:px-3 md:py-1.5 md:text-sm"><span class="nav-dot" style="background:var(--chf-relics)" aria-hidden="true"></span><span class="lg:hidden">Relics</span><span class="hidden lg:inline">Relics and bonus</span></a></li>
+        <li><a href="catch.html" class="nav-link press flex min-h-11 flex-col items-center justify-center gap-1 rounded-xl px-1 text-xs font-bold md:min-h-0 md:flex-row md:gap-1.5 md:rounded-full md:px-3 md:py-1.5 md:text-sm"><span class="nav-dot" style="background:var(--chf-catch)" aria-hidden="true"></span><span class="lg:hidden">Catch</span><span class="hidden lg:inline">Catching</span></a></li>
+        <li><a href="teams.html" class="nav-link press flex min-h-11 flex-col items-center justify-center gap-1 rounded-xl px-1 text-xs font-bold md:min-h-0 md:flex-row md:gap-1.5 md:rounded-full md:px-3 md:py-1.5 md:text-sm"><span class="nav-dot" style="background:var(--chf-teams)" aria-hidden="true"></span><span class="lg:hidden">Teams</span><span class="hidden lg:inline">Teams and PvP</span></a></li>
+        <li><a href="breed.html" class="nav-link press flex min-h-11 flex-col items-center justify-center gap-1 rounded-xl px-1 text-xs font-bold md:min-h-0 md:flex-row md:gap-1.5 md:rounded-full md:px-3 md:py-1.5 md:text-sm"><span class="nav-dot" style="background:var(--chf-breed)" aria-hidden="true"></span><span class="lg:hidden">Breed</span><span class="hidden lg:inline">Breeding</span></a></li>
+      </ul>
+    </nav>
+    <div role="group" aria-label="Theme" class="ml-auto flex rounded-full border border-line p-px md:justify-self-end">
+      <button type="button" data-theme-pick="light" aria-pressed="false" class="theme-btn press inline-flex h-9 w-11 items-center justify-center gap-1.5 rounded-full font-bold text-fog lg:h-8 lg:w-auto lg:px-2.5"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></svg><span class="max-lg:sr-only">Light</span></button>
+      <button type="button" data-theme-pick="dark" aria-pressed="true" class="theme-btn press inline-flex h-9 w-11 items-center justify-center gap-1.5 rounded-full font-bold text-fog lg:h-8 lg:w-auto lg:px-2.5"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" aria-hidden="true"><path d="M19.5 14.5A8 8 0 0 1 9.5 4.5a8 8 0 1 0 10 10z"/></svg><span class="max-lg:sr-only">Dark</span></button>
+    </div>
+  </div>
+</header>
+
+<div id="filters" class="z-10 md:sticky md:top-[var(--bar-h,0px)] border-b border-ink/10 bg-paper/95 backdrop-blur">
+  <div class="mx-auto max-w-7xl px-4 pt-5 pb-4 sm:px-6">
+    <div class="flex flex-wrap items-end justify-between gap-x-6 gap-y-1">
+      <h1 class="chapter font-display text-3xl tracking-tight sm:text-4xl" style="font-weight:700">Miscrits field guide</h1>
+      <p class="text-sm text-fog">Where each miscrit lives, and the days it doesn't show. <span id="today-note"></span></p>
+    </div>
+
+    <div class="mt-4 flex flex-col gap-3 lg:flex-row lg:items-center">
+      <label class="relative block flex-1">
+        <span class="sr-only">Search miscrits</span>
+        <svg class="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-fog" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="q" type="search" autocomplete="off" placeholder="Name, evolution, or place like Forest 1"
+          class="w-full rounded-2xl border border-line bg-card py-3 pl-11 pr-4 text-base shadow-sm placeholder:text-fog">
+      </label>
+      <div class="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:flex">
+        <select id="zone" class="min-w-0 lg:w-44 rounded-xl border border-line bg-card px-3 py-2.5 text-sm" aria-label="Location">
+          <button type="button"><selectedcontent></selectedcontent></button>
+          <option value="">Anywhere</option>
+        </select>
+        <select id="element" class="min-w-0 lg:w-44 rounded-xl border border-line bg-card px-3 py-2.5 text-sm" aria-label="Element">
+          <button type="button"><selectedcontent></selectedcontent></button>
+          <option value="">Any element</option>
+        </select>
+        <select id="day" class="min-w-0 lg:w-40 rounded-xl border border-line bg-card px-3 py-2.5 text-sm" aria-label="Findable on">
+          <button type="button"><selectedcontent></selectedcontent></button>
+          <option value="">Any day</option>
+        </select>
+        <select id="stat" class="min-w-0 lg:w-44 rounded-xl border border-line bg-card px-3 py-2.5 text-sm" aria-label="Minimum stat">
+          <button type="button"><selectedcontent></selectedcontent></button>
+          <option value="">Any stats</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="mt-3 flex flex-wrap items-center gap-2">
+      <div id="rarities" class="flex flex-wrap gap-2" role="group" aria-label="Rarity"></div>
+      <p id="count" class="ml-auto text-sm text-fog" aria-live="polite"></p>
+    </div>
+  </div>
+</div>
+
+<script>
+// Theme: dark unless light is picked. The pick is shared by every page and every open tab.
+(() => {
+  const root = document.documentElement, KEY = 'miscripedia.theme';
+  const btns = document.querySelectorAll('[data-theme-pick]');
+  const show = () => btns.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.themePick === root.dataset.theme)));
+  const set = t => {
+    root.classList.add('theme-snap');
+    root.dataset.theme = t;
+    show();
+    requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove('theme-snap')));
+  };
+  btns.forEach(b => b.addEventListener('click', () => {
+    set(b.dataset.themePick);
+    try { localStorage.setItem(KEY, b.dataset.themePick); } catch {}
+  }));
+  addEventListener('storage', e => { if (e.key === KEY) set(e.newValue === 'light' ? 'light' : 'dark'); });
+  show();
+})();
+</script>
+
+<main class="mx-auto max-w-7xl px-4 pt-6 pb-14 sm:px-6">
+  <ul id="grid" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"></ul>
+  <div id="empty" class="hidden py-24 text-center">
+    <p class="font-display text-2xl">No miscrit matches that.</p>
+    <p class="mt-2 text-fog">Try fewer filters, or search part of a name.</p>
+    <button id="reset" class="mt-5 rounded-xl bg-ink px-4 py-2.5 text-sm text-on">Clear filters</button>
+  </div>
+</main>
+
+<footer class="border-t border-ink/10">
+  <div class="mx-auto flex max-w-7xl items-start gap-3 px-4 py-6 text-sm text-fog sm:px-6">
+    <img src="assets/brand/miscripedia-book.png" onerror="this.onerror=null;this.src='https://www.worldofmiscrits.com/images/e2f02115-cde2-4c0a-9fc6-45779d695c8d.png'" alt="" width="51" height="56" class="h-10 w-auto shrink-0">
+    <div>
+      <p><span class="font-display text-ink" style="font-weight:700">Miscripedia</span> is an unofficial fan guide, not affiliated with the Miscrits game.</p>
+      <p class="mt-1">Miscrit data and art come from <a href="https://www.worldofmiscrits.com/" class="font-bold text-moss underline decoration-moss/40 underline-offset-4">worldofmiscrits.com</a>.</p>
+    </div>
+  </div>
+</footer>
+
+<dialog id="detail" class="overflow-y-auto bg-card p-0 text-ink shadow-2xl" aria-labelledby="detail-name">
+  <div id="detail-body"></div>
+  <p id="detail-live" class="sr-only" aria-live="polite"></p>
+</dialog>
+
+<script>
+const MISCRITS = window.MISCRITS || [];
+
+const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const RARITY = {
+  Common:    { ring: '#9AA5A0', text: 'var(--r-common-text)', bg: 'var(--r-common-wash)' },
+  Rare:      { ring: '#2E8BC0', text: 'var(--r-rare-text)', bg: 'var(--r-rare-wash)' },
+  Epic:      { ring: '#3BA55C', text: 'var(--r-epic-text)', bg: 'var(--r-epic-wash)' },
+  Exotic:    { ring: '#9B4DCA', text: 'var(--r-exotic-text)', bg: 'var(--r-exotic-wash)' },
+  Legendary: { ring: '#E0A21B', text: 'var(--r-legendary-text)', bg: 'var(--r-legendary-wash)' },
+};
+const ELEMENT = {
+  Fire: '#E0552F', Water: '#2F86D6', Nature: '#4FA544', Earth: '#9A6B3A',
+  Wind: '#8C9BD9', Lightning: '#D9A514', Physical: '#8A8F8C', Misc: '#B9A7C9',
+};
+// Laid out like the game's own card: health and speed, then physical and elemental columns.
+const STAT_GRID = [
+  { k: 'hp',  label: 'Health',            col: 'core',      icon: 'hp' },
+  { k: 'pa',  label: 'Physical attack',   col: 'physical',  icon: 'attack' },
+  { k: 'ea',  label: 'Elemental attack',  col: 'elemental', icon: 'attack' },
+  { k: 'spd', label: 'Speed',             col: 'speed',     icon: 'spd' },
+  { k: 'pd',  label: 'Physical defense',  col: 'physical',  icon: 'defense' },
+  { k: 'ed',  label: 'Elemental defense', col: 'elemental', icon: 'defense' },
+];
+// The game's stat colours; `deep` is the tile edge, `text` the value text, `empty` an unfilled segment.
+const STAT_HUE = {
+  core:      { fill: '#58B030', deep: '#2F6E16', text: 'var(--s-core)', empty: 'var(--s-core-empty)' },
+  speed:     { fill: '#F2B21B', deep: '#8A5E00', text: 'var(--s-speed)', empty: 'var(--s-speed-empty)' },
+  physical:  { fill: '#2E6FC7', deep: '#1D4F94', text: 'var(--s-physical)', empty: 'var(--s-physical-empty)' },
+  elemental: { fill: '#D8343A', deep: '#9E1F24', text: 'var(--s-elemental)', empty: 'var(--s-elemental-empty)' },
+};
+const STAT_ICON = {
+  hp: '<path d="M9.5 4h5v5.5H20v5h-5.5V20h-5v-5.5H4v-5h5.5z"/>',
+  spd: '<path d="M13.5 2 5 13.5h6L9.5 22 19 9.5h-6.2z"/>',
+  attack: '<path d="m12 2 2.4 5.6L20.5 5l-2.6 6.1L23 12l-5.1 1.9 2.6 6.1-6.1-2.6L12 23l-2.4-5.6L3.5 20l2.6-6.1L1 12l5.1-1.9L3.5 4l6.1 2.6z"/>',
+  defense: '<path d="M12 2 20 5v6.5c0 5-3.4 8.9-8 10.5-4.6-1.6-8-5.5-8-10.5V5z"/>',
+};
+const STAT_LEVEL = { Weak: 1, Moderate: 2, Strong: 3, Max: 4, Elite: 5 };
+// The game's stat tile (a white glyph on the stat's fill) and one bar segment, shared by the detail and the stat filter.
+const statTile = (icon, h, cls, svgCls) => `<span class="${cls}" style="background:${h.fill};box-shadow:inset 0 0 0 1.5px ${h.deep}" aria-hidden="true">
+  <svg class="${svgCls}" viewBox="0 0 24 24" fill="#fff" stroke="${h.deep}" stroke-width="1.2" stroke-linejoin="round">${STAT_ICON[icon]}</svg></span>`;
+const segment = (lit, h, cls = '') => `<span class="${cls}" style="background:${lit ? h.fill : h.empty};box-shadow:inset 0 0 0 1px ${lit ? h.deep : h.fill + '55'}"></span>`;
+const MOVE_TYPE = {
+  Dot: 'Damage over time', Hot: 'Heal over time', Bot: 'Buff over time', TimeBomb: 'Time bomb', SwitchCurse: 'Switch curse', LifeSteal: 'Life steal',
+  SI: 'Sleep immune', CI: 'Confuse immune', PI: 'Paralyze immune', Antiheal: 'Anti-heal',
+};
+const TODAY = new Date().getDay();
+
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const parts = el => el.match(/[A-Z][a-z]+/g) || [el];
+const byHash = new Map(MISCRITS.map(m => [m.slugs[0], m]));
+
+// Local copy first, the game's CDN if build.py has not fetched it yet.
+// Avatars try upscale.py's 4x copy before that: the game's own are 50px.
+function img(kind, s, cls, alt = '') {
+  const avatar = kind === 'avatars';
+  const cdn = avatar
+    ? `https://cdn.worldofmiscrits.com/avatars/${s}_avatar.png`
+    : `https://cdn.worldofmiscrits.com/miscrits/${s}_back.png`;
+  const src = avatar ? `src="assets/avatars-hd/${s}.webp" data-local="assets/avatars/${s}.png"` : `src="assets/${kind}/${s}.png"`;
+  return `<img ${src} data-cdn="${cdn}" alt="${esc(alt)}" loading="lazy" class="${cls}"
+    onerror="const d=this.dataset;if(d.local){this.src=d.local;d.local=''}else if(d.cdn){this.src=d.cdn;d.cdn=''}else{this.style.visibility='hidden'}">`;
+}
+
+function elementIcon(el, size = 'h-5 w-5') {
+  const k = el.toLowerCase();
+  if (k === 'misc') return `<span class="inline-block ${size} shrink-0 rounded-full" style="background:${ELEMENT.Misc}" title="Misc"></span>`;
+  return `<img src="assets/elements/${k}.png" data-cdn="https://www.worldofmiscrits.com/${k}.png" alt="" title="${esc(parts(el).join(' and '))}" class="${size} shrink-0 object-contain"
+    onerror="if(this.dataset.cdn){this.src=this.dataset.cdn;this.dataset.cdn=''}else{this.style.visibility='hidden'}">`;
+}
+
+// An empty day list is no limit, never a miscrit that spawns on no day.
+const findableOn = (m, day) => m.spots.some(s => !s.days.length || s.days.includes(day));
+const missingDays = days => [0,1,2,3,4,5,6].filter(d => !days.includes(d));
+const place = s => `${s.zone} ${s.spot}`;
+
+// Fields are kept apart with "|" so a place search stays inside one place.
+for (const m of MISCRITS) {
+  m.hay = [...m.names, m.element, m.rarity, ...m.spots.map(place)].join('|').toLowerCase();
+}
+const reEsc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+// A number is read with the word before it: "forest 1" means Forest 1, not Forest 2 and Cave 1.
+const queryTests = terms => terms.map((t, i) => /^\d+$/.test(t) && i
+  ? (re => hay => re.test(hay))(new RegExp(`${reEsc(terms[i - 1])}[^|]*\\s${t}(?!\\d)`))
+  : hay => hay.includes(t));
+
+function weekStrip(days) {
+  return [0,1,2,3,4,5,6].map(d => {
+    const on = days.includes(d);
+    return `<span class="${on ? 'day-on' : 'day-off'}${d === TODAY ? ' day-today' : ''} grid h-6 place-items-center rounded-md text-[11px] font-bold" title="${DAYS[d]}: ${on ? 'spawns' : 'does not spawn'}"><span class="day-l">${DAYS[d][0]}</span><span class="sr-only">${DAYS[d].slice(1)} ${on ? 'spawns' : 'missing'}</span></span>`;
+  }).join('');
+}
+
+const spawnsOn = (s, day) => !s.days.length || s.days.includes(day);
+const CHECK = '<path d="M5 12.5l4.5 4.5L19 7.5"/>';
+
+// The dialog's first answer: can I catch it today, and if not, when next.
+function todayAnswer(m) {
+  const tone = (cls, icon, lead, rest) => `<p class="flex items-start gap-2 rounded-xl px-3 py-2.5 text-sm ${cls}">
+    <svg class="mt-0.5 h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icon}</svg>
+    <span><strong class="font-bold">${lead}</strong>${rest ? `<span class="text-ink"> ${rest}</span>` : ''}</span></p>`;
+  if (!m.spots.length) return tone('bg-leaf text-fog', AVAIL.wild.icon, 'Not in the wild.', 'Usually from events, the shop, or crafting.');
+  const where = (list, all) => list.length === 1
+    ? `at ${esc(place(list[0]))}`
+    : list.length === all ? `at all ${all} places below` : `at ${list.length} of ${all} places`;
+  const today = m.spots.filter(s => spawnsOn(s, TODAY));
+  if (today.length) return tone('bg-wash-yes text-moss', CHECK, 'Findable today', `${where(today, m.spots.length)}.`);
+  const ahead = [1, 2, 3, 4, 5, 6].map(n => (TODAY + n) % 7).find(d => m.spots.some(s => spawnsOn(s, d)));
+  const next = m.spots.filter(s => spawnsOn(s, ahead));
+  return tone('bg-wash-no text-rust', AVAIL.gone.icon, 'Not today.',
+    `Next on ${DAYS[ahead]}${ahead === (TODAY + 1) % 7 ? ' (tomorrow)' : ''} ${where(next, m.spots.length)}.`);
+}
+
+// Detail only. Places that share the same days share one week strip, so four
+// every-day spots read as one list, not four identical rows of lit days.
+function whereToFind(m) {
+  const groups = new Map();
+  for (const s of m.spots) {
+    const key = s.days.join(',');
+    if (!groups.has(key)) groups.set(key, { days: s.days, spots: [] });
+    groups.get(key).spots.push(s);
+  }
+  const html = [...groups.values()].map(({ days, spots }) => {
+    const flag = days.length
+      ? `<span class="shrink-0 text-right text-xs font-bold text-rust">Not on ${missingDays(days).map(d => DAYS[d].slice(0, 3)).join(', ')}</span>`
+      : `<span class="shrink-0 rounded-full bg-wash-yes px-2 py-0.5 text-xs font-bold text-moss">Every day</span>`;
+    return `<div class="rounded-xl bg-leaf/70 p-2.5">
+      <div class="mb-1.5 flex items-start justify-between gap-2">
+        <ul class="flex min-w-0 flex-wrap gap-x-3 gap-y-0.5 font-display text-[15px]">${spots.map(s =>
+          `<li class="flex items-center gap-1">${PIN.replace('mt-0.5 h-4 w-4', 'h-3.5 w-3.5')}${esc(place(s))}</li>`).join('')}</ul>
+        ${flag}
+      </div>
+      <div class="grid grid-cols-7 gap-1">${weekStrip(days.length ? days : [0,1,2,3,4,5,6])}</div>
+    </div>`;
+  }).join('');
+  return `<div class="space-y-2">${html}</div>`;
+}
+
+function rarityBadge(m) {
+  const r = RARITY[m.rarity] || RARITY.Common;
+  return `<span class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-bold" style="background:${r.bg};color:${r.text}">${m.rarity}</span>`;
+}
+
+const PIN = `<svg class="mt-0.5 h-4 w-4 shrink-0 text-moss" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>`;
+const AVAIL = {
+  wild:  { label: 'Not in the wild', cls: 'bg-leaf text-fog',
+           icon: '<circle cx="12" cy="12" r="8"/><path d="M6.5 17.5l11-11"/>' },
+  some:  { label: 'Some days', cls: 'bg-wash-some text-some',
+           icon: '<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>' },
+  gone:  { label: 'Not today', cls: 'bg-wash-no text-rust',
+           icon: '<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4M10 13.5l4 4M14 13.5l-4 4"/>' },
+};
+// The card only flags when the day matters; the week strips live in the detail.
+function availability(m) {
+  if (!m.spots.length) return 'wild';
+  if (!findableOn(m, TODAY)) return 'gone';
+  return m.spots.some(s => s.days.length) ? 'some' : null;
+}
+function availPill(key) {
+  if (!key) return '';
+  const a = AVAIL[key];
+  return `<span class="inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-xs font-bold ${a.cls}">
+    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${a.icon}</svg>${a.label}</span>`;
+}
+
+function card(m) {
+  const r = RARITY[m.rarity] || RARITY.Common;
+  const [name, ...evos] = m.names;
+  const places = m.spots.map(place);
+  // The card names zones only, one line; exact spots and days are in the detail.
+  const zones = [...new Set(m.spots.map(s => s.zone))];
+  // The label replaces the card's text, so it carries the where and the day flag too.
+  const avail = availability(m);
+  const label = [name, parts(m.element).join(' and '), m.rarity, zones.join(', '), avail && AVAIL[avail].label].filter(Boolean).join(', ');
+  return `<li>
+    <button type="button" data-open="${m.slugs[0]}" aria-label="${esc(label)}. See evolutions and moves"
+      class="card press flex h-full w-full flex-col rounded-3xl border-2 bg-card p-4 text-left shadow-[0_1px_2px_rgb(var(--shade)/.06)]"
+      style="border-color:${r.ring}66;color:${r.ring}">
+      <div class="flex w-full items-center gap-3 text-ink">
+        <span class="shrink-0 rounded-2xl p-[3px]" style="background:${r.ring}">${img('avatars', m.slugs[0], 'block h-[58px] w-[58px] rounded-[13px] bg-leaf object-cover')}</span>
+        <div class="min-w-0">
+          <div class="flex min-w-0 items-center gap-1.5">
+            <span class="inline-flex shrink-0 items-center" title="${esc(parts(m.element).join(' and '))}">${elementIcon(m.element, 'h-5 w-5')}<span class="sr-only">${esc(parts(m.element).join(' and '))}</span></span>
+            <h2 class="truncate font-display text-xl leading-tight" style="font-weight:700">${esc(name)}</h2>
+          </div>
+          <div class="mt-1 text-xs">${rarityBadge(m)}</div>
+        </div>
+      </div>
+      <p class="mt-2 w-full truncate text-xs text-fog" title="Evolves into ${esc(evos.join(', '))}">Evolves into ${esc(evos.join(', '))}</p>
+      <div class="mt-auto w-full pt-3">
+        <div class="flex w-full items-start gap-2 border-t border-ink/10 pt-3 text-ink">
+          ${places.length ? `${PIN}<p class="min-w-0 flex-1 truncate font-display text-[15px] leading-snug" title="${esc(places.join(', '))}">${esc(zones.join(', '))}</p>` : '<span class="flex-1"></span>'}
+          ${availPill(avail)}
+        </div>
+      </div>
+    </button>
+  </li>`;
+}
+
+// Detail dialog
+const dialog = document.getElementById('detail');
+let current = null;
+let shown = [];  // the filtered list, so the dialog can step through what the grid shows
+
+function statBars(stats) {
+  const cell = ({ k, label, col, icon }) => {
+    const v = stats[k], n = STAT_LEVEL[v] || 0, h = STAT_HUE[col];
+    return `<div class="min-w-0">
+      <div class="flex items-center gap-1.5">
+        ${statTile(icon, h, 'grid h-6 w-6 shrink-0 place-items-center rounded-md', 'h-4 w-4')}
+        <span class="grid flex-1 grid-cols-5 gap-0.5" aria-hidden="true">${[1,2,3,4,5].map(i => segment(i <= n, h, 'h-3 rounded-[3px]')).join('')}</span>
+      </div>
+      <p class="mt-1 flex flex-wrap justify-between gap-x-1 text-xs"><span class="text-fog">${label.startsWith('Physical') || label.startsWith('Elemental') ? `<span class="sr-only">${label.split(' ')[0]} </span>${label.split(' ')[1].replace(/^./, c => c.toUpperCase())}` : label}</span><span class="font-bold" style="color:${h.text}">${esc(v)}</span></p>
+    </div>`;
+  };
+  // Column heads sit inside the panel, in their column's colour, so they read as part of the grid.
+  const head = col => col ? `<span class="text-xs font-bold" style="color:${STAT_HUE[col].text}">${col[0].toUpperCase() + col.slice(1)}</span>` : '<span></span>';
+  return `<div class="grid grid-cols-3 gap-x-3 gap-y-3 rounded-2xl bg-leaf/60 p-3">
+      <div class="col-span-3 -mb-1 grid grid-cols-3 gap-x-3" aria-hidden="true">${head()}${head('physical')}${head('elemental')}</div>
+      ${STAT_GRID.map(cell).join('')}
+    </div>`;
+}
+
+// Move icons are the game's own, picked by what the move does (see build.py).
+function abilityIcon(a) {
+  if (!a.icon) return elementIcon(a.element, 'h-8 w-8');
+  return `<img src="assets/abilities/${a.icon}.png" data-cdn="https://www.worldofmiscrits.com/${a.icon}.png" alt="" width="32" height="32" loading="lazy" class="h-8 w-8 shrink-0"
+    onerror="if(this.dataset.cdn){this.src=this.dataset.cdn;this.dataset.cdn=''}else{this.style.visibility='hidden'}">`;
+}
+
+const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
+function moveKind(a) {
+  if (a.type === 'Attack') return `${parts(a.element).join('/')} attack`;
+  if (a.type === 'Buff' && a.ap < 0) return 'Debuff';
+  if (a.type === 'Bot' && a.ap < 0) return 'Debuff over time';
+  return MOVE_TYPE[a.type] || a.type;
+}
+
+// Only the facts the feed gives; a move without accuracy shows none.
+function moveRow(a, i) {
+  const facts = [];
+  // Buffs raise or lower a stat by their amount; everything else deals or heals that much.
+  const signed = a.type === 'Buff' || a.type === 'Bot';
+  if (a.ap !== undefined) facts.push([signed ? (a.ap > 0 ? `+${a.ap}` : `−${-a.ap}`) : `${a.ap} AP`, true]);
+  if (a.true_dmg) facts.push(['Fixed damage']);
+  if (a.accuracy !== undefined) facts.push([`${a.accuracy}% accuracy`]);
+  if (a.times > 1) facts.push([`Hits ${a.times} times`]);
+  // Block moves carry turns -1, which is no turn count to show.
+  if (a.turns > 0) facts.push([plural(a.turns, 'turn')]);
+  // A cooldown of -1 is the feed's way of saying the move has a single use.
+  if (a.cooldown === -1) facts.push(['1 use']);
+  else if (a.cooldown > 0) facts.push([`${a.cooldown}-turn cooldown`]);
+  if (a.max_uses) facts.push([plural(a.max_uses, 'use')]);
+  if (a.immunity) facts.push([`${a.immunity}-turn immunity`]);
+  if (a.target === 'Self') facts.push(['On self']);
+  // A ruled row, not a card: the learn order rides on the icon, the kind follows the name,
+  // and the enchant bonus closes the facts line instead of taking one of its own.
+  const tags = facts.map(([t, key]) => `<li class="fact${key ? ' fact-key' : ''}">${esc(t)}</li>`);
+  if (a.enchant_desc) tags.push(`<li class="fact fact-enchant"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.2 6.6L21 11l-6.8 2.4L12 20l-2.2-6.6L3 11l6.8-2.4z"/></svg><span class="font-normal">Enchanted</span> ${esc(a.enchant_desc)}</li>`);
+  return `<li class="move">
+    <span class="move-icon">${abilityIcon(a)}<span class="move-no"><span class="sr-only">Move </span>${i + 1}</span></span>
+    <div class="min-w-0">
+      <h4 class="flex flex-wrap items-baseline gap-x-2"><span class="font-display text-base leading-snug">${esc(a.name)}</span><span class="text-xs text-fog">${esc(moveKind(a))}</span></h4>
+      <p class="mt-0.5 text-sm leading-snug">${esc(a.desc)}</p>
+      ${tags.length ? `<ul class="mt-2 flex flex-wrap gap-1" aria-label="Move facts">${tags.join('')}</ul>` : ''}
+    </div>
+  </li>`;
+}
+
+function renderDetail(m, stage, swapped = false) {
+  const r = RARITY[m.rarity] || RARITY.Common;
+  const name = m.names[stage];
+  const at = shown.indexOf(m);
+  const nav = (dir, label, path) => {
+    // Opened from a link while the filters hide it: there is no place in the list to step from.
+    const to = at >= 0 && shown[at + dir];
+    return `<button type="button" data-step="${dir}" ${to ? '' : 'disabled'} aria-label="${label}${to ? ': ' + esc(to.names[0]) : ''}"
+      class="icon-btn press grid h-10 w-10 place-items-center rounded-full disabled:opacity-30">
+      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="${path}"/></svg>
+    </button>`;
+  };
+  const section = (title, body, aside = '') => `<section>
+    <div class="mb-2 flex flex-wrap items-baseline justify-between gap-x-3">
+      <h3 class="font-display text-lg">${title}</h3>${aside}
+    </div>${body}</section>`;
+  document.getElementById('detail-body').innerHTML = `
+    <div class="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-ink/10 bg-card/95 py-2.5 pl-5 pr-3 backdrop-blur">
+      <div class="flex min-w-0 items-center gap-2">
+        <span class="inline-flex shrink-0 items-center">${elementIcon(m.element, 'h-7 w-7')}<span class="sr-only">${esc(parts(m.element).join(' and '))}</span></span>
+        <h2 id="detail-name" tabindex="-1" class="truncate font-display text-xl sm:text-2xl" style="font-weight:700">${esc(name)}</h2>
+        ${rarityBadge(m)}
+      </div>
+      <div class="flex shrink-0 items-center">
+        ${at >= 0 ? `<span class="mr-1 hidden text-xs text-fog sm:inline">${at + 1} of ${shown.length}</span>` : ''}
+        ${nav(-1, 'Previous miscrit', 'M15 6l-6 6 6 6')}
+        ${nav(1, 'Next miscrit', 'M9 6l6 6-6 6')}
+        <button type="button" data-copy class="icon-btn press hidden h-10 w-10 place-items-center rounded-full sm:grid" aria-label="Copy link to ${esc(m.names[0])}" title="Copy link">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/></svg>
+        </button>
+        <button type="button" data-close class="icon-btn press ml-1 grid h-10 w-10 place-items-center rounded-full" aria-label="Close">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="px-5 pt-4">${todayAnswer(m)}</div>
+
+    <div class="grid gap-6 p-5 md:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
+      <div>
+        <div class="relative grid aspect-[4/3] place-items-center overflow-hidden rounded-3xl p-6 md:aspect-square" style="background:radial-gradient(circle at 50% 60%, ${r.bg}, var(--leaf) 70%)">
+          ${img('art', m.slugs[stage], `max-h-full max-w-full object-contain drop-shadow-lg${swapped ? ' art-swap' : ''}`, `${name} artwork`)}
+          <span class="absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-card/90 py-1 pl-1.5 pr-2.5 text-sm font-bold shadow-[0_1px_2px_rgb(var(--shade)/.08)]">${elementIcon(m.element, 'h-5 w-5')}${parts(m.element).join(' + ')}</span>
+        </div>
+        <div class="mt-4 mb-2 flex items-baseline justify-between gap-3">
+          <h3 id="evo-head" class="font-display text-lg">Evolutions</h3>
+          <span class="text-sm text-fog">${stage + 1} of ${m.names.length}</span>
+        </div>
+        <div class="grid grid-cols-4 gap-2" role="group" aria-labelledby="evo-head">
+          ${m.names.map((n, i) => `<button type="button" data-stage="${i}" aria-pressed="${i === stage}" aria-label="${esc(n)}, evolution ${i + 1}" class="stage press rounded-2xl border-2 border-transparent bg-leaf/60 p-1.5 text-center">
+            ${img('avatars', m.slugs[i], 'mx-auto aspect-square w-full rounded-xl object-cover', '')}
+            <span class="mt-1 block truncate font-display text-xs">${esc(n)}</span>
+          </button>`).join('')}
+        </div>
+      </div>
+
+      <div class="min-w-0 space-y-6">
+        ${m.descriptions[stage] ? section('Lore', `<p class="max-w-prose leading-relaxed">${esc(m.descriptions[stage])}</p>`) : ''}
+        ${m.spots.length ? section('Where to find', whereToFind(m)) : ''}
+        ${section('Stats', statBars(m.stats))}
+      </div>
+    </div>
+
+    <section class="border-t border-ink/10 px-5 pb-6 pt-5">
+      <div class="mb-3 flex flex-wrap items-baseline justify-between gap-x-3">
+        <h3 class="font-display text-lg">Moves</h3>
+        <p class="text-sm text-fog">In the order ${esc(m.names[0])}'s line learns them</p>
+      </div>
+      <ol class="moves grid md:grid-cols-2 md:gap-x-8">${m.moves.map(moveRow).join('')}</ol>
+    </section>`;
+}
+
+function openDetail(m, stage = 0) {
+  current = m;
+  renderDetail(m, stage);
+  if (!dialog.open) dialog.showModal();
+  dialog.scrollTop = 0;
+  document.getElementById('detail-name').focus();
+  if (location.hash.slice(1) !== m.slugs[0]) history.replaceState(null, '', '#' + m.slugs[0]);
+}
+
+function step(dir, fromButton = false) {
+  const at = current ? shown.indexOf(current) : -1;
+  const to = at >= 0 && shown[at + dir];
+  if (!to) return;
+  openDetail(to);
+  // Pressing previous/next again should not need a trip back from the heading.
+  const btn = fromButton && dialog.querySelector(`[data-step="${dir}"]:not(:disabled)`);
+  if (btn) {
+    btn.focus();
+    document.getElementById('detail-live').textContent = `${to.names[0]}, ${at + dir + 1} of ${shown.length}`;
+  }
+}
+
+// A pointer close plays a short exit; a keyboard close (detail 0, or Escape) is instant.
+function closeDetail(animate) {
+  if (!animate || dialog.classList.contains('closing')) return dialog.close();
+  dialog.classList.add('closing');
+  const done = () => { dialog.classList.remove('closing'); if (dialog.open) dialog.close(); };
+  dialog.addEventListener('animationend', done, { once: true });
+  setTimeout(done, 260);  // in case no animation runs
+}
+
+async function copyLink(btn) {
+  const url = location.href;
+  let ok = false;
+  try { await navigator.clipboard.writeText(url); ok = true; } catch {
+    const t = Object.assign(document.createElement('textarea'), { value: url });
+    dialog.append(t); t.select();
+    try { ok = document.execCommand('copy'); } catch {}
+    t.remove(); btn.focus();
+  }
+  document.getElementById('detail-live').textContent = ok ? 'Link copied.' : 'Could not copy the link. Copy it from the address bar.';
+  if (!ok) return;
+  const icon = btn.innerHTML;
+  btn.innerHTML = `<svg class="h-5 w-5 text-moss" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${CHECK}</svg>`;
+  setTimeout(() => { if (btn.isConnected) btn.innerHTML = icon; }, 1600);
+}
+
+dialog.addEventListener('click', e => {
+  if (e.target === dialog || e.target.closest('[data-close]')) return closeDetail(e.detail > 0);
+  const st = e.target.closest('[data-step]');
+  if (st) return step(Number(st.dataset.step), true);
+  const cp = e.target.closest('[data-copy]');
+  if (cp) return copyLink(cp);
+  const s = e.target.closest('[data-stage]');
+  if (s && current) {
+    const i = Number(s.dataset.stage);
+    // The art swap is for pointer picks only; keyboard picks switch instantly.
+    renderDetail(current, i, e.detail > 0);
+    dialog.querySelector(`[data-stage="${i}"]`).focus();
+  }
+});
+dialog.addEventListener('keydown', e => {
+  if (e.target.matches('input, select, textarea') || e.altKey || e.ctrlKey || e.metaKey) return;
+  if (e.key === 'ArrowLeft') { e.preventDefault(); step(-1); }
+  if (e.key === 'ArrowRight') { e.preventDefault(); step(1); }
+});
+dialog.addEventListener('close', () => {
+  const slug = current && current.slugs[0];
+  current = null;
+  document.getElementById('detail-live').textContent = '';
+  history.replaceState(null, '', location.pathname + location.search);
+  // After stepping with previous/next, return focus to the card of the miscrit last shown.
+  const card = slug && document.querySelector(`#grid [data-open="${slug}"]`);
+  if (card) { card.focus({ preventScroll: true }); card.scrollIntoView({ block: 'nearest' }); }
+});
+
+// Controls
+const $ = id => document.getElementById(id);
+const state = { q: '', zone: '', element: '', day: '', stat: '', rarities: new Set() };
+
+const zones = [...new Set(MISCRITS.flatMap(m => m.spots.map(s => s.zone)))].sort();
+// Each zone leads with the cards' location pin.
+$('zone').insertAdjacentHTML('beforeend', zones.map(z =>
+  `<option value="${esc(z)}">${PIN.replace('mt-0.5 h-4 w-4', 'opt-icon')}<span class="opt-text">${esc(z)}</span></option>`).join(''));
+// A single element also matches the mixed miscrits that include it; the Mixed group
+// picks mixed miscrits exactly ("=FireWind") or all of them ("mixed").
+const elements = [...new Set(MISCRITS.flatMap(m => parts(m.element)))].sort();
+const mixed = [...new Set(MISCRITS.map(m => m.element).filter(e => parts(e).length > 1))]
+  .sort((a, b) => parts(a).join(' ').localeCompare(parts(b).join(' ')));
+// Options carry the element's icon; browsers without rich options drop the markup and keep the words.
+const elementOption = (value, el, text) =>
+  `<option value="${value}">${el ? elementIcon(el, 'opt-icon') : ''}<span class="opt-text">${text}</span></option>`;
+$('element').insertAdjacentHTML('beforeend',
+  `<optgroup label="Element">${elements.map(e => elementOption(e, e, e)).join('')}</optgroup>
+   <optgroup label="Mixed">${elementOption('mixed', '', 'Any mixed element')}${mixed.map(e => elementOption(`=${e}`, e, parts(e).join(' + '))).join('')}</optgroup>`);
+const matchesElement = (m, v) =>
+  !v || (v === 'mixed' ? parts(m.element).length > 1 : v[0] === '=' ? m.element === v.slice(1) : parts(m.element).includes(v));
+
+// "spd:4" keeps miscrits whose Speed is Max or better.
+const STAT_ORDER = ['hp', 'spd', 'pa', 'pd', 'ea', 'ed'];
+const LEVEL_NAMES = Object.keys(STAT_LEVEL);
+// The closed field has room for the tile, a short name and the bar; the full name stays for screen readers.
+const STAT_SHORT = { hp: 'Health', spd: 'Speed', pa: 'Phys. atk', pd: 'Phys. def', ea: 'Elem. atk', ed: 'Elem. def' };
+// In the list a row is the bar and the level, under a group head in the stat's colour. The words read
+// "Speed: Strong or better" as plain text, so browsers without rich options keep the old labels.
+$('stat').insertAdjacentHTML('beforeend', STAT_ORDER.map(k => {
+  const { label, col, icon } = STAT_GRID.find(s => s.k === k), h = STAT_HUE[col];
+  return `<optgroup label="${label}" style="color:${h.text}"><legend>${statTile(icon, h, 'opt-tile opt-head', '')}${label}</legend>${[2, 3, 4, 5].map(n =>
+    `<option value="${k}:${n}">${statTile(icon, h, 'opt-tile', '')}<span class="sr-only">${label}: </span><span class="opt-short" data-t="${STAT_SHORT[k]}" aria-hidden="true"></span><span class="opt-meter" aria-hidden="true">${[1,2,3,4,5].map(i => segment(i <= n, h)).join('')}</span><span class="opt-level">${LEVEL_NAMES[n - 1]}${n < 5 ? '<span class="opt-more"> or better</span>' : ''}</span></option>`).join('')}</optgroup>`;
+}).join(''));
+const matchesStat = (m, v) => {
+  if (!v) return true;
+  const [k, n] = v.split(':');
+  return (STAT_LEVEL[m.stats[k]] || 0) >= Number(n);
+};
+// Each day is a lit week-strip cell; the letter is drawn from data-l so plain-text lists read just the day.
+$('day').insertAdjacentHTML('beforeend', DAYS.map((d, i) => `<option value="${i}"><span class="opt-day day-on${i === TODAY ? ' day-today' : ''}" data-l="${d[0]}" aria-hidden="true"></span><span class="opt-text">${d}</span>${i === TODAY ? ' <span class="opt-tag"><span class="opt-paren">(</span>today<span class="opt-paren">)</span></span>' : ''}</option>`).join(''));
+$('today-note').textContent = `Today is ${DAYS[TODAY]}.`;
+
+$('rarities').innerHTML = Object.keys(RARITY).map(r =>
+  `<button type="button" class="chip press inline-flex items-center gap-1.5 rounded-full border border-line bg-card px-3 py-1.5 text-sm" aria-pressed="false" data-r="${r}">
+     <span class="h-2.5 w-2.5 shrink-0 rounded-full" style="background:${RARITY[r].ring}" aria-hidden="true"></span><span>${r}</span><span class="chip-count text-fog tabular-nums">${MISCRITS.filter(m => m.rarity === r).length}</span>
+   </button>`).join('');
+
+function apply() {
+  const q = queryTests(state.q.trim().toLowerCase().split(/\s+/).filter(Boolean));
+  const day = state.day === '' ? null : Number(state.day);
+  // With a location picked, the day has to be one it spawns there, not somewhere else.
+  const inZone = s => !state.zone || s.zone === state.zone;
+  const list = MISCRITS.filter(m =>
+    q.every(test => test(m.hay)) &&
+    (!state.zone || m.spots.some(inZone)) &&
+    matchesElement(m, state.element) &&
+    matchesStat(m, state.stat) &&
+    (!state.rarities.size || state.rarities.has(m.rarity)) &&
+    (day === null || m.spots.some(s => inZone(s) && spawnsOn(s, day)))
+  );
+  shown = list;
+  $('grid').innerHTML = list.map(card).join('');
+  $('empty').classList.toggle('hidden', list.length > 0);
+  $('count').textContent = `${list.length} of ${MISCRITS.length} miscrits`;
+}
+
+$('grid').addEventListener('click', e => {
+  const b = e.target.closest('[data-open]');
+  if (b) openDetail(byHash.get(b.dataset.open));
+});
+$('q').addEventListener('input', e => { state.q = e.target.value; apply(); });
+for (const k of ['zone', 'element', 'day', 'stat']) $(k).addEventListener('change', e => { state[k] = e.target.value; apply(); });
+$('rarities').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  const on = b.getAttribute('aria-pressed') !== 'true';
+  b.setAttribute('aria-pressed', on);
+  on ? state.rarities.add(b.dataset.r) : state.rarities.delete(b.dataset.r);
+  apply();
+});
+$('reset').addEventListener('click', () => {
+  Object.assign(state, { q: '', zone: '', element: '', day: '', stat: '' }); state.rarities.clear();
+  for (const k of ['q', 'zone', 'element', 'day', 'stat']) $(k).value = '';
+  document.querySelectorAll('.chip').forEach(b => b.setAttribute('aria-pressed', 'false'));
+  apply();
+  // The button hides with the empty state, so focus goes to the search it just cleared.
+  $('q').focus();
+});
+document.addEventListener('keydown', e => {
+  if (e.key === '/' && !dialog.open && document.activeElement !== $('q')) { e.preventDefault(); $('q').focus(); }
+});
+
+apply();
+// A link like index.html#flue opens that miscrit straight away.
+const fromHash = () => { const m = byHash.get(location.hash.slice(1)); if (m) openDetail(m); };
+window.addEventListener('hashchange', fromHash);
+fromHash();
+</script>
+<script>
+// The site bar sticks. Its height places the field guide's sticky filters under it, and --stick-h keeps
+// scrolled-to focus and jump targets clear of whatever is stuck at the top.
+(() => {
+  const root = document.documentElement, bar = document.getElementById('site-bar'), filters = document.getElementById('filters');
+  const measure = () => {
+    const b = bar.offsetHeight, f = filters && getComputedStyle(filters).position === 'sticky' ? filters.offsetHeight : 0;
+    root.style.setProperty('--bar-h', b + 'px');
+    root.style.setProperty('--stick-h', b + f + 'px');
+  };
+  const watch = new ResizeObserver(measure);
+  watch.observe(bar);
+  if (filters) watch.observe(filters);
+  addEventListener('resize', measure);
+})();
+</script>
+</body>
+</html>

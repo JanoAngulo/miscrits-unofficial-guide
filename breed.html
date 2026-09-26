@@ -1,0 +1,895 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+  // Dark is the default; a light pick is kept for every page.
+  try { if (localStorage.getItem('miscripedia.theme') === 'light') document.documentElement.dataset.theme = 'light'; } catch {}
+</script>
+<title>Breeding Guide</title>
+<link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAFyGlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS4wLWMwNjEgNjQuMTQwOTQ5LCAyMDEwLzEyLzA3LTEwOjU3OjAxICAgICAgICAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iCiAgICB4bWxuczpzdFJlZj0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlUmVmIyIKICAgIHhtbG5zOnN0RXZ0PSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VFdmVudCMiCiAgICB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iCiAgIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo5QzkzNUREMTI2MjA2ODExOTdBNUFERUVDMTIxMTUzRCIKICAgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDpDQUI1MDhGRkZDRDgxMURGQTVDREU4OEFFQkYyMDA5RSIKICAgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpGOTdGMTE3NDA3MjA2ODExODA4M0U5ODg0QjI3QUZEMSIKICAgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IFdpbmRvd3MiCiAgIHhtcDpNZXRhZGF0YURhdGU9IjIwMTEtMTEtMDhUMTE6MzU6MzAtMDc6MDAiCiAgIHhtcDpSYXRpbmc9IjQiPgogICA8eG1wTU06RGVyaXZlZEZyb20KICAgIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6QUM2RTg5RjFFQ0ZCREYxMTk2RUNDRjk4REExMERFNjEiCiAgICBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjlDOTM1REQxMjYyMDY4MTE5N0E1QURFRUMxMjExNTNEIi8+CiAgIDx4bXBNTTpIaXN0b3J5PgogICAgPHJkZjpTZXE+CiAgICAgPHJkZjpsaQogICAgICBzdEV2dDphY3Rpb249InNhdmVkIgogICAgICBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOkY3N0YxMTc0MDcyMDY4MTE4MDgzRTk4ODRCMjdBRkQxIgogICAgICBzdEV2dDp3aGVuPSIyMDExLTExLTA4VDExOjM1OjE1LTA3OjAwIgogICAgICBzdEV2dDpjaGFuZ2VkPSIvbWV0YWRhdGEiLz4KICAgICA8cmRmOmxpCiAgICAgIHN0RXZ0OmFjdGlvbj0ic2F2ZWQiCiAgICAgIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6Rjk3RjExNzQwNzIwNjgxMTgwODNFOTg4NEIyN0FGRDEiCiAgICAgIHN0RXZ0OndoZW49IjIwMTEtMTEtMDhUMTE6MzU6MzAtMDc6MDAiCiAgICAgIHN0RXZ0OmNoYW5nZWQ9Ii9tZXRhZGF0YSIvPgogICAgPC9yZGY6U2VxPgogICA8L3htcE1NOkhpc3Rvcnk+CiAgPC9yZGY6RGVzY3JpcHRpb24+CiA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgo8P3hwYWNrZXQgZW5kPSJyIj8+9tBYJAAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAImSURBVHjaYmCAADcgXg/E/4H4PhCXMWACNSCeBlVzHojTkCXXz5iX+v/es8n/D51s/O/mofcfqhgG0vj4OP/XNAaB1WzZXQ4zhIEZquD9lo3neD9/+qFh7SjF4OyuxvDuzS/Ta1efigPlXgNx48oNeRJGlsIMP779Y/B372X4+fNPPVD8LMyAu0C84fy5BzkBYeocb748YLCyk2X48oHF9Ma1Z6wN7b4eMqo/GL58f8+wc+N9hn27r08Aqm8DaWRBcuZPIL5w7/YHB17JdwwfPr9giMqSYJBXM0tQN/7J8OrDGwZ+blGG79/+gtR+hGliQgsoB2MzOQYmJhaGP39/M3z+9pbByJaD4esPiHo2Vg4GRkZmFA3oBjCwsrAz8HEJM6yc+ZZBQkiRQVRAjuHzax6Gozu/MnBzCGBEDYYBzMysDAK84gz7tj9kmNB0hYGbSZWhvvAYA+M/XgYuTn4iDAA6n5dLEMzeteNSuZ15/YNPn743crBxMbAwsRA2gJGRkYEF6Aoo6AJiRSDmFxDgZeBk52WQlhECicvjNODv3z8Mv//8QhYSACaigpBwC4bfv1gYZGSFGID8BJA4ltTK8P/M9ar/J6+W/rewUv0PTa4gA/5racuA+O+BeD8Qh2HTrAA0/f/F2w1A3IiSXKG2GWDThOyFADcPfQZebmGG1csuMkQFTwKJTYfKfQAlMgYCYP+yNXkwp0+D5j6SQBg+/+ECAAEGAPvZtkvsKGElAAAAAElFTkSuQmCC">
+<meta name="description" content="Work out the chance a Miscrits breed gives you the miscrit and stats you want, and what it costs in gold.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+{
+  // Colours are theme tokens, so opacity modifiers like border-ink/10 follow the theme.
+  const v = n => `color-mix(in srgb, var(--${n}) calc(<alpha-value> * 100%), transparent)`;
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          display: ['Fredoka', 'system-ui', 'sans-serif'],
+          body: ['"Atkinson Hyperlegible"', 'system-ui', 'sans-serif'],
+        },
+        colors: {
+          paper: v('paper'), card: v('card'), leaf: v('leaf'), ink: v('ink'), on: v('on'), moss: v('moss'), fog: v('fog'), line: v('line'), rust: v('rust'),
+          'wash-yes': v('wash-yes'), 'wash-some': v('wash-some'), some: v('some'), 'wash-no': v('wash-no'),
+          // Text on the game's fixed fills (tier colours, a white rolled stat) stays dark in both themes.
+          'ink-fixed': '#1B2E2A',
+        },
+      },
+    },
+  };
+}
+</script>
+<script src="data.js"></script>
+<style>
+  /* The page title and section headings take the chapter colour; card titles stay ink under them. */
+  .chapter { color: var(--chapter); }
+  .nav-dot { width: 8px; height: 8px; border-radius: 9999px; flex-shrink: 0; }
+  /* Site bar: chapter tabs in fog; the current chapter takes ink, like a pressed chip. */
+  .nav-link { color: var(--fog); }
+  .nav-link[aria-current="page"] { background: var(--ink); color: var(--on); }
+  .brand { border-radius: 8px; }
+  /* The site bar sticks (and on the field guide the filters under it); --stick-h is their height, set by the page,
+     so focus and jumps land clear of them. */
+  html { scroll-padding-top: calc(var(--stick-h, 0px) + 1rem); }
+
+  :root {
+    color-scheme: light;
+    /* Chapter colours: each page is a chapter of the guidebook, tabbed in its own colour. Text values clear 4.5:1 on
+       paper and card in both themes; the fills mark the nav tabs only. Moss and rust stay out: they mean yes and no. */
+    --ch-field: #1C6A6E; --ch-relics: #8A5E00; --ch-catch: #1D628A; --ch-teams: #6E2E96; --ch-breed: #A12F63;
+    --chf-field: #2A9D9F; --chf-relics: #E0A21B; --chf-catch: #2E8BC0; --chf-teams: #9B4DCA; --chf-breed: #E0508F;
+    --chapter: var(--ch-breed);
+    --paper: #EEF3EF; --card: #FFFFFF; --leaf: #E1EAE4; --ink: #1B2E2A; --on: #FFFFFF; --moss: #3E6B57;
+    /* fog clears 4.5:1 on leaf, line clears 3:1 against card for control edges. */
+    --fog: #4F605A; --line: #83928C; --rust: #A0422A; --rust-hatch: #C7735D;
+    --wash-yes: #DDEDE3; --wash-some: #E4ECF4; --some: #2B587A; --wash-no: #F7E4DE;
+    --hatch-light: #F7F9F8; --hatch-dark: #E3E9E6; --hatch-edge: #C9D3CE;
+    --focus: #2E8BC0; --select: #CFE3D7; --scroll: #A9BAB3; --count-on-ink: var(--count-on-ink); --warn-on-ink: #F2B8A8;
+    --shade: 27 46 42; --scrim: rgb(27 46 42 / .55);
+    --r-common-text: #4E5A56; --r-common-wash: #EEF1EF; --r-rare-text: #1D628A; --r-rare-wash: #E3F1F9;
+    --r-epic-text: #237140; --r-epic-wash: #E4F4E9; --r-exotic-text: #6E2E96; --r-exotic-wash: #F2E8F8;
+    --r-legendary-text: #8A5E00; --r-legendary-wash: #FCF1D6;
+    /* Stat colours: the fills are the game's and never change; the text and unfilled tints follow the theme. */
+    --s-core: #2F6E16; --s-speed: #8A5E00; --s-physical: #1D4F94; --s-elemental: #9E1F24;
+    --s-core-empty: #DDEFD3; --s-speed-empty: #FCEDC8; --s-physical-empty: #D9E5F5; --s-elemental-empty: #F7DADB;
+    --q-green-text: #2F6E16;
+    --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234F605A' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    /* The game's stat colours for a rolled stat. Red and green clear 3:1 on white; white takes a line edge. */
+    --q-red: #CC3B32; --q-green: #3D9A2E;
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  /* Night trail: near-black pine ground, pine surfaces a step up. Every text pair still clears 4.5:1, edges 3:1. */
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --ch-field: #7FD0CB; --ch-relics: #F0C766; --ch-catch: #8CCBF0; --ch-teams: #D6ACF2; --ch-breed: #F4A3C4;
+    --paper: #070E0C; --card: #0F1A17; --leaf: #172622; --ink: #E2ECE6; --on: #070E0C; --moss: #7FC49F;
+    --fog: #9FB3AA; --line: #5F766D; --rust: #F0927B; --rust-hatch: #B35F4B;
+    --wash-yes: #11291E; --wash-some: #0E1F2C; --some: #9CC6E8; --wash-no: #2A1611;
+    --hatch-light: #111D1A; --hatch-dark: #1B2B26; --hatch-edge: #2C3F37;
+    --focus: #5FB4E6; --select: #264436; --scroll: #344943; --count-on-ink: #4A6159; --warn-on-ink: #9A3A24;
+    --shade: 0 0 0; --scrim: rgb(0 0 0 / .72);
+    --r-common-text: #B7C3BE; --r-common-wash: #18241F; --r-rare-text: #8CCBF0; --r-rare-wash: #0B2333;
+    --r-epic-text: #86D6A0; --r-epic-wash: #0D2819; --r-exotic-text: #D6ACF2; --r-exotic-wash: #241634;
+    --r-legendary-text: #F0C766; --r-legendary-wash: #271E07;
+    --s-core: #8FD66A; --s-speed: #F5C84E; --s-physical: #8DB6F2; --s-elemental: #F58F93;
+    --s-core-empty: #16280F; --s-speed-empty: #2C240B; --s-physical-empty: #121E33; --s-elemental-empty: #301114;
+    --q-green-text: #8FD66A;
+    --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239FB3AA' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  }
+  body { background: var(--paper); color: var(--ink); caret-color: var(--moss); font-variant-numeric: tabular-nums; }
+  ::selection { background: var(--select); color: var(--ink); }
+  * { scrollbar-color: var(--scroll) transparent; }
+  .font-display { font-weight: 600; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+  .seg input:checked + span { background: var(--ink); color: var(--on); border-color: var(--ink); }
+  .seg input:checked + span .sub { color: var(--count-on-ink); }
+  .seg input:focus-visible + span { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .press { transition: transform 160ms var(--ease-out), background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease; }
+  .press:active { transform: scale(0.98); }
+  .press:focus-visible:active { transform: none; }
+
+  /* A stat pick: three swatches (minus, dot, plus) per stat. Unpicked ones sit quiet on leaf; the pick fills flush
+     with its colour, so a parent reads as a strip of colour, and the glyph still says which. */
+  .sw { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 8px; background: var(--leaf); color: var(--fog); }
+  .sw-any { width: auto; padding: 0 8px; font-size: 12px; font-weight: 700; }
+  input:checked + .sw-0 { background: var(--q-red); color: #fff; }
+  input:checked + .sw-1 { background: #fff; color: #1B2E2A; box-shadow: inset 0 0 0 1.5px #1B2E2A; }
+  input:checked + .sw-2 { background: var(--q-green); color: #fff; }
+  input:checked + .sw-any { background: var(--ink); color: var(--on); }
+  input:focus-visible + .sw { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .sw { transition: background-color 120ms ease, box-shadow 120ms ease, color 120ms ease; }
+  @media (pointer: coarse) { .sw { width: 32px; height: 32px; } .sw-any { width: auto; } }
+  /* Forced colours drop the fills, so the pick keeps an outline. */
+  @media (forced-colors: active) {
+    input:checked + .sw, .seg input:checked + span { outline: 2px solid CanvasText; outline-offset: 1px; }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .seg input:not(:checked) + span:hover { background: var(--leaf); }
+    .nav-link:not([aria-current]):hover { background: var(--card); color: var(--ink); }
+    input:not(:checked) + .sw-0:hover { background: var(--s-elemental-empty); color: var(--s-elemental); }
+    input:not(:checked) + .sw-1:hover { background: #fff; color: #1B2E2A; }
+    input:not(:checked) + .sw-2:hover { background: var(--s-core-empty); color: var(--s-core); }
+    input:not(:checked) + .sw-any:hover { background: var(--card); color: var(--ink); }
+    .bar:hover .tip { opacity: 1; }
+    .link:hover { text-decoration-color: currentColor; }
+  }
+
+  /* One rolled stat, as the catching guide draws it. */
+  .q { height: 14px; border-radius: 4px; display: grid; place-items: center; }
+  .q-0, .q-2 { color: #fff; } .q-1 { color: #4F605A; }
+  .q svg { width: 10px; height: 10px; }
+  .q-2 { background: var(--q-green); box-shadow: inset 0 0 0 1px #2F6E16; }
+  .q-1 { background: #fff; box-shadow: inset 0 0 0 1px var(--line); }
+  .q-0 { background: var(--q-red); box-shadow: inset 0 0 0 1px #8F2620; }
+  /* A stat left open is empty, not a no, so it stays flat (the hatch is kept for ratings that can't happen). */
+  .q-any { background: var(--hatch-light); box-shadow: inset 0 0 0 1px var(--hatch-edge); }
+  .never { background: repeating-linear-gradient(135deg, var(--hatch-light) 0 3px, var(--hatch-dark) 3px 5px); box-shadow: inset 0 0 0 1px var(--hatch-edge); }
+
+  /* Rating tier fills, as the catching guide uses them. Letters on them stay ink; a faint edge holds the pale ones on white. */
+  .rtag { display: inline-grid; place-items: center; aspect-ratio: 1; border-radius: 6px; color: #1B2E2A; font-family: Fredoka, system-ui, sans-serif; font-weight: 700; line-height: 1; vertical-align: middle; box-shadow: inset 0 0 0 1px rgb(27 46 42 / .18); }
+  .tip { opacity: 0; transition: opacity 120ms ease; pointer-events: none; }
+  .bar-fill { transition: height 300ms var(--ease-out), background-color 150ms ease; }
+  #pick-list-0 [aria-selected="true"], #pick-list-1 [aria-selected="true"], #pick-list-2 [aria-selected="true"] { background: var(--leaf); }
+
+  /* Nothing animates on a keyboard action. */
+  [data-input="key"] .bar-fill, [data-input="key"] .press, [data-input="key"] .sw { transition: none; }
+  @media (prefers-reduced-motion: no-preference) {
+    [data-input="pointer"] .settle { animation: settle 220ms var(--ease-out); }
+    @keyframes settle { from { opacity: .5; transform: translateY(3px); } }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bar-fill, .sw { transition: none; }
+    .press:active { transform: none; }
+    [data-input="pointer"] .settle { animation: fade 150ms ease; }
+  }
+  @keyframes fade { from { opacity: .5; } }
+  /* Theme switch: the pressed pick takes ink, like a pressed chip. */
+  .theme-btn[aria-pressed="true"] { background: var(--ink); color: var(--on); }
+  @media (hover: hover) and (pointer: fine) { .theme-btn[aria-pressed="false"]:hover { background: var(--leaf); color: var(--ink); } }
+  /* A theme switch repaints in one frame; the colour transitions would otherwise stagger it. */
+  .theme-snap *, .theme-snap *::before, .theme-snap *::after { transition: none !important; }
+  /* Fields and dropdowns take the focus ring on their own edge, with no gap around them. */
+  input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--focus); outline-offset: -1px; }
+</style>
+</head>
+<body class="font-body text-ink antialiased">
+
+<header id="site-bar" class="sticky top-0 z-20 border-b border-ink/10 bg-paper/95 backdrop-blur">
+  <div class="mx-auto flex max-w-7xl flex-wrap items-center gap-x-6 gap-y-1 px-4 py-2 text-sm sm:px-6 md:grid md:grid-cols-[1fr_auto_1fr] md:py-3">
+    <a href="index.html" class="brand flex items-center justify-self-start"><img src="assets/brand/miscrits-logo.png" onerror="this.onerror=null;this.src='https://www.worldofmiscrits.com/images/d1b7b11f-e431-4c85-b851-dfa7b9407505.png'" alt="Miscripedia home" width="443" height="196" class="h-9 w-auto"></a>
+    <nav aria-label="Pages" class="order-last w-full md:order-none md:w-auto">
+      <ul class="grid grid-cols-5 gap-1 md:flex">
+        <li><a href="index.html" class="nav-link press flex min-h-11 flex-col items-center justify-center gap-1 rounded-xl px-1 text-xs font-bold md:min-h-0 md:flex-row md:gap-1.5 md:rounded-full md:px-3 md:py-1.5 md:text-sm"><span class="nav-dot" style="background:var(--chf-field)" aria-hidden="true"></span><span class="lg:hidden">Guide</span><span class="hidden lg:inline">Field guide</span></a></li>
+        <li><a href="relics.html" class="nav-link press flex min-h-11 flex-col items-center justify-center gap-1 rounded-xl px-1 text-xs font-bold md:min-h-0 md:flex-row md:gap-1.5 md:rounded-full md:px-3 md:py-1.5 md:text-sm"><span class="nav-dot" style="background:var(--chf-relics)" aria-hidden="true"></span><span class="lg:hidden">Relics</span><span class="hidden lg:inline">Relics and bonus</span></a></li>
+        <li><a href="catch.html" class="nav-link press flex min-h-11 flex-col items-center justify-center gap-1 rounded-xl px-1 text-xs font-bold md:min-h-0 md:flex-row md:gap-1.5 md:rounded-full md:px-3 md:py-1.5 md:text-sm"><span class="nav-dot" style="background:var(--chf-catch)" aria-hidden="true"></span><span class="lg:hidden">Catch</span><span class="hidden lg:inline">Catching</span></a></li>
+        <li><a href="teams.html" class="nav-link press flex min-h-11 flex-col items-center justify-center gap-1 rounded-xl px-1 text-xs font-bold md:min-h-0 md:flex-row md:gap-1.5 md:rounded-full md:px-3 md:py-1.5 md:text-sm"><span class="nav-dot" style="background:var(--chf-teams)" aria-hidden="true"></span><span class="lg:hidden">Teams</span><span class="hidden lg:inline">Teams and PvP</span></a></li>
+        <li><a href="breed.html" aria-current="page" class="nav-link flex min-h-11 flex-col items-center justify-center gap-1 rounded-xl px-1 text-xs font-bold md:min-h-0 md:flex-row md:gap-1.5 md:rounded-full md:px-3 md:py-1.5 md:text-sm"><span class="nav-dot" style="background:var(--chf-breed)" aria-hidden="true"></span><span class="lg:hidden">Breed</span><span class="hidden lg:inline">Breeding</span></a></li>
+      </ul>
+    </nav>
+    <div role="group" aria-label="Theme" class="ml-auto flex rounded-full border border-line p-px md:justify-self-end">
+      <button type="button" data-theme-pick="light" aria-pressed="false" class="theme-btn press inline-flex h-9 w-11 items-center justify-center gap-1.5 rounded-full font-bold text-fog lg:h-8 lg:w-auto lg:px-2.5"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></svg><span class="max-lg:sr-only">Light</span></button>
+      <button type="button" data-theme-pick="dark" aria-pressed="true" class="theme-btn press inline-flex h-9 w-11 items-center justify-center gap-1.5 rounded-full font-bold text-fog lg:h-8 lg:w-auto lg:px-2.5"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" aria-hidden="true"><path d="M19.5 14.5A8 8 0 0 1 9.5 4.5a8 8 0 1 0 10 10z"/></svg><span class="max-lg:sr-only">Dark</span></button>
+    </div>
+  </div>
+</header>
+
+<div class="border-b border-ink/10">
+  <div class="mx-auto max-w-7xl px-4 pt-6 pb-6 sm:px-6">
+    <h1 class="chapter font-display text-3xl tracking-tight sm:text-4xl" style="font-weight:700">Breeding guide</h1>
+    <p class="mt-2 max-w-2xl text-fog">Three miscrits go in and one of them comes back, each of its six stats copied from a parent at random. Set your three below and mark what you want to see the odds before you pay.</p>
+  </div>
+</div>
+
+<script>
+// Theme: dark unless light is picked. The pick is shared by every page and every open tab.
+(() => {
+  const root = document.documentElement, KEY = 'miscripedia.theme';
+  const btns = document.querySelectorAll('[data-theme-pick]');
+  const show = () => btns.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.themePick === root.dataset.theme)));
+  const set = t => {
+    root.classList.add('theme-snap');
+    root.dataset.theme = t;
+    show();
+    requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove('theme-snap')));
+  };
+  btns.forEach(b => b.addEventListener('click', () => {
+    set(b.dataset.themePick);
+    try { localStorage.setItem(KEY, b.dataset.themePick); } catch {}
+  }));
+  addEventListener('storage', e => { if (e.key === KEY) set(e.newValue === 'light' ? 'light' : 'dark'); });
+  show();
+})();
+</script>
+
+<main class="mx-auto max-w-7xl px-4 pt-8 pb-14 sm:px-6">
+
+  <!-- Calculator -->
+  <section aria-labelledby="calc-h">
+    <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+      <h2 id="calc-h" tabindex="-1" class="chapter font-display text-2xl focus:outline-none sm:text-3xl" style="font-weight:700">Work out a breed</h2>
+      <button type="button" id="clear" class="press rounded-lg px-2 py-1 text-sm font-bold text-moss underline decoration-moss/40 underline-offset-4">Start over</button>
+    </div>
+    <p class="mt-1 text-sm text-fog">Set each parent's stats as the game colours them. Naming a parent is optional; the same miscrit twice raises its chance of coming back.</p>
+
+    <div id="parents" class="mt-4 grid items-stretch gap-2 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_auto_minmax(0,1fr)] lg:gap-3"></div>
+
+    <div class="my-2 flex justify-center lg:my-3" aria-hidden="true">
+      <span class="grid h-9 w-9 place-items-center rounded-full bg-ink text-on">
+        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 9h14M5 15h14"/></svg>
+      </span>
+    </div>
+
+    <div class="grid overflow-hidden rounded-3xl border border-ink/10 bg-card shadow-[0_1px_2px_rgb(var(--shade)/.06)] lg:grid-cols-[minmax(0,23rem)_minmax(0,1fr)]">
+      <form id="target" class="border-b border-ink/10 p-4 sm:p-5 lg:border-b-0 lg:border-r" autocomplete="off" onsubmit="return false">
+        <h3 class="font-display text-xl" style="font-weight:700">What you want back</h3>
+        <fieldset class="mt-3">
+          <legend class="text-sm font-bold">Miscrit</legend>
+          <div id="want-group" class="mt-1 grid gap-1.5"></div>
+        </fieldset>
+        <fieldset class="mt-4" aria-describedby="stats-hint">
+          <legend class="text-sm font-bold">Stats</legend>
+          <p id="stats-hint" class="text-xs text-fog">Each one must come out exactly this colour. Any leaves it open.</p>
+          <div id="target-stats" class="mt-2 grid gap-x-4 gap-y-2.5 sm:grid-cols-2 lg:grid-cols-1"></div>
+        </fieldset>
+        <div class="mt-4 flex flex-wrap gap-1.5" role="group" aria-label="Quick targets">
+          <button type="button" data-preset="green" class="press rounded-full border border-line bg-card px-3 py-1.5 text-sm font-bold">All green</button>
+          <button type="button" data-preset="redspd" class="press rounded-full border border-line bg-card px-3 py-1.5 text-sm font-bold">Red speed, rest green</button>
+          <button type="button" data-preset="any" class="press rounded-full border border-line bg-card px-3 py-1.5 text-sm font-bold">Anything</button>
+        </div>
+      </form>
+      <div id="answer" class="min-w-0 scroll-mt-4 p-4 sm:p-5"></div>
+      <p id="status" class="sr-only" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <!-- Rules -->
+  <section aria-labelledby="rules-h" class="mt-16">
+    <h2 id="rules-h" class="chapter font-display text-2xl sm:text-3xl" style="font-weight:700">How breeding works</h2>
+    <dl class="mt-4 grid gap-x-10 gap-y-5 rounded-3xl bg-card p-5 sm:grid-cols-2 sm:p-6">
+      <div>
+        <dt class="font-display text-lg">Where</dt>
+        <dd class="mt-0.5 text-fog">Talk to Brash in the Miscrit Breeding building.</dd>
+      </div>
+      <div>
+        <dt class="font-display text-lg">Cost</dt>
+        <dd class="mt-0.5 text-fog"><strong class="text-ink">5,000 gold</strong> a breed.</dd>
+      </div>
+      <div>
+        <dt class="font-display text-lg">Three in, one out</dt>
+        <dd class="mt-0.5 text-fog">The result is always one of the three you put in, each with a 1 in 3 chance. Put the same miscrit in twice and it has 2 in 3.</dd>
+      </div>
+      <div>
+        <dt class="font-display text-lg">Stats are mixed</dt>
+        <dd class="mt-0.5 text-fog">Each of the six stats is copied from one of the three parents, picked at random. A colour two parents share has a 2 in 3 chance for that stat.</dd>
+      </div>
+      <div class="sm:col-span-2">
+        <dt class="font-display text-lg">All three are used up</dt>
+        <dd class="mt-0.5 max-w-2xl text-fog">You lose every miscrit you put in and get only the result back. Breed miscrits you would not use anyway: a low-rated rarity you want better, and Commons with the stats you are after.</dd>
+      </div>
+    </dl>
+  </section>
+
+  <!-- Why take the shot -->
+  <section aria-labelledby="why-h" class="mt-16">
+    <h2 id="why-h" class="chapter font-display text-2xl sm:text-3xl" style="font-weight:700">Worth the shot</h2>
+    <p class="mt-1 max-w-2xl text-fog">A 1 in 7 chance sounds poor until you set it next to hunting. For an S+ Blighted Flowerpiller:</p>
+    <div class="mt-4 space-y-4 rounded-3xl bg-card p-5 sm:p-6">
+      <div>
+        <div class="flex flex-wrap items-baseline justify-between gap-x-3">
+          <p class="font-bold">Hunting one in the wild</p>
+          <p class="text-sm"><strong>0.12% to 0.24%</strong> <span class="text-fog">a catch</span></p>
+        </div>
+        <div class="mt-1.5 h-4 rounded-full bg-leaf" aria-hidden="true"><div class="odds-fill h-4 rounded-full" style="width:max(0.24%, 4px);background:#FE5B00;box-shadow:inset 0 0 0 1px rgb(27 46 42 / .2)"></div></div>
+      </div>
+      <div>
+        <div class="flex flex-wrap items-baseline justify-between gap-x-3">
+          <p class="font-bold">Breeding the A+ one you already have</p>
+          <p class="text-sm"><strong>14.8%</strong> <span class="text-fog">a breed</span></p>
+        </div>
+        <div class="mt-1.5 h-4 rounded-full bg-leaf" aria-hidden="true"><div class="odds-fill h-4 rounded-full" style="width:14.8%;background:#FE5B00;box-shadow:inset 0 0 0 1px rgb(27 46 42 / .2)"></div></div>
+      </div>
+      <p class="text-xs text-fog">Both bars on one scale, 0 to 100%.</p>
+      <p class="max-w-2xl text-sm text-fog">An A+ Blighted Flowerpiller isn't a PvP pick anyway, so breeding it risks little. You won't win every breed, but the more you breed the more it pays off.</p>
+    </div>
+  </section>
+
+  <!-- Worked examples -->
+  <section aria-labelledby="ex-h" class="mt-16">
+    <h2 id="ex-h" class="chapter font-display text-2xl sm:text-3xl" style="font-weight:700">Two ways to use it</h2>
+    <div id="examples" class="mt-4 grid gap-4 lg:grid-cols-2"></div>
+  </section>
+</main>
+
+<footer class="border-t border-ink/10">
+  <div class="mx-auto flex max-w-7xl items-start gap-3 px-4 py-6 text-sm text-fog sm:px-6">
+    <img src="assets/brand/miscripedia-book.png" onerror="this.onerror=null;this.src='https://www.worldofmiscrits.com/images/e2f02115-cde2-4c0a-9fc6-45779d695c8d.png'" alt="" width="51" height="56" class="h-10 w-auto shrink-0">
+    <div>
+      <p><span class="font-display text-ink" style="font-weight:700">Miscripedia</span> is an unofficial fan guide, not affiliated with the Miscrits game.</p>
+      <p class="mt-1">Miscrit data and art come from <a href="https://www.worldofmiscrits.com/" class="font-bold text-moss underline decoration-moss/40 underline-offset-4">worldofmiscrits.com</a>.</p>
+    </div>
+  </div>
+</footer>
+
+<a id="peek" href="#answer" class="fixed inset-x-3 bottom-3 z-30 hidden items-center gap-3 rounded-2xl bg-ink px-4 py-3 text-on shadow-[0_12px_32px_-12px_rgb(var(--shade)/.6)] lg:hidden">
+  <span id="peek-p" class="font-display text-2xl leading-none" style="font-weight:700"></span>
+  <span id="peek-t" class="min-w-0 flex-1 truncate text-sm text-[var(--count-on-ink)]"></span>
+  <span class="shrink-0 text-sm font-bold underline decoration-on/40 underline-offset-4">Breakdown</span>
+</a>
+
+<script>
+const $ = id => document.getElementById(id);
+const MISCRITS = window.MISCRITS || [];
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+const RATINGS = ['F-', 'F', 'F+', 'D', 'D+', 'C', 'C+', 'B', 'B+', 'A', 'A+', 'S', 'S+'];
+// Rating tiers: A to S+, B to B+, C to C+, D to D+, and the F tier.
+const TIERS = [
+  { min: 9, fill: '#FE5B00' },
+  { min: 7, fill: '#37DA31' },
+  { min: 5, fill: '#FF6BFF' },
+  { min: 3, fill: '#E0D854' },
+  { min: 0, fill: '#B7C0C8' },
+];
+const tier = s => TIERS.find(t => s >= t.min);
+const tag = (s, cls = '') => `<span class="rtag ${cls}" style="background:${tier(s).fill}">${RATINGS[s]}</span>`;
+const say = r => r.replace('+', ' plus').replace('-', ' minus');
+// Laid out as the game's card: HP and speed, then attacks, then defences.
+const STATS = [
+  { k: 'hp', ab: 'HP', name: 'Health', col: 'core', icon: 'hp' },
+  { k: 'spd', ab: 'SPD', name: 'Speed', col: 'speed', icon: 'spd' },
+  { k: 'ea', ab: 'EA', name: 'Elemental attack', col: 'elemental', icon: 'attack' },
+  { k: 'pa', ab: 'PA', name: 'Physical attack', col: 'physical', icon: 'attack' },
+  { k: 'ed', ab: 'ED', name: 'Elemental defense', col: 'elemental', icon: 'defense' },
+  { k: 'pd', ab: 'PD', name: 'Physical defense', col: 'physical', icon: 'defense' },
+];
+// The game's stat tiles, as the relic guide draws them: the icon's shape keeps an elemental stat's red
+// apart from a red roll, and the tile always sits beside its name.
+const STAT_HUE = {
+  core:      { fill: '#58B030', deep: '#2F6E16' },
+  speed:     { fill: '#F2B21B', deep: '#8A5E00' },
+  physical:  { fill: '#2E6FC7', deep: '#1D4F94' },
+  elemental: { fill: '#D8343A', deep: '#9E1F24' },
+};
+const STAT_ICON = {
+  hp: '<path d="M9.5 4h5v5.5H20v5h-5.5V20h-5v-5.5H4v-5h5.5z"/>',
+  spd: '<path d="M13.5 2 5 13.5h6L9.5 22 19 9.5h-6.2z"/>',
+  attack: '<path d="m12 2 2.4 5.6L20.5 5l-2.6 6.1L23 12l-5.1 1.9 2.6 6.1-6.1-2.6L12 23l-2.4-5.6L3.5 20l2.6-6.1L1 12l5.1-1.9L3.5 4l6.1 2.6z"/>',
+  defense: '<path d="M12 2 20 5v6.5c0 5-3.4 8.9-8 10.5-4.6-1.6-8-5.5-8-10.5V5z"/>',
+};
+function tile(s, size = 'h-5 w-5') {
+  const h = STAT_HUE[s.col];
+  return `<span class="grid ${size} shrink-0 place-items-center rounded-md" style="background:${h.fill};box-shadow:inset 0 0 0 1.5px ${h.deep}" aria-hidden="true">
+    <svg class="h-[65%] w-[65%]" viewBox="0 0 24 24" fill="#fff" stroke="${h.deep}" stroke-width="1.2" stroke-linejoin="round">${STAT_ICON[s.icon]}</svg></span>`;
+}
+// A parent card has no room for the tiles on the narrowest phones, nor while three cards share a row below xl,
+// so there it keeps the words only.
+const statLabel = (s, roomy = true) => `<span class="flex ${roomy ? 'w-14' : 'w-8 min-[420px]:w-14 lg:w-8 xl:w-14'} shrink-0 items-center gap-1.5 text-xs font-bold" title="${s.name}" aria-hidden="true">${tile(s, roomy ? 'h-5 w-5' : 'hidden h-5 w-5 min-[420px]:grid lg:hidden xl:grid')}${s.ab}</span>`;
+const COLOURS = ['red', 'white', 'green'];
+const GLYPH = [
+  '<path d="M6.5 12h11"/>',
+  '<circle cx="12" cy="12" r="3.25"/>',
+  '<path d="M12 6.5v11M6.5 12h11"/>',
+];
+const glyph = q => `<svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true">${GLYPH[q]}</svg>`;
+const GOLD = 5000;
+const RARITY = {
+  Common: { ring: '#9AA5A0', text: 'var(--r-common-text)', wash: 'var(--r-common-wash)' },
+  Rare: { ring: '#2E8BC0', text: 'var(--r-rare-text)', wash: 'var(--r-rare-wash)' },
+  Epic: { ring: '#3BA55C', text: 'var(--r-epic-text)', wash: 'var(--r-epic-wash)' },
+  Exotic: { ring: '#9B4DCA', text: 'var(--r-exotic-text)', wash: 'var(--r-exotic-wash)' },
+  Legendary: { ring: '#E0A21B', text: 'var(--r-legendary-text)', wash: 'var(--r-legendary-wash)' },
+};
+
+// Breeding takes miscrits by their first evolution, so only first names are offered and matched.
+const byName = new Map();
+for (const m of MISCRITS) byName.set(m.names[0].toLowerCase(), m);
+const ENTRIES = MISCRITS.map(m => ({ name: m.names[0], m, key: m.names[0].toLowerCase() }))
+  .sort((a, b) => a.name.localeCompare(b.name));
+
+const allOf = q => Object.fromEntries(STATS.map(s => [s.k, q]));
+const parent = (name, stats) => ({ name, stats: { ...stats } });
+const EXAMPLES = [
+  {
+    title: 'Turn an A+ into an S+',
+    body: 'You have an A+ Blighted Flowerpiller with white HP and white EA, and you want every stat green. Breed it with two S+ Commons. It has a 1 in 3 chance of coming back; HP and EA are each green 2 times in 3, and the rest are sure to be.',
+    math: '1/3 × 2/3 × 2/3',
+    parents: [
+      parent('Blighted Flowerpiller', { ...allOf(2), hp: 1, ea: 1 }),
+      parent('', allOf(2)),
+      parent('', allOf(2)),
+    ],
+    labels: ['A+ Blighted Flowerpiller', 'S+ Common', 'S+ Common'],
+    want: 0, target: allOf(2),
+  },
+  {
+    title: 'Give a Legendary red speed',
+    body: 'Red speed is far easier to find on Commons, and Legendaries never spawn with a red stat, so breeding is the only way to get one. Put a Blighted Flue with white speed in with two Commons that have red speed and every other stat green. The same idea suits Legendaries like Foil Croaky or Da Windy.',
+    math: '1/3 × 2/3',
+    parents: [
+      parent('Blighted Flue', { ...allOf(2), spd: 1 }),
+      parent('', { ...allOf(2), spd: 0 }),
+      parent('', { ...allOf(2), spd: 0 }),
+    ],
+    labels: ['Blighted Flue', 'Red speed Common', 'Red speed Common'],
+    want: 0, target: { ...allOf(2), spd: 0 },
+  },
+];
+const fromExample = ex => ({ parents: ex.parents.map(p => parent(p.name, p.stats)), want: ex.want, target: { ...ex.target } });
+const BLANK = () => ({ parents: [0, 1, 2].map(() => parent('', allOf(1))), want: 0, target: allOf('any') });
+
+const KEY = 'miscripedia.breed';
+const valid = s => s && Array.isArray(s.parents) && s.parents.length === 3 && [0, 1, 2].includes(s.want)
+  && s.parents.every(p => typeof p.name === 'string' && STATS.every(t => [0, 1, 2].includes(p.stats?.[t.k])))
+  && STATS.every(t => ['any', 0, 1, 2].includes(s.target?.[t.k]));
+let state;
+try { state = JSON.parse(localStorage.getItem(KEY)); } catch { state = null; }
+// The page opens on the red speed example, so the first view already shows a worked answer.
+if (!valid(state)) state = fromExample(EXAMPLES[1]);
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {} };
+
+// Track the last input, so keyboard changes skip motion.
+addEventListener('pointerdown', () => { document.documentElement.dataset.input = 'pointer'; }, true);
+addEventListener('keydown', () => { document.documentElement.dataset.input = 'key'; }, true);
+
+// Who a parent is: a named miscrit by its line, typed text by that text, or else just its slot.
+const lineOf = p => byName.get(p.name.trim().toLowerCase()) || null;
+const who = (p, i) => { const m = lineOf(p); return m ? `m${m.id}` : p.name.trim() ? `t${p.name.trim().toLowerCase()}` : `p${i}`; };
+const label = (p, i) => { const m = lineOf(p); return m ? m.names.find(n => n.toLowerCase() === p.name.trim().toLowerCase()) : p.name.trim() || `Parent ${i + 1}`; };
+const score = p => STATS.reduce((t, s) => t + p.stats[s.k], 0);
+
+function avatar(m, name, cls = 'h-10 w-10 rounded-xl') {
+  const s = m.slugs[Math.max(0, m.names.findIndex(n => n.toLowerCase() === name))];
+  return `<img src="assets/avatars-hd/${s}.webp" data-local="assets/avatars/${s}.png" data-cdn="https://cdn.worldofmiscrits.com/avatars/${s}_avatar.png" alt="" loading="lazy" class="${cls} shrink-0 bg-leaf object-cover"
+    onerror="const d=this.dataset;if(d.local){this.src=d.local;d.local=''}else if(d.cdn){this.src=d.cdn;d.cdn=''}else{this.style.visibility='hidden'}">`;
+}
+// The slot's face: the miscrit's avatar in its rarity frame, or the slot number.
+function face(p, i, size = 'lg') {
+  const m = lineOf(p);
+  const box = size === 'lg' ? 'h-12 w-12 rounded-2xl' : 'h-8 w-8 rounded-xl';
+  const inner = size === 'lg' ? 'rounded-[13px]' : 'rounded-[9px]';
+  if (!m) return `<span class="grid ${box} shrink-0 place-items-center bg-leaf font-display ${size === 'lg' ? 'text-xl' : 'text-sm'} text-fog" style="font-weight:700" aria-hidden="true">${i + 1}</span>`;
+  return `<span class="grid ${box} shrink-0 p-[3px]" style="background:${RARITY[m.rarity]?.ring || '#9AA5A0'}" aria-hidden="true">${avatar(m, p.name.trim().toLowerCase(), `h-full w-full ${inner}`)}</span>`;
+}
+
+// ---------- Parents ----------
+
+const PLUS = `<div class="flex justify-center lg:items-center" aria-hidden="true"><span class="grid h-8 w-8 place-items-center rounded-full bg-card text-ink shadow-[0_1px_2px_rgb(var(--shade)/.08)]">
+  <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></div>`;
+
+const swatches = (name, groupLabel, checked, withAny = false) => `<div role="radiogroup" aria-label="${esc(groupLabel)}" class="flex gap-1.5">
+  ${withAny ? `<label class="cursor-pointer"><input type="radio" name="${name}" value="any" class="sr-only" aria-label="Any" ${checked === 'any' ? 'checked' : ''}><span class="sw sw-any">Any</span></label>` : ''}
+  ${[0, 1, 2].map(q => `<label class="cursor-pointer" title="${COLOURS[q]}"><input type="radio" name="${name}" value="${q}" class="sr-only" aria-label="${COLOURS[q]}" ${checked === q ? 'checked' : ''}><span class="sw sw-${q}">${glyph(q)}</span></label>`).join('')}
+</div>`;
+
+$('parents').innerHTML = [0, 1, 2].map(i => `
+  <article id="card-${i}" class="rounded-3xl bg-card p-4 shadow-[0_1px_2px_rgb(var(--shade)/.06)]" aria-labelledby="pname-${i}">
+    <div class="flex items-center gap-3">
+      <span id="face-${i}">${face(state.parents[i], i)}</span>
+      <div class="relative min-w-0 flex-1">
+        <label for="pick-${i}" id="pname-${i}" class="flex items-center gap-2 text-xs font-bold text-fog">Parent ${i + 1}<span id="wanted-${i}" class="hidden rounded-full bg-ink px-2 py-0.5 text-[11px] leading-none text-on">Wanted</span></label>
+        <input id="pick-${i}" type="text" placeholder="Name it (optional)" spellcheck="false"
+          role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="pick-list-${i}"
+          class="mt-0.5 h-11 w-full rounded-xl border border-line bg-card px-3 font-display text-base placeholder:font-body placeholder:text-fog">
+        <ul id="pick-list-${i}" role="listbox" aria-label="Miscrits" hidden
+          class="absolute inset-x-0 top-full z-20 mt-1 max-h-80 overflow-y-auto overscroll-contain rounded-2xl border border-line bg-card p-1 shadow-[0_12px_32px_-12px_rgb(var(--shade)/.35)]"></ul>
+      </div>
+    </div>
+    <div class="mt-4 grid grid-cols-2 gap-x-3 gap-y-2.5">
+      ${STATS.map(s => `<div class="flex items-center gap-2">
+        ${statLabel(s, false)}
+        ${swatches(`p${i}-${s.k}`, `Parent ${i + 1}, ${s.name}`, state.parents[i].stats[s.k])}
+      </div>`).join('')}
+    </div>
+    <div class="mt-4 flex items-center justify-between gap-2 border-t border-ink/10 pt-3">
+      <p class="text-sm"><span class="sr-only">Rating: </span><span id="rate-${i}"></span> <span id="score-${i}" class="text-xs text-fog"></span></p>
+      <div class="flex items-center gap-1" role="group" aria-label="Set every stat of parent ${i + 1}">
+        <span class="mr-1 text-xs text-fog" aria-hidden="true">All</span>
+        ${[0, 1, 2].map(q => `<button type="button" data-all="${i}" data-q="${q}" aria-label="Make every stat ${COLOURS[q]}" title="All ${COLOURS[q]}"
+          class="press grid h-7 w-7 place-items-center rounded-lg ${q === 2 ? 'bg-[#3D9A2E] text-[#fff]' : q === 0 ? 'bg-[#CC3B32] text-[#fff]' : 'bg-[#fff] text-ink-fixed ring-1 ring-inset ring-line'}">${glyph(q)}</button>`).join('')}
+      </div>
+    </div>
+  </article>`).join(PLUS);
+
+function renderParents() {
+  state.parents.forEach((p, i) => {
+    const s = score(p);
+    $(`rate-${i}`).innerHTML = tag(s, 'h-8 text-base');
+    $(`score-${i}`).textContent = `${s}/12`;
+    $(`face-${i}`).innerHTML = face(p, i);
+    const wanted = who(p, i) === who(state.parents[state.want], state.want);
+    $(`wanted-${i}`).classList.toggle('hidden', !wanted);
+    const m = lineOf(p);
+    // Shadows, not a border: the wanted ring and rarity line take no layout, so picking a card never shifts it.
+    $(`card-${i}`).style.boxShadow = [
+      m && `inset 0 4px 0 ${RARITY[m.rarity]?.ring || '#9AA5A0'}`,
+      wanted && '0 0 0 2px var(--ink)',
+      '0 1px 2px rgb(var(--shade) / .06)',
+    ].filter(Boolean).join(', ');
+  });
+}
+function syncParents() {
+  state.parents.forEach((p, i) => {
+    $(`pick-${i}`).value = p.name;
+    for (const s of STATS) document.querySelector(`input[name=p${i}-${s.k}][value="${p.stats[s.k]}"]`).checked = true;
+  });
+}
+
+$('parents').addEventListener('change', e => {
+  const m = e.target.name?.match(/^p(\d)-(\w+)$/);
+  if (!m) return;
+  state.parents[+m[1]].stats[m[2]] = Number(e.target.value);
+  update();
+});
+$('parents').addEventListener('click', e => {
+  const b = e.target.closest('[data-all]');
+  if (!b) return;
+  const i = +b.dataset.all, q = +b.dataset.q;
+  state.parents[i].stats = allOf(q);
+  syncParents();
+  update();
+});
+
+// Miscrit pickers: ARIA comboboxes, because a datalist cannot show the avatars. Typed text that names
+// no miscrit still counts as a name, so two slots typed the same are treated as the same miscrit.
+[0, 1, 2].forEach(i => {
+  const box = $(`pick-${i}`), list = $(`pick-list-${i}`);
+  let matches = [], active = -1;
+  const open = q => {
+    q = q.trim().toLowerCase();
+    matches = (q ? [...ENTRIES.filter(e => e.key.startsWith(q)), ...ENTRIES.filter(e => !e.key.startsWith(q) && e.key.includes(q))] : ENTRIES).slice(0, 40);
+    active = -1;
+    list.innerHTML = matches.length ? matches.map((e, j) => `<li id="opt-${i}-${j}" role="option" aria-selected="false" data-j="${j}"
+        class="flex cursor-pointer items-center gap-2.5 rounded-xl px-2 py-1.5">
+        ${avatar(e.m, e.key, 'h-9 w-9 rounded-lg')}
+        <span class="min-w-0"><span class="block truncate font-display text-base leading-tight">${esc(e.name)}</span>
+        <span class="block truncate text-xs text-fog">${esc(e.m.rarity)}, ${esc((e.m.element.match(/[A-Z][a-z]+/g) || [e.m.element]).join(' and '))}</span></span>
+      </li>`).join('')
+      : '<li class="px-3 py-2.5 text-sm text-fog">No miscrit by that name. It will still count as a name.</li>';
+    list.hidden = false;
+    box.setAttribute('aria-expanded', 'true');
+    box.removeAttribute('aria-activedescendant');
+  };
+  const close = () => {
+    list.hidden = true;
+    box.setAttribute('aria-expanded', 'false');
+    box.removeAttribute('aria-activedescendant');
+    active = -1;
+  };
+  const setActive = j => {
+    list.querySelector('[aria-selected="true"]')?.setAttribute('aria-selected', 'false');
+    active = j;
+    const el = $(`opt-${i}-${j}`);
+    if (!el) return box.removeAttribute('aria-activedescendant');
+    el.setAttribute('aria-selected', 'true');
+    box.setAttribute('aria-activedescendant', el.id);
+    el.scrollIntoView({ block: 'nearest' });
+  };
+  const choose = j => {
+    const e = matches[j];
+    if (!e) return;
+    box.value = e.name;
+    close();
+    state.parents[i].name = e.name;
+    update();
+  };
+  box.addEventListener('keydown', e => {
+    const isOpen = !list.hidden;
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (!isOpen) return open(box.value), setActive(e.key === 'ArrowDown' ? 0 : matches.length - 1);
+      const n = matches.length;
+      if (n) setActive(e.key === 'ArrowDown' ? (active + 1) % n : (active - 1 + n) % n);
+    } else if (e.key === 'Enter' && isOpen && active >= 0) {
+      e.preventDefault();
+      choose(active);
+    } else if (e.key === 'Escape' && isOpen) {
+      e.preventDefault();
+      close();
+    }
+  });
+  box.addEventListener('click', () => { if (list.hidden) open(box.value); });
+  box.addEventListener('blur', close);
+  box.addEventListener('input', () => { open(box.value); state.parents[i].name = box.value; update(); });
+  // Keep focus in the input while a pointer picks an option, so blur does not close the list first.
+  list.addEventListener('pointerdown', e => e.preventDefault());
+  list.addEventListener('click', e => { const li = e.target.closest('[data-j]'); if (li) choose(Number(li.dataset.j)); });
+  list.addEventListener('pointermove', e => { const li = e.target.closest('[data-j]'); if (li && Number(li.dataset.j) !== active) setActive(Number(li.dataset.j)); });
+});
+
+// ---------- Target ----------
+
+$('target-stats').innerHTML = STATS.map(s => `<div class="flex items-center gap-2">
+  ${statLabel(s)}
+  ${swatches(`t-${s.k}`, `Wanted ${s.name}`, state.target[s.k], true)}
+</div>`).join('');
+
+function renderWant() {
+  // One option per distinct miscrit: two slots holding the same one are one choice with a better chance.
+  const groups = [];
+  state.parents.forEach((p, i) => {
+    const id = who(p, i);
+    const g = groups.find(x => x.id === id);
+    g ? g.slots.push(i) : groups.push({ id, slots: [i] });
+  });
+  const wantId = who(state.parents[state.want], state.want);
+  const focused = document.activeElement?.name === 'want';
+  $('want-group').innerHTML = groups.map(g => {
+    const i = g.slots[0], p = state.parents[i];
+    return `<label class="seg block cursor-pointer">
+      <input type="radio" name="want" value="${i}" class="sr-only" ${g.id === wantId ? 'checked' : ''}>
+      <span class="press flex min-h-11 items-center gap-2.5 rounded-xl border border-line px-2 py-1.5">
+        ${face(p, i, 'sm')}
+        <span class="min-w-0 flex-1 truncate font-display text-base">${esc(label(p, i))}</span>
+        <span class="sub shrink-0 text-xs font-bold text-fog">${g.slots.length} in 3</span>
+      </span></label>`;
+  }).join('');
+  if (focused) document.querySelector('input[name=want]:checked')?.focus({ preventScroll: true });
+}
+function syncTarget() {
+  for (const s of STATS) document.querySelector(`input[name=t-${s.k}][value="${state.target[s.k]}"]`).checked = true;
+}
+
+$('target').addEventListener('change', e => {
+  if (e.target.name === 'want') state.want = Number(e.target.value);
+  const m = e.target.name?.match(/^t-(\w+)$/);
+  if (m) state.target[m[1]] = e.target.value === 'any' ? 'any' : Number(e.target.value);
+  update();
+});
+$('target').addEventListener('click', e => {
+  const b = e.target.closest('[data-preset]');
+  if (!b) return;
+  const p = b.dataset.preset;
+  state.target = p === 'green' ? allOf(2) : p === 'redspd' ? { ...allOf(2), spd: 0 } : allOf('any');
+  syncTarget();
+  update();
+});
+
+// ---------- Maths ----------
+
+const gcd = (a, b) => b ? gcd(b, a % b) : a;
+function frac(n, d) { const g = gcd(n, d) || 1; return [n / g, d / g]; }
+function pct(p) {
+  const v = p * 100;
+  if (v === 0) return '0%';
+  if (v >= 99.95) return v === 100 ? '100%' : '>99.9%';
+  if (v < 0.01) return '<0.01%';
+  if (v < 1) return `${v.toFixed(2)}%`;
+  return `${v.toFixed(1).replace(/\.0$/, '')}%`;
+}
+const oneIn = p => { const n = 1 / p; return n < 10 ? n.toFixed(1).replace(/\.0$/, '') : Math.round(n).toLocaleString('en-US'); };
+
+function solve() {
+  const P = state.parents;
+  // How many parents carry each colour, per stat. A stat's chance of a colour is that count over three.
+  const count = Object.fromEntries(STATS.map(s => [s.k, [0, 1, 2].map(q => P.filter(p => p.stats[s.k] === q).length)]));
+  const wantId = who(P[state.want], state.want);
+  const same = P.filter((p, i) => who(p, i) === wantId).length;
+  const set = STATS.filter(s => state.target[s.k] !== 'any');
+  const hits = set.map(s => ({ s, q: state.target[s.k], n: count[s.k][state.target[s.k]], from: P.map((p, i) => p.stats[s.k] === state.target[s.k] ? i : -1).filter(i => i >= 0) }));
+  const statN = hits.reduce((t, h) => t * h.n, 1), statD = 3 ** hits.length;
+  const pStats = statN / statD, pWant = same / 3, p = pWant * pStats;
+  // Rating spread of whatever comes back: the six stats convolved.
+  let dist = [1];
+  for (const s of STATS) {
+    const next = Array(dist.length + 2).fill(0);
+    dist.forEach((v, t) => { for (let q = 0; q < 3; q++) next[t + q] += v * count[s.k][q] / 3; });
+    dist = next;
+  }
+  return { count, same, pWant, pStats, p, hits, set, statN, statD, dist, blocked: hits.filter(h => !h.n) };
+}
+
+// ---------- Answer ----------
+
+const cell = q => `<span class="q q-${q}">${q === 'any' ? '' : glyph(q)}</span>`;
+const strip = (stats, cls = 'w-24') => `<span class="grid ${cls} shrink-0 grid-cols-6 gap-0.5" aria-hidden="true">${STATS.map(s => cell(stats[s.k])).join('')}</span>`;
+const fracHtml = ([n, d]) => d === 1 ? `${n}` : `${n}/${d}`;
+
+function renderAnswer() {
+  const r = solve();
+  const P = state.parents, w = P[state.want], name = label(w, state.want);
+  const all = r.set.length === STATS.length;
+  const tScore = all ? STATS.reduce((t, s) => t + state.target[s.k], 0) : null;
+  const wScore = score(w);
+  const title = `${esc(name)}${all ? ` ${tag(tScore, 'ml-1 h-9 rounded-lg text-lg')}` : ''}`;
+  const blockedWords = r.blocked.map(h => `${COLOURS[h.q]} ${h.s.name.toLowerCase()}`);
+  const listWords = a => a.length < 3 ? a.join(' or ') : `${a.slice(0, -1).join(', ')} or ${a.at(-1)}`;
+
+  const head = r.p > 0
+    ? `<p class="font-display text-6xl leading-none tracking-tight sm:text-7xl" style="font-weight:700">${pct(r.p)}</p>
+       <p class="mt-2 text-fog">chance a breed gives you</p>`
+    : `<p class="font-display text-4xl leading-none text-rust sm:text-5xl" style="font-weight:700">Can't happen</p>
+       <p class="mt-2 text-fog">No parent has ${listWords(blockedWords)}, so no breed can hand ${r.blocked.length > 1 ? 'them' : 'it'} down. Put in a parent that has ${r.blocked.length > 1 ? 'them' : 'it'}.</p>`;
+
+  const factorRow = r.p > 0 ? `<div class="mt-5 flex flex-wrap items-stretch gap-2 text-sm">
+      <div class="rounded-2xl bg-leaf px-3 py-2"><p class="font-bold">${pct(r.pWant)}</p><p class="text-xs text-fog">it's ${esc(name)} <span class="whitespace-nowrap">(${r.same} in 3)</span></p></div>
+      <span class="self-center font-bold text-fog" aria-hidden="true">×</span><span class="sr-only">times</span>
+      <div class="rounded-2xl bg-leaf px-3 py-2"><p class="font-bold">${pct(r.pStats)}</p><p class="text-xs text-fog">${r.set.length ? `the stats match (${r.statN === r.statD ? 'sure' : fracHtml(frac(r.statN, r.statD))})` : 'any stats will do'}</p></div>
+      <span class="flex items-stretch gap-2"><span class="self-center font-bold text-fog" aria-hidden="true">=</span><span class="sr-only">equals</span>
+      <div class="rounded-2xl bg-ink px-3 py-2 text-on"><p class="font-bold">${pct(r.p)}</p><p class="text-xs text-[var(--count-on-ink)]">${fracHtml(frac(r.same * r.statN, 3 * r.statD))} a breed</p></div></span>
+    </div>` : '';
+
+  // Per stat: which parents can hand the wanted colour down.
+  const anyStats = STATS.filter(s => state.target[s.k] === 'any');
+  const who3 = from => from.length === 3 ? 'Every parent' : from.length ? `Parent${from.length > 1 ? 's' : ''} ${from.map(i => i + 1).join(' and ')}` : 'No parent';
+  const breakdown = `<h4 class="mt-6 font-display text-lg">Stat by stat</h4>
+    <ul class="mt-1 divide-y divide-ink/10">
+      ${r.hits.map(h => `<li class="flex items-center gap-3 py-2">
+        ${statLabel(h.s)}
+        <span class="grid h-6 w-6 shrink-0 place-items-center rounded-md ${h.q === 2 ? 'bg-[#3D9A2E] text-[#fff]' : h.q === 0 ? 'bg-[#CC3B32] text-[#fff]' : 'bg-[#fff] text-ink-fixed ring-1 ring-inset ring-line'}" aria-hidden="true">${glyph(h.q)}</span>
+        <span class="min-w-0 flex-1 text-sm"><span class="sr-only">${h.s.name}, ${COLOURS[h.q]}: </span>${h.n ? `${who3(h.from)} ${h.from.length === 2 ? 'have' : 'has'} it` : `<span class="font-bold text-rust">No parent has ${COLOURS[h.q]} ${h.s.name.toLowerCase()}</span>`}</span>
+        <span class="shrink-0 text-sm font-bold ${h.n ? '' : 'text-rust'}">${h.n === 3 ? 'Sure' : `${h.n}/3`}</span>
+      </li>`).join('')}
+      ${anyStats.length ? `<li class="flex items-center gap-3 py-2 text-sm text-fog"><span class="w-14 shrink-0"></span><span class="q q-any h-6 w-6 shrink-0 rounded-md" aria-hidden="true"></span><span class="flex-1">${anyStats.map(s => s.ab).join(', ')} left open</span><span class="shrink-0 font-bold">Any</span></li>` : ''}
+    </ul>`;
+
+  // What it takes, on average and to be fairly sure.
+  const sure = r.p >= 1 ? 1 : Math.ceil(Math.log(0.1) / Math.log1p(-r.p));
+  const cost = r.p > 0 ? `<dl class="mt-6 grid grid-cols-3 divide-x divide-ink/10 rounded-2xl bg-leaf py-3 text-center">
+      <div class="px-2"><dt class="text-xs text-fog">On average</dt><dd class="mt-0.5 font-display text-lg leading-tight sm:text-xl" style="font-weight:700">${r.p >= 1 ? 'Every' : `1 in ${oneIn(r.p)}`}</dd><dd class="text-xs text-fog">${r.p >= 1 ? 'breed' : 'breeds'}</dd></div>
+      <div class="px-2"><dt class="text-xs text-fog">Average cost</dt><dd class="mt-0.5 font-display text-lg leading-tight sm:text-xl" style="font-weight:700">${Math.round(GOLD / r.p).toLocaleString('en-US')}</dd><dd class="text-xs text-fog">gold</dd></div>
+      <div class="px-2"><dt class="text-xs text-fog">90% sure within</dt><dd class="mt-0.5 font-display text-lg leading-tight sm:text-xl" style="font-weight:700">${sure.toLocaleString('en-US')}</dd><dd class="text-xs text-fog">breed${sure === 1 ? '' : 's'}, ${(sure * GOLD).toLocaleString('en-US')} gold</dd></div>
+    </dl>
+    <p class="mt-2 text-xs text-fog">Each breed uses up all three parents, so each try also needs a fresh set.</p>` : '';
+
+  // Rating spread of whatever comes back; ratings above the wanted miscrit's own are marked.
+  const max = Math.max(...r.dist);
+  const up = r.dist.slice(wScore + 1).reduce((t, v) => t + v, 0) * r.pWant;
+  const chart = `<h4 class="mt-6 font-display text-lg">Rating of the result</h4>
+    <p class="text-sm">${wScore === 12 ? `${esc(name)} is already S+; nothing rates higher.`
+      : `<strong>${pct(up)}</strong> chance ${esc(name)} comes back rated above its ${tag(wScore, 'h-6 text-xs')}.`}</p>
+    <figure class="mt-2">
+      <ol class="flex h-32 items-end gap-1 border-b border-line pt-6" aria-label="Chance of each rating, whichever miscrit comes back">
+        ${r.dist.map((v, s) => `<li class="bar relative flex h-full flex-1 flex-col justify-end">
+          <span class="sr-only">${say(RATINGS[s])}: ${v ? pct(v) : 'not possible'}${s > wScore ? `, above ${say(RATINGS[wScore])}` : ''}</span>
+          <span class="tip absolute left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-lg bg-ink px-2 py-1 text-xs font-bold text-on shadow-[0_6px_16px_-8px_rgb(var(--shade)/.5)]"
+            style="bottom:calc(${(v / max) * 100}% + 6px)" aria-hidden="true">${RATINGS[s]} &middot; ${v ? pct(v) : 'not possible'}</span>
+          ${v ? `<span class="bar-fill block rounded-t" style="height:${Math.max((v / max) * 100, 2)}%;background:${tier(s).fill};box-shadow:${s > wScore ? '0 0 0 2px var(--card), 0 0 0 4px var(--ink)' : 'inset 0 0 0 1px rgb(27 46 42 / .2)'}" aria-hidden="true"></span>`
+            : '<span class="never block h-3 rounded-t" aria-hidden="true"></span>'}
+        </li>`).join('')}
+      </ol>
+      <ol class="mt-1 flex gap-1" aria-hidden="true">${RATINGS.map((n, s) => `<li class="flex-1 text-center text-[11px] font-bold ${s > wScore ? 'text-ink' : 'text-fog'} ${r.dist[s] ? '' : 'line-through'}">${n}</li>`).join('')}</ol>
+      <ul class="mt-3 flex flex-wrap gap-1.5" aria-hidden="true">${r.dist.map((v, s) => ({ v, s })).filter(x => x.v).reverse().map(x => `<li class="flex items-center gap-1.5 rounded-lg py-1 pl-1 pr-2.5 text-xs font-bold ${x.s > wScore ? 'bg-ink text-on' : 'bg-leaf'}">${tag(x.s, 'h-6 text-[11px]')} ${pct(x.v)}</li>`).join('')}</ul>
+      <figcaption class="mt-2 text-xs text-fog">Whichever miscrit comes back. Ringed bars rate above ${esc(name)}'s ${RATINGS[wScore]}; hatched ones can't happen with these parents.</figcaption>
+    </figure>`;
+
+  $('answer').innerHTML = `<div class="settle">
+    <h3 class="sr-only">The odds</h3>
+    ${head}
+    <div class="mt-2 flex flex-wrap items-center gap-3">
+      ${face(w, state.want, 'sm')}
+      <p class="font-display text-2xl leading-tight" style="font-weight:700">${title}</p>
+      ${r.set.length ? `<span class="grid w-28 grid-cols-6 gap-0.5" aria-hidden="true">${STATS.map(s => cell(state.target[s.k])).join('')}</span>` : ''}
+    </div>
+    ${factorRow}
+    ${r.set.length ? breakdown : ''}
+    ${cost}
+    ${chart}
+  </div>`;
+}
+
+// ---------- Examples ----------
+
+$('examples').innerHTML = EXAMPLES.map((ex, n) => {
+  const s = fromExample(ex);
+  const P = s.parents;
+  return `<article class="flex flex-col rounded-3xl bg-card p-5 sm:p-6" aria-labelledby="ex-${n}">
+    <h3 id="ex-${n}" class="font-display text-xl" style="font-weight:700">${ex.title}</h3>
+    <div class="mt-4 flex flex-wrap items-end gap-x-2 gap-y-3" aria-hidden="true">
+      ${P.map((p, i) => `<div class="flex items-end gap-2">
+        ${i ? '<span class="pb-0.5 font-bold text-fog">+</span>' : ''}
+        <div class="w-24 self-end"><p class="text-xs font-bold leading-tight ${i ? 'text-fog' : ''}">${esc(ex.labels[i])}</p><div class="mt-1 flex items-center gap-1">${tag(score(p), 'h-5 text-[10px]')}${strip(p.stats, 'min-w-0 flex-1')}</div></div>
+      </div>`).join('')}
+      <span class="pb-0.5 font-bold text-fog">=</span>
+      <div class="w-24 self-end"><p class="text-xs font-bold leading-tight">Wanted</p><div class="mt-1 flex items-center gap-1">${tag(score({ stats: ex.target }), 'h-5 text-[10px]')}${strip(ex.target, 'min-w-0 flex-1')}</div></div>
+    </div>
+    <p class="mt-4 text-fog">${ex.body}</p>
+    <p class="mt-3 text-sm"><span class="text-fog">${ex.math} =</span> <strong class="font-display text-xl" style="font-weight:700">${pct(solveFor(s))}</strong></p>
+    <div class="mt-auto pt-4">
+      <button type="button" data-example="${n}" aria-describedby="ex-${n}" class="press rounded-xl bg-ink px-4 py-2.5 text-sm font-bold text-on">Load into calculator</button>
+    </div>
+  </article>`;
+}).join('');
+
+function solveFor(s) {
+  const keep = state;
+  state = s;
+  const p = solve().p;
+  state = keep;
+  return p;
+}
+
+$('examples').addEventListener('click', e => {
+  const b = e.target.closest('[data-example]');
+  if (!b) return;
+  state = fromExample(EXAMPLES[+b.dataset.example]);
+  syncAll();
+  update();
+  $('calc-h').scrollIntoView({ behavior: document.documentElement.dataset.input === 'key' || matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+  $('calc-h').focus({ preventScroll: true });
+});
+$('clear').addEventListener('click', () => {
+  state = BLANK();
+  syncAll();
+  update();
+});
+
+// On small screens the answer sits below all three parents; keep the chance in view while editing them.
+const seen = { parents: false, answer: false };
+if ('IntersectionObserver' in window) {
+  const io = new IntersectionObserver(es => {
+    for (const e of es) seen[e.target.id] = e.isIntersecting;
+    const show = seen.parents && !seen.answer;
+    $('peek').classList.toggle('hidden', !show);
+    $('peek').classList.toggle('flex', show);
+  });
+  io.observe($('parents'));
+  io.observe($('answer'));
+}
+function renderPeek() {
+  const r = solve(), w = state.parents[state.want];
+  $('peek-p').textContent = r.p > 0 ? pct(r.p) : "Can't happen";
+  $('peek-p').classList.toggle('text-[var(--warn-on-ink)]', !(r.p > 0));
+  $('peek-t').textContent = `${label(w, state.want)}, ${pct(r.pWant)} × ${pct(r.pStats)}`;
+}
+
+// A short line for screen readers, since the whole answer is too long to read out on every change.
+// Waits for a pause, so typing a name doesn't announce each letter.
+let statusTimer, statusReady = false;
+function renderStatus() {
+  if (!statusReady) return void (statusReady = true);
+  const r = solve(), name = label(state.parents[state.want], state.want);
+  const text = r.p > 0 ? `${pct(r.p)} chance a breed gives you ${name}${r.set.length ? ' with the stats you marked' : ''}.`
+    : `Can't happen: no parent has ${r.blocked.map(h => `${COLOURS[h.q]} ${h.s.name.toLowerCase()}`).join(' or ')}.`;
+  clearTimeout(statusTimer);
+  statusTimer = setTimeout(() => { $('status').textContent = text; }, 500);
+}
+
+function syncAll() { syncParents(); syncTarget(); }
+function update() {
+  save();
+  renderParents();
+  renderWant();
+  renderAnswer();
+  renderPeek();
+  renderStatus();
+}
+syncAll();
+update();
+</script>
+<script>
+// The site bar sticks. Its height places the field guide's sticky filters under it, and --stick-h keeps
+// scrolled-to focus and jump targets clear of whatever is stuck at the top.
+(() => {
+  const root = document.documentElement, bar = document.getElementById('site-bar'), filters = document.getElementById('filters');
+  const measure = () => {
+    const b = bar.offsetHeight, f = filters && getComputedStyle(filters).position === 'sticky' ? filters.offsetHeight : 0;
+    root.style.setProperty('--bar-h', b + 'px');
+    root.style.setProperty('--stick-h', b + f + 'px');
+  };
+  const watch = new ResizeObserver(measure);
+  watch.observe(bar);
+  if (filters) watch.observe(filters);
+  addEventListener('resize', measure);
+})();
+</script>
+</body>
+</html>
