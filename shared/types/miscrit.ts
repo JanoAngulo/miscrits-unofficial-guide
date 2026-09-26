@@ -57,3 +57,6 @@ export interface Miscrit {
   spots: Spot[]
   moves: Move[]
 }
+
+// A list card's share of an entry: everything but the moves and lore, which only the detail shows.
+export type MiscritSummary = Pick<Miscrit, 'id' | 'names' | 'slugs' | 'element' | 'rarity' | 'stats' | 'spots'>

@@ -15,3 +15,4 @@ node_modules/
 .data/
 dist/
 server/data/
+shared/data/

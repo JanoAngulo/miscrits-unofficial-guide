@@ -1,0 +1,90 @@
+/* The field guide and its detail dialog. Imported like chrome.css, ahead of Tailwind's utilities. */
+/* A day the miscrit is missing: hatched and struck, so it reads without colour. */
+.day-off {
+  background: repeating-linear-gradient(135deg, var(--hatch-light) 0 3px, var(--hatch-dark) 3px 5px);
+  color: var(--fog);
+  box-shadow: inset 0 0 0 1px var(--hatch-edge);
+  text-decoration: line-through;
+}
+.day-on { background: var(--moss); color: var(--on); }
+/* Centre the letter by its cap height, not the font's uneven ascent and descent. */
+.day-l { line-height: 1; text-box: trim-both cap alphabetic; }
+/* Today: a thin ink ring flush against the cell. */
+.day-today { box-shadow: 0 0 0 2px var(--ink); }
+.day-off.day-today { box-shadow: inset 0 0 0 1px var(--hatch-edge), 0 0 0 2px var(--ink); }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--on); border-color: var(--ink); }
+.chip[aria-pressed="true"] .chip-count { color: var(--count-on-ink); }
+.stage[aria-pressed="true"] { border-color: var(--ink); background: var(--card); }
+/* content-visibility clips paint to the item, so the item reaches 5px past the card to hold its focus ring. */
+#grid > li { content-visibility: auto; contain-intrinsic-size: auto 186px; padding: 5px; margin: -5px; }
+
+@media (hover: hover) and (pointer: fine) {
+  .card:hover { border-color: currentColor !important; box-shadow: 0 6px 16px -8px rgb(var(--shade) / .25); }
+  .stage[aria-pressed="false"]:hover { background: var(--card); }
+  .icon-btn:not(:disabled):hover { background: var(--leaf); }
+}
+
+/* margin: auto undoes the v4 preflight reset, which would pin the dialog to the top left. */
+dialog { margin: auto; width: min(100% - 2rem, 56rem); max-width: none; max-height: min(92vh, 900px); border-radius: 1.5rem; }
+dialog::backdrop { background: var(--scrim); }
+body:has(dialog[open]) { overflow: hidden; }
+/* On a phone the detail is a bottom sheet, which is how a tap-to-open reads there. */
+@media (max-width: 639px) {
+  dialog { width: 100%; max-width: 100%; margin: auto 0 0; max-height: 92dvh; border-radius: 1.5rem 1.5rem 0 0; }
+}
+
+/* Move facts: quiet tags so the numbers scan down the list. */
+.fact { border-radius: 6px; background: var(--leaf); padding: 1px 6px; font-size: .75rem; font-weight: 700; color: var(--fog); }
+.fact-key { background: var(--card); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line); }
+.fact-enchant { display: inline-flex; align-items: center; gap: 4px; background: none; padding-left: 0; }
+.fact-enchant svg { width: 12px; height: 12px; flex-shrink: 0; color: var(--moss); }
+/* Moves: a ruled table, one hairline between rows. The learn order is a badge on the icon's corner. */
+.move { display: grid; grid-template-columns: 40px 1fr; gap: 12px; padding: 14px 0; border-top: 1px solid color-mix(in srgb, var(--ink) 10%, transparent); }
+.move-icon { position: relative; align-self: start; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: var(--leaf); }
+.move-no { position: absolute; right: -5px; bottom: -5px; display: grid; place-items: center; min-width: 18px; height: 18px; padding: 0 4px;
+  border-radius: 9999px; background: var(--card); box-shadow: 0 0 0 1px var(--line); font-size: 10px; font-weight: 700; line-height: 1; color: var(--fog); }
+
+@media (prefers-reduced-motion: no-preference) {
+  dialog[open] { animation: rise 240ms var(--ease-out); }
+  dialog[open]::backdrop { animation: fade 240ms ease; }
+  @media (max-width: 639px) { dialog[open] { animation: sheet 320ms var(--ease-drawer); } }
+  /* Leaving is quicker than arriving. */
+  dialog.closing { animation: sink 160ms var(--ease-out) forwards; }
+  dialog.closing::backdrop { animation: fade-out 160ms ease forwards; }
+  @media (max-width: 639px) { dialog.closing { animation: sheet-out 200ms var(--ease-drawer) forwards; } }
+  .art-swap { animation: swap 200ms var(--ease-out); }
+  @keyframes rise { from { opacity: 0; transform: translateY(8px) scale(0.98); } }
+  @keyframes sink { to { opacity: 0; transform: translateY(4px) scale(0.99); } }
+  @keyframes sheet { from { transform: translateY(100%); } }
+  @keyframes sheet-out { to { transform: translateY(100%); } }
+  @keyframes swap { from { opacity: 0; filter: blur(4px); transform: scale(0.97); } }
+}
+@media (prefers-reduced-motion: reduce) {
+  dialog[open], dialog[open]::backdrop { animation: fade 150ms ease; }
+  dialog.closing, dialog.closing::backdrop { animation: fade-out 120ms ease forwards; }
+}
+
+@supports (appearance: base-select) {
+  /* Rich options: each filter's list draws what it filters by, in the page's own marks. The closed field shows
+     the pick through <selectedcontent>; parts marked for one place only are hidden in the other. */
+  select > button { display: flex; align-items: center; width: 100%; min-width: 0; padding: 0; border: 0; background: none; color: inherit; font: inherit; text-align: start; }
+  selectedcontent { display: flex; align-items: center; gap: 6px; min-width: 0; white-space: nowrap; }
+  select option { display: flex; align-items: center; gap: 8px; }
+  .opt-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .opt-icon { width: 20px; height: 20px; flex-shrink: 0; }
+  /* A findable day is a lit week-strip cell; today keeps the strip's ink ring. */
+  .opt-day { display: grid; place-items: center; width: 20px; height: 20px; flex-shrink: 0; border-radius: 6px; font-size: 11px; font-weight: 700; line-height: 1; }
+  .opt-day::before { content: attr(data-l); text-box: trim-both cap alphabetic; }
+  .opt-tag { margin-left: auto; padding: 0 6px; border: 1px solid var(--line); border-radius: 9999px; font-size: .75rem; font-weight: 700; line-height: 1.33; color: var(--fog); text-transform: capitalize; }
+  .opt-paren { display: none; }
+  /* A minimum stat is the dialog's five-segment bar, filled to the level asked for. */
+  .opt-tile { display: grid; place-items: center; width: 20px; height: 20px; flex-shrink: 0; border-radius: 6px; }
+  .opt-tile svg { width: 14px; height: 14px; }
+  .opt-short::before { content: attr(data-t); }
+  .opt-meter { display: inline-grid; grid-auto-flow: column; gap: 2px; flex-shrink: 0; }
+  .opt-meter > span { width: 8px; height: 12px; border-radius: 2px; }
+  selectedcontent .opt-meter > span { width: 5px; height: 10px; }
+  .opt-more { color: var(--fog); font-weight: 400; }
+  select legend { display: flex; align-items: center; gap: 6px; }
+  option .opt-tile, option .opt-short, selectedcontent .opt-level, selectedcontent .opt-tag { display: none; }
+}

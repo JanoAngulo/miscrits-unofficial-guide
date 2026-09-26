@@ -7,6 +7,8 @@ export default defineNuxtConfig({
   modules: ['@nuxtjs/color-mode'],
   css: ['~/assets/css/main.css'],
   vite: { plugins: [tailwindcss()] },
+  // The field guide's rich select options show the pick through the browser's own <selectedcontent>.
+  vue: { compilerOptions: { isCustomElement: tag => tag === 'selectedcontent' } },
 
   // Dark is the default; a light pick is kept for every page, under the key the static pages used.
   colorMode: {

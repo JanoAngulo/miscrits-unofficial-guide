@@ -41,5 +41,6 @@ onBeforeUnmount(() => {
   <div>
     <SiteBar />
     <slot />
+    <SiteFooter />
   </div>
 </template>

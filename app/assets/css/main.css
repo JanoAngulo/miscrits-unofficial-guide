@@ -3,6 +3,7 @@
 @import "tailwindcss/theme.css" layer(theme);
 @import "tailwindcss/preflight.css" layer(base);
 @import "./chrome.css" layer(utilities);
+@import "./field.css" layer(utilities);
 @import "tailwindcss/utilities.css" layer(utilities);
 
 /* Colours are theme tokens, so opacity modifiers like border-ink/10 follow the theme. */

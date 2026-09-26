@@ -7,7 +7,8 @@
  * The feed is https://www.worldofmiscrits.com/miscrits.json - the file the
  * official Miscripedia page renders. It is kept verbatim in data/miscrits.json so
  * a rebuild never needs the network, and slimmed into server/data/miscrits.json
- * for the Nuxt app, and into data.js for the static pages until they are retired.
+ * for the Nuxt app's detail pages, shared/data/list.json for its lists (no moves
+ * or lore), and data.js for the static pages until they are retired.
  *
  * Images are only downloaded when missing, so re-running is cheap. The site falls
  * back to the CDN for any image that is not on disk.
@@ -15,13 +16,14 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import type { FeedEntry, Miscrit, Move, Spot } from '../shared/types/miscrit'
+import type { FeedEntry, Miscrit, MiscritSummary, Move, Spot } from '../shared/types/miscrit'
 import { abilityIcon, slugify } from '../shared/utils/miscrit'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const FEED_URL = 'https://www.worldofmiscrits.com/miscrits.json'
 const FEED = join(ROOT, 'data', 'miscrits.json')
 const OUT = join(ROOT, 'server', 'data', 'miscrits.json')
+const LIST = join(ROOT, 'shared', 'data', 'list.json')
 const DATA_JS = join(ROOT, 'data.js')
 const ASSETS = join(ROOT, 'assets')
 const AVATAR_URL = (s: string) => `https://cdn.worldofmiscrits.com/avatars/${s}_avatar.png`
@@ -124,6 +126,10 @@ async function main() {
   const json = JSON.stringify(entries)
   mkdirSync(dirname(OUT), { recursive: true })
   writeFileSync(OUT, json)
+  const list: MiscritSummary[] = entries.map(({ id, names, slugs, element, rarity, stats, spots }) =>
+    ({ id, names, slugs, element, rarity, stats, spots }))
+  mkdirSync(dirname(LIST), { recursive: true })
+  writeFileSync(LIST, JSON.stringify(list))
   writeFileSync(DATA_JS, `window.MISCRITS = ${json};\n`)
   console.log(`data: ${entries.length} miscrits`)
   if (!offline) await fetchImages(entries)
