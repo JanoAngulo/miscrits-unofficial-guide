@@ -51,3 +51,6 @@ select:not([multiple]) { appearance: none; padding-right: 2.25rem; background-im
 
 @keyframes fade { from { opacity: 0; } }
 @keyframes fade-out { to { opacity: 0; } }
+
+/* Miscrit pickers (MiscritCombobox): the active option takes the leaf wash. */
+.combo-list [aria-selected="true"] { background: var(--leaf); }

@@ -58,5 +58,6 @@ export interface Miscrit {
   moves: Move[]
 }
 
-// A list card's share of an entry: everything but the moves and lore, which only the detail shows.
-export type MiscritSummary = Pick<Miscrit, 'id' | 'names' | 'slugs' | 'element' | 'rarity' | 'stats' | 'spots'>
+// A list card's share of an entry: everything but the moves and lore, which only the detail shows. util is what the
+// teams page reads from the moves: the utility keys (shared/utils/teams) the line brings.
+export type MiscritSummary = Pick<Miscrit, 'id' | 'names' | 'slugs' | 'element' | 'rarity' | 'stats' | 'spots'> & { util: string[] }

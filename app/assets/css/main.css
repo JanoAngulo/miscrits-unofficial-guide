@@ -4,6 +4,10 @@
 @import "tailwindcss/preflight.css" layer(base);
 @import "./chrome.css" layer(utilities);
 @import "./field.css" layer(utilities);
+@import "./relics.css" layer(utilities);
+@import "./breed.css" layer(utilities);
+@import "./catch.css" layer(utilities);
+@import "./teams.css" layer(utilities);
 @import "tailwindcss/utilities.css" layer(utilities);
 
 /* Colours are theme tokens, so opacity modifiers like border-ink/10 follow the theme. */
@@ -31,6 +35,8 @@
   /* Tailwind v3 defaults the static pages were drawn against. */
   *, ::after, ::before, ::backdrop, ::file-selector-button { border-color: var(--color-gray-200, currentColor); }
   button:not(:disabled), [role="button"]:not(:disabled) { cursor: pointer; }
+  /* v4's preflight gives fields font: inherit, which would carry the body's tabular numerals into them and buttons; v3 did not. */
+  input, select, textarea, button { font-variant-numeric: normal; }
 
   :root {
     color-scheme: light;

@@ -1,0 +1,25 @@
+/* The relics page. Imported like chrome.css, ahead of Tailwind's utilities. Scoped to the page's root, since other
+   pages have segmented controls and picks of their own. */
+
+/* A deprioritised slot: the same hatch the field guide uses for a missing day. */
+:where(.relics-page) .slot-off {
+  background: repeating-linear-gradient(135deg, var(--hatch-light) 0 3px, var(--hatch-dark) 3px 5px);
+  box-shadow: inset 0 0 0 1px var(--hatch-edge);
+}
+:where(.relics-page) .slot-on { background: var(--moss); }
+
+/* Segmented controls are radio groups; the checked one takes ink, like a pressed chip. */
+:where(.relics-page) .seg input:checked + span { background: var(--ink); color: var(--on); border-color: var(--ink); }
+:where(.relics-page) .seg input:focus-visible + span { outline: 3px solid var(--focus); outline-offset: 2px; transition: none; }
+@media (hover: hover) and (pointer: fine) {
+  :where(.relics-page) .seg input:not(:checked) + span:hover { background: var(--leaf); }
+  :where(.relics-page) .pick:hover { --tw-ring-color: color-mix(in srgb, var(--ink) 30%, transparent); }
+}
+
+:where(.relics-page) .bonus-input { -moz-appearance: textfield; }
+:where(.relics-page) .bonus-input::-webkit-inner-spin-button { opacity: .6; }
+
+:where(.relics-page) .build { scroll-margin-top: calc(var(--stick-h, 0px) + 1rem); box-shadow: inset 0 4px 0 var(--hf); }
+:where(.relics-page) .build:target { outline: 3px solid var(--ink); outline-offset: 2px; }
+/* A build's relics sit on the unfilled tint of the stat it leans on, edged in the game's fill. */
+:where(.relics-page) .relic { background: var(--hw); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--hf) 45%, transparent); }

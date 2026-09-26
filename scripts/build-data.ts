@@ -18,6 +18,7 @@ import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import type { FeedEntry, Miscrit, MiscritSummary, Move, Spot } from '../shared/types/miscrit'
 import { abilityIcon, slugify } from '../shared/utils/miscrit'
+import { teamUtilityKeys } from '../shared/utils/teams'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const FEED_URL = 'https://www.worldofmiscrits.com/miscrits.json'
@@ -126,8 +127,9 @@ async function main() {
   const json = JSON.stringify(entries)
   mkdirSync(dirname(OUT), { recursive: true })
   writeFileSync(OUT, json)
-  const list: MiscritSummary[] = entries.map(({ id, names, slugs, element, rarity, stats, spots }) =>
-    ({ id, names, slugs, element, rarity, stats, spots }))
+  // The list drops the moves, keeping only the utility the teams page scores them for.
+  const list: MiscritSummary[] = entries.map(({ id, names, slugs, element, rarity, stats, spots, moves }) =>
+    ({ id, names, slugs, element, rarity, stats, spots, util: teamUtilityKeys(moves) }))
   mkdirSync(dirname(LIST), { recursive: true })
   writeFileSync(LIST, JSON.stringify(list))
   writeFileSync(DATA_JS, `window.MISCRITS = ${json};\n`)
