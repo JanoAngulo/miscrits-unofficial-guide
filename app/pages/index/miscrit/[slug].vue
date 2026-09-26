@@ -47,17 +47,14 @@ const answer = computed(() => {
   if (!m.spots.length) return { cls: 'bg-leaf text-fog', icon: AVAIL.wild.icon, lead: 'Not in the wild.', rest: 'Usually from events, the shop, or crafting.' }
   if (today.value === null) return null
   const t = today.value
-  const where = (list: Spot[], all: number) => list.length === 1
-    ? `at ${place(list[0]!)}`
-    : list.length === all ? `at all ${all} places below` : `at ${list.length} of ${all} places`
+  // Short, to fit beside the heading: the strips below already say which places and days.
   const now = m.spots.filter(s => spawnsOn(s, t))
-  if (now.length) return { icon: CHECK_ICON, tone: 'text-moss', lead: 'Findable today', rest: `${where(now, m.spots.length)}.` }
-  const ahead = [1, 2, 3, 4, 5, 6].map(n => (t + n) % 7).find(d => findableOn(m, d))!
-  const next = m.spots.filter(s => spawnsOn(s, ahead))
-  return {
-    tone: 'text-rust', icon: AVAIL.gone.icon, lead: 'Not today.',
-    rest: `Next on ${DAYS[ahead]}${ahead === (t + 1) % 7 ? ' (tomorrow)' : ''} ${where(next, m.spots.length)}.`,
+  if (now.length) {
+    const rest = now.length === m.spots.length ? '' : now.length === 1 ? `at ${place(now[0]!)}` : `at ${now.length} of ${m.spots.length}`
+    return { icon: CHECK_ICON, tone: 'text-moss', lead: 'Findable today', rest }
   }
+  const ahead = [1, 2, 3, 4, 5, 6].map(n => (t + n) % 7).find(d => findableOn(m, d))!
+  return { tone: 'text-rust', icon: AVAIL.gone.icon, lead: 'Not today.', rest: ahead === (t + 1) % 7 ? 'Back tomorrow' : `Back ${DAYS[ahead]}` }
 })
 
 // Places that share the same days share one week strip, so four every-day spots read as one list, not four identical
