@@ -41,7 +41,8 @@ function pick(i: number, e: MouseEvent) {
   stage.value = i
 }
 
-// The dialog's first answer: can I catch it today, and if not, when next.
+// The dialog's first answer: can I catch it today, and if not, when next. It sits in the heading of the places it is
+// about, in its colour without a wash; a miscrit not in the wild has no places, so its answer keeps a banner.
 const answer = computed(() => {
   if (!m.spots.length) return { cls: 'bg-leaf text-fog', icon: AVAIL.wild.icon, lead: 'Not in the wild.', rest: 'Usually from events, the shop, or crafting.' }
   if (today.value === null) return null
@@ -50,11 +51,11 @@ const answer = computed(() => {
     ? `at ${place(list[0]!)}`
     : list.length === all ? `at all ${all} places below` : `at ${list.length} of ${all} places`
   const now = m.spots.filter(s => spawnsOn(s, t))
-  if (now.length) return { cls: 'bg-wash-yes text-moss', icon: CHECK_ICON, lead: 'Findable today', rest: `${where(now, m.spots.length)}.` }
+  if (now.length) return { icon: CHECK_ICON, tone: 'text-moss', lead: 'Findable today', rest: `${where(now, m.spots.length)}.` }
   const ahead = [1, 2, 3, 4, 5, 6].map(n => (t + n) % 7).find(d => findableOn(m, d))!
   const next = m.spots.filter(s => spawnsOn(s, ahead))
   return {
-    cls: 'bg-wash-no text-rust', icon: AVAIL.gone.icon, lead: 'Not today.',
+    tone: 'text-rust', icon: AVAIL.gone.icon, lead: 'Not today.',
     rest: `Next on ${DAYS[ahead]}${ahead === (t + 1) % 7 ? ' (tomorrow)' : ''} ${where(next, m.spots.length)}.`,
   }
 })
@@ -128,7 +129,7 @@ onMounted(() => guide.shownDetail())
       </div>
     </div>
 
-    <div v-if="answer" class="px-5 pt-4">
+    <div v-if="answer && !m.spots.length" class="px-5 pt-4">
       <p class="flex items-start gap-2 rounded-xl px-3 py-2.5 text-sm" :class="answer.cls">
         <StatusIcon :paths="answer.icon" class="mt-0.5 h-4 w-4 shrink-0" />
         <span><strong class="font-bold">{{ answer.lead }}</strong><span v-if="answer.rest" class="text-ink">{{ ` ${answer.rest}` }}</span></span>
@@ -162,7 +163,13 @@ onMounted(() => guide.shownDetail())
           <p class="max-w-prose leading-relaxed">{{ m.descriptions[stage] }}</p>
         </section>
         <section v-if="m.spots.length">
-          <h3 class="mb-2 font-display text-lg">Where to find</h3>
+          <div class="mb-2 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+            <h3 class="font-display text-lg">Where to find</h3>
+            <p v-if="answer" class="flex items-start gap-1.5 text-sm" :class="answer.tone">
+              <StatusIcon :paths="answer.icon" class="mt-0.5 h-4 w-4 shrink-0" />
+              <span><strong class="font-bold">{{ answer.lead }}</strong><span v-if="answer.rest" class="text-ink">{{ ` ${answer.rest}` }}</span></span>
+            </p>
+          </div>
           <div class="space-y-2">
             <div v-for="g in groups" :key="g.days.join()" class="rounded-xl bg-leaf/70 p-2.5">
               <div class="mb-1.5 flex items-start justify-between gap-2">
