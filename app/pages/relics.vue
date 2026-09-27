@@ -70,6 +70,47 @@ const DEPRIO = [
   { n: 5, wastes: '', use: 'Never worth it.', tag: 'Never', tone: 'bg-wash-no text-rust' },
 ]
 
+// The stop lines, each drawn over six sorted bonuses with the ones it adds up lit.
+const STOPS = [
+  { k: 'A', n: 3, limit: 45, text: 'Lowest three bonuses, added up' },
+  { k: 'B', n: 2, limit: 28, text: 'Lowest two bonuses, added up' },
+  { k: 'C', n: 1, limit: 8, text: 'Lowest single bonus' },
+]
+const BARS = [28, 40, 54, 68, 84, 100]
+const PRIORITY = [
+  { who: 'Standard', steps: ['Attack', 'ED / PD', 'HP'] },
+  { who: 'Hybrid', steps: ['Attack 1', 'ED / PD', 'Attack 2', 'HP'] },
+]
+
+// Choosing between builds: each question forks two ways, and each way ends in builds or in relics. A relic carries
+// the build it goes in, so it takes that build's tint; hybrid relics take health, as hybrid builds do.
+// A relic tagged with a build number goes in that build, beside the other; untagged ones are alternatives.
+interface Choice { when: string, then?: string, builds?: number[], relics?: [string, StatColumn, number?][] }
+const CHOICES: { q: string, note?: string, opts: Choice[] }[] = [
+  { q: 'True or raw damage', opts: [
+    { when: 'Lots of true damage', then: 'Lean toward a defensive tank', builds: [5, 6, 7, 8] },
+    { when: 'Lots of raw damage or healing', then: 'Lean toward a bruiser stat check', builds: [1, 2, 3, 4] },
+  ] },
+  { q: 'Snipers', note: 'Only relic a sniper you stopped on B or C.', opts: [
+    { when: 'If in doubt', then: 'Fast bruiser is always safe', builds: [10] },
+    { when: 'If the meta favours speed', then: 'Some snipers can run full speed', builds: [9] },
+  ] },
+  { q: 'Builds 10 and 11', note: 'The first relic for each.', opts: [
+    { when: '3/5+ defenses and more than 25 bonus', then: 'More duel value', relics: [['Temple Stone', 'speed', 10], ['Vanquished Soul', 'speed', 11]] },
+    { when: 'Otherwise', relics: [['Magicite Staff', 'speed', 10], ['Dark Warro Thorn', 'speed', 11]] },
+  ] },
+  { q: 'Hybrids', opts: [
+    { when: 'Already heals or blocks', then: 'Usually better', relics: [['Gold Piece', 'core'], ['White Gem', 'core']] },
+    { when: 'Stacks stats or has lower HP', relics: [['Bauble', 'core']] },
+  ] },
+]
+// A build number badge, filled like the build card's own. Green and gold fills take dark ink, as there.
+const badge = (n: number) => {
+  const lean = BUILD[n]!.lean, hue = STAT_HUE[lean]
+  return { background: hue.fill, color: lean === 'core' || lean === 'speed' ? '#1B2E2A' : '#fff', boxShadow: `inset 0 0 0 1.5px ${hue.deep}` }
+}
+const tint = (col: StatColumn) => ({ '--hf': STAT_HUE[col].fill, '--hw': STAT_HUE[col].empty })
+
 type Role = 'standard' | 'hybrid' | 'sniper'
 type Atk = 'ea' | 'pa'
 const ROLES: [Role, string][] = [['standard', 'Standard'], ['hybrid', 'Hybrid'], ['sniper', 'Sniper']]
@@ -330,7 +371,7 @@ onMounted(() => {
 
           <label class="mt-3 block">
             <span class="text-sm font-bold">Base speed</span>
-            <select v-model="state.spd" class="mt-1 h-11 w-full rounded-xl border border-line bg-card px-3 text-base" aria-describedby="spd-help">
+            <select v-model="state.spd" class="mt-1 block min-h-11 w-full rounded-xl border border-line bg-card px-3 py-2.5 text-base leading-6" aria-describedby="spd-help">
               <option value="">Not sure</option>
               <option value="1">Weak (1/5)</option>
               <option value="2">Moderate (2/5)</option>
@@ -407,16 +448,38 @@ onMounted(() => {
         <h2 id="stop-h" class="chapter font-display text-2xl sm:text-3xl font-bold">When to stop rebonusing</h2>
         <p class="mt-1 max-w-2xl text-fog">Stop once any one of these is true of your bonuses. Every miscrit has more than one good build, so stay open to what the roll gives you.</p>
         <ol class="mt-4 grid gap-3 sm:grid-cols-3">
-          <li class="rounded-2xl bg-card p-4"><p class="text-xs font-bold text-fog">A</p><p class="font-display text-xl">Lowest three add up to under 45</p></li>
-          <li class="rounded-2xl bg-card p-4"><p class="text-xs font-bold text-fog">B</p><p class="font-display text-xl">Lowest two add up to under 28</p></li>
-          <li class="rounded-2xl bg-card p-4"><p class="text-xs font-bold text-fog">C</p><p class="font-display text-xl">Lowest single stat under 8</p></li>
+          <li v-for="s in STOPS" :key="s.k" class="flex items-end justify-between gap-4 rounded-2xl bg-card p-4">
+            <div class="min-w-0">
+              <span class="grid h-7 w-7 place-items-center rounded-full bg-leaf font-display text-sm font-bold">{{ s.k }}</span>
+              <p class="mt-3 font-display text-4xl leading-none font-bold"><span class="text-fog">&lt;</span> {{ s.limit }}</p>
+              <p class="mt-1.5 text-sm text-fog">{{ s.text }}</p>
+            </div>
+            <div class="flex h-14 shrink-0 items-end gap-1" aria-hidden="true">
+              <span v-for="(h, i) in BARS" :key="i" class="w-2 rounded-xs" :class="i < s.n ? 'bg-moss' : 'bg-leaf'" :style="{ height: `${h}%` }" />
+            </div>
+          </li>
         </ol>
-        <p class="mt-3 max-w-2xl text-sm text-fog">Your highest bonus should always land on the attack you use. Priority is <strong class="text-ink">attack, then ED/PD, then HP</strong> for standard miscrits, and <strong class="text-ink">attack 1, then ED/PD, then attack 2, then HP</strong> for hybrids.</p>
+        <div class="mt-4 rounded-2xl border border-ink/10 p-4">
+          <p class="text-sm"><strong>Your highest bonus goes on the attack you use.</strong> <span class="text-fog">Then, most to least:</span></p>
+          <dl class="mt-3 space-y-2">
+            <div v-for="p in PRIORITY" :key="p.who" class="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+              <dt class="w-20 shrink-0 text-xs font-bold text-fog">{{ p.who }}</dt>
+              <dd>
+                <ol class="flex flex-wrap items-center gap-1.5" :aria-label="`${p.who} priority`">
+                  <li v-for="(step, i) in p.steps" :key="step" class="flex items-center gap-1.5">
+                    <svg v-if="i" class="h-3.5 w-3.5 text-fog" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg>
+                    <span class="rounded-full border px-2.5 py-0.5 text-sm font-bold" :class="i ? 'border-line' : 'border-ink bg-ink text-on'">{{ step }}</span>
+                  </li>
+                </ol>
+              </dd>
+            </div>
+          </dl>
+        </div>
       </section>
 
       <section aria-labelledby="deprio-h" class="mt-14">
         <h2 id="deprio-h" class="chapter font-display text-2xl sm:text-3xl font-bold">Which deprio to use</h2>
-        <p class="mt-1 max-w-2xl text-fog">With 2/6 and the deprio pity system, a good roll comes quickly enough to keep the plat cost down.</p>
+        <p class="mt-1 max-w-2xl text-fog">With 2/6 and the deprio pity system, a roll that clears a stop line takes about 10 tries on average, well under 500 plats.</p>
         <div class="mt-4 overflow-hidden rounded-3xl border border-ink/10 bg-card">
           <ul class="divide-y divide-ink/10">
             <li v-for="d in DEPRIO" :key="d.n" class="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-4 gap-y-2 p-4 sm:grid-cols-[5.5rem_9rem_minmax(0,1fr)_auto]">
@@ -456,13 +519,37 @@ onMounted(() => {
 
       <section aria-labelledby="rules-h" class="mt-14">
         <h2 id="rules-h" class="chapter font-display text-2xl sm:text-3xl font-bold">Choosing between builds</h2>
-        <ul class="mt-4 grid gap-3 md:grid-cols-2">
-          <li class="rounded-2xl bg-card p-4"><p class="font-display text-xl">Lots of true damage</p><p class="mt-1 text-sm text-fog">Lean toward a defensive tank, builds 5 to 8.</p></li>
-          <li class="rounded-2xl bg-card p-4"><p class="font-display text-xl">Lots of raw damage or healing</p><p class="mt-1 text-sm text-fog">Lean toward a bruiser stat check, builds 1 to 4.</p></li>
-          <li class="rounded-2xl bg-card p-4"><p class="font-display text-xl">Snipers</p><p class="mt-1 text-sm text-fog">Only relic a sniper you stopped on B or C. Bruiser (build 10) is always safe. Some can run the speed build (9), depending on the meta; if in doubt, build 10.</p></li>
-          <li class="rounded-2xl bg-card p-4"><p class="font-display text-xl">Temple Stone or Magicite Staff, Vanquished Soul or Dark Warro Thorn</p><p class="mt-1 text-sm text-fog">For builds 10 and 11: a miscrit with 3/5 or better defenses and more than 25 bonus gets more duel value from Temple Stone or Vanquished Soul.</p></li>
-          <li class="rounded-2xl bg-card p-4 md:col-span-2"><p class="font-display text-xl">Bauble or Gold Piece / White Gem, for hybrids</p><p class="mt-1 text-sm text-fog">If the miscrit already heals or blocks, Gold Piece is usually better. If it stacks stats or has lower HP, Bauble is better.</p></li>
-        </ul>
+        <p class="mt-1 max-w-2xl text-fog">Match your miscrit to one side of each question. Build numbers jump to the build.</p>
+        <div class="mt-4 overflow-hidden rounded-3xl border border-ink/10 bg-card">
+          <ul class="divide-y divide-ink/10">
+            <li v-for="c in CHOICES" :key="c.q" class="grid gap-x-6 gap-y-3 p-4 sm:p-5 lg:grid-cols-[12rem_minmax(0,1fr)]">
+              <div>
+                <h3 class="font-display text-xl leading-tight font-bold">{{ c.q }}</h3>
+                <p v-if="c.note" class="mt-1 text-sm text-fog">{{ c.note }}</p>
+              </div>
+              <div class="grid gap-3 md:grid-cols-2 md:gap-0 md:divide-x md:divide-ink/10">
+                <div v-for="(o, i) in c.opts" :key="o.when" class="min-w-0" :class="i ? 'border-t border-ink/10 pt-3 md:border-t-0 md:pt-0 md:pl-5' : 'md:pr-5'">
+                  <p class="font-display text-lg leading-snug">{{ o.when }}</p>
+                  <div class="mt-2 flex flex-wrap items-center gap-1.5">
+                    <svg class="h-4 w-4 shrink-0 text-fog" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" /></svg>
+                    <a
+                      v-for="n in o.builds" :key="n" :href="`#build-${n}`" :style="badge(n)"
+                      class="press grid h-8 min-w-8 place-items-center rounded-lg px-1.5 font-display text-base"
+                    ><span class="sr-only">Build </span>{{ n }}</a>
+                    <template v-for="([r, col, n], j) in o.relics" :key="r">
+                      <span v-if="j && !n" class="text-xs text-fog">or</span>
+                      <span class="inline-flex items-center gap-1">
+                        <a v-if="n" :href="`#build-${n}`" :style="badge(n)" class="press grid h-6 min-w-6 place-items-center rounded-md px-1 font-display text-xs"><span class="sr-only">Build </span>{{ n }}</a>
+                        <span class="relic rounded-lg px-2 py-1 text-sm font-bold" :style="tint(col)">{{ r }}</span>
+                      </span>
+                    </template>
+                    <span v-if="o.then" class="text-sm text-fog">{{ o.then }}</span>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
       </section>
     </main>
   </div>
