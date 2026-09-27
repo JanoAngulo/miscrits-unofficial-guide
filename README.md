@@ -29,6 +29,8 @@ Built with Nuxt and Tailwind CSS. Needs Node 20+.
 npm install
 npm run dev        # dev server on http://localhost:3000
 npm run generate   # static site in .output/public
+npm run preview    # serve the built site locally
+npm run typecheck  # vue-tsc over the whole app
 ```
 
 Every `dev`, `build` and `generate` first rebuilds the site's data from
@@ -40,6 +42,21 @@ python upscale.py  # make 200px HD avatars for any that are missing (Python 3.10
 ```
 
 `upscale.py` downloads Real-ESRGAN and libwebp into `tools/` on first run.
+
+## Project layout
+
+| Path | What's in it |
+| --- | --- |
+| `app/pages/` | One file per page. `index/miscrit/[slug].vue` renders inside the field guide's dialog, so every miscrit gets its own prerendered URL. |
+| `app/components/` | Shared pieces (cards, the miscrit picker, stat bars, the week strip); `breed/` and `teams/` hold page-only ones. |
+| `app/utils/`, `app/composables/` | Page logic and shared state, kept out of the `.vue` files. |
+| `app/assets/css/` | Design tokens in `main.css`, one stylesheet per page. |
+| `app/layouts/default.vue`, `app/error.vue` | Site bar and footer; the not-found and error page. |
+| `server/api/` | Full miscrit data (moves, lore) for the detail page. |
+| `shared/` | Types and helpers used by both the app and the data script. |
+| `scripts/build-data.ts` | Turns the game's feed into the app's data files. |
+| `public/assets/` | Icons, logos and the HD avatars. |
+| `DESIGN.md`, `PRODUCT.md` | The design system and who the site is for. |
 
 ## Data
 
