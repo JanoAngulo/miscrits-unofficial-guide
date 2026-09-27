@@ -29,11 +29,15 @@
   --color-wash-no: var(--wash-no);
   /* Text on the game's fixed fills (tier colours, a white rolled stat) stays dark in both themes. */
   --color-ink-fixed: #1B2E2A;
+  /* Edges and glyphs on the rolled red / white / green stat, fixed like the fills. */
+  --color-q-green-deep: #2F6E16;
+  --color-q-red-edge: #8F2620;
+  --color-fog-fixed: #4F605A;
 }
 
 @layer base {
-  /* Tailwind v3 defaults the static pages were drawn against. */
-  *, ::after, ::before, ::backdrop, ::file-selector-button { border-color: var(--color-gray-200, currentColor); }
+  /* Keeps Tailwind v3 defaults the layouts rely on: a faint themed hairline for bare borders, a pointer on buttons. */
+  *, ::after, ::before, ::backdrop, ::file-selector-button { border-color: color-mix(in srgb, var(--ink) 12%, transparent); }
   button:not(:disabled), [role="button"]:not(:disabled) { cursor: pointer; }
   /* v4's preflight gives fields font: inherit, which would carry the body's tabular numerals into them and buttons; v3 did not. */
   input, select, textarea, button { font-variant-numeric: normal; }
@@ -46,11 +50,11 @@
     --chf-field: #2A9D9F; --chf-relics: #E0A21B; --chf-catch: #2E8BC0; --chf-teams: #9B4DCA; --chf-breed: #E0508F;
     --chapter: var(--ch-field);
     --paper: #EEF3EF; --card: #FFFFFF; --leaf: #E1EAE4; --ink: #1B2E2A; --on: #FFFFFF; --moss: #3E6B57;
-    /* fog clears 4.5:1 on leaf, line clears 3:1 against card for control edges. */
-    --fog: #4F605A; --line: #83928C; --rust: #A0422A; --rust-hatch: #C7735D;
+    /* fog clears 4.5:1 on leaf; line clears 3:1 against paper, leaf and card for control edges. */
+    --fog: #4F605A; --line: #78867F; --rust: #A0422A; --rust-hatch: #C7735D;
     --wash-yes: #DDEDE3; --wash-some: #E4ECF4; --some: #2B587A; --wash-no: #F7E4DE;
     --hatch-light: #F7F9F8; --hatch-dark: #E3E9E6; --hatch-edge: #C9D3CE;
-    --focus: #2E8BC0; --select: #CFE3D7; --scroll: #A9BAB3; --count-on-ink: var(--count-on-ink); --warn-on-ink: #F2B8A8;
+    --focus: #2E8BC0; --select: #CFE3D7; --scroll: #A9BAB3; --count-on-ink: #B8C9C2; --warn-on-ink: #F2B8A8;
     --shade: 27 46 42; --scrim: rgb(27 46 42 / .55);
     --r-common-text: #4E5A56; --r-common-wash: #EEF1EF; --r-rare-text: #1D628A; --r-rare-wash: #E3F1F9;
     --r-epic-text: #237140; --r-epic-wash: #E4F4E9; --r-exotic-text: #6E2E96; --r-exotic-wash: #F2E8F8;

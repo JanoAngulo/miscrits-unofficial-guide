@@ -6,7 +6,7 @@
         alt="" width="51" height="56" class="h-10 w-auto shrink-0"
       />
       <div>
-        <p><span class="font-display text-ink" style="font-weight:700">Miscripedia</span> is an unofficial fan guide, not affiliated with the Miscrits game.</p>
+        <p><span class="font-display font-bold text-ink">Miscripedia</span> is an unofficial fan guide, not affiliated with the Miscrits game.</p>
         <p class="mt-1">Miscrit data and art come from <a href="https://www.worldofmiscrits.com/" class="font-bold text-moss underline decoration-moss/40 underline-offset-4">worldofmiscrits.com</a>.</p>
       </div>
     </div>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// A plain inline rarity badge: the static guide's, which sits on the text line rather than as a flex box.
+// An inline rarity badge that sits on the text line rather than as a flex box.
 const props = defineProps<{ rarity: string }>()
 const look = computed(() => rarityLook(props.rarity))
 </script>

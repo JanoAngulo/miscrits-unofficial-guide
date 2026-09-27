@@ -70,7 +70,6 @@ const DEPRIO = [
   { n: 5, wastes: '', use: 'Never worth it.', tag: 'Never', tone: 'bg-wash-no text-rust' },
 ]
 
-// Form
 type Role = 'standard' | 'hybrid' | 'sniper'
 type Atk = 'ea' | 'pa'
 const ROLES: [Role, string][] = [['standard', 'Standard'], ['hybrid', 'Hybrid'], ['sniper', 'Sniper']]
@@ -274,7 +273,7 @@ onMounted(() => {
   <div class="relics-page">
     <div class="border-b border-ink/10">
       <div class="mx-auto max-w-7xl px-4 pt-6 pb-6 sm:px-6">
-        <h1 class="chapter font-display text-3xl tracking-tight sm:text-4xl" style="font-weight:700">Relic and bonus guide</h1>
+        <h1 class="chapter font-display text-3xl tracking-tight sm:text-4xl font-bold">Relic and bonus guide</h1>
         <p class="mt-2 max-w-2xl text-fog">Rebonus first, relic second: your bonuses decide the build. Check a roll below to see whether to stop, and which relics fit it.</p>
       </div>
     </div>
@@ -284,8 +283,8 @@ onMounted(() => {
       <section aria-labelledby="check-h" class="grid gap-6 lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)]">
         <form class="rounded-3xl border border-ink/10 bg-card p-4 shadow-[0_1px_2px_rgb(var(--shade)/.06)] sm:p-5" autocomplete="off" novalidate @submit.prevent>
           <div class="flex items-baseline justify-between gap-3">
-            <h2 id="check-h" class="chapter font-display text-2xl sm:text-3xl" style="font-weight:700">Check a rebonus</h2>
-            <button type="button" class="press rounded-lg px-2 py-1 text-sm font-bold text-moss underline decoration-moss/40 underline-offset-4" @click="loadExample">Load example</button>
+            <h2 id="check-h" class="chapter font-display text-2xl sm:text-3xl font-bold">Check a rebonus</h2>
+            <button type="button" class="press min-h-11 rounded-xl px-2 py-1 text-sm font-bold text-moss underline decoration-moss/40 underline-offset-4" @click="loadExample">Load example</button>
           </div>
 
           <div class="mt-4">
@@ -373,7 +372,7 @@ onMounted(() => {
             <div class="rounded-3xl bg-card p-4 shadow-[0_1px_2px_rgb(var(--shade)/.06)] sm:p-5">
               <p class="flex items-start gap-2.5 rounded-2xl px-4 py-3" :class="verdict.tone">
                 <StatusIcon :paths="verdict.stop ? CHECK_ICON : WARN" class="mt-1 h-5 w-5 shrink-0" />
-                <span><strong class="font-display text-2xl leading-tight" style="font-weight:700">{{ verdict.head }}</strong>
+                <span><strong class="font-display text-2xl leading-tight font-bold">{{ verdict.head }}</strong>
                   <span class="mt-0.5 block text-sm text-ink">{{ verdict.sub }}</span></span>
               </p>
 
@@ -389,7 +388,7 @@ onMounted(() => {
             </div>
 
             <div class="mt-4 rounded-3xl bg-card p-4 shadow-[0_1px_2px_rgb(var(--shade)/.06)] sm:p-5">
-              <h3 class="font-display text-xl" style="font-weight:700">{{ verdict.stop ? 'Relics for this roll' : 'Relics once you stop' }}</h3>
+              <h3 class="font-display text-xl font-bold">{{ verdict.stop ? 'Relics for this roll' : 'Relics once you stop' }}</h3>
               <p class="mt-0.5 text-sm text-fog">{{ verdict.why }}</p>
               <div class="mt-3 grid gap-3 xl:grid-cols-2">
                 <div v-for="p in verdict.picks" :key="p.b.n">
@@ -404,9 +403,8 @@ onMounted(() => {
         <p class="sr-only" aria-live="polite">{{ countText }}</p>
       </section>
 
-      <!-- Rebonus reference -->
       <section aria-labelledby="stop-h" class="mt-14">
-        <h2 id="stop-h" class="chapter font-display text-2xl sm:text-3xl" style="font-weight:700">When to stop rebonusing</h2>
+        <h2 id="stop-h" class="chapter font-display text-2xl sm:text-3xl font-bold">When to stop rebonusing</h2>
         <p class="mt-1 max-w-2xl text-fog">Stop once any one of these is true of your bonuses. Every miscrit has more than one good build, so stay open to what the roll gives you.</p>
         <ol class="mt-4 grid gap-3 sm:grid-cols-3">
           <li class="rounded-2xl bg-card p-4"><p class="text-xs font-bold text-fog">A</p><p class="font-display text-xl">Lowest three add up to under 45</p></li>
@@ -417,8 +415,8 @@ onMounted(() => {
       </section>
 
       <section aria-labelledby="deprio-h" class="mt-14">
-        <h2 id="deprio-h" class="chapter font-display text-2xl sm:text-3xl" style="font-weight:700">Which deprio to use</h2>
-        <p class="mt-1 max-w-2xl text-fog">With 2/6 and the deprio pity system, a good roll takes about 10 tries on average, well under 500 plats.</p>
+        <h2 id="deprio-h" class="chapter font-display text-2xl sm:text-3xl font-bold">Which deprio to use</h2>
+        <p class="mt-1 max-w-2xl text-fog">With 2/6 and the deprio pity system, a good roll comes quickly enough to keep the plat cost down.</p>
         <div class="mt-4 overflow-hidden rounded-3xl border border-ink/10 bg-card">
           <ul class="divide-y divide-ink/10">
             <li v-for="d in DEPRIO" :key="d.n" class="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-4 gap-y-2 p-4 sm:grid-cols-[5.5rem_9rem_minmax(0,1fr)_auto]">
@@ -434,12 +432,12 @@ onMounted(() => {
             </li>
           </ul>
         </div>
-        <p class="mt-3 max-w-2xl text-sm text-fog">The third stat you give up is usually HP. There are exceptions, but that is the general rule.</p>
+        <p class="mt-3 max-w-2xl text-sm text-fog">The third stat you give up is usually HP.</p>
       </section>
 
       <section aria-labelledby="builds-h" class="mt-14">
-        <h2 id="builds-h" class="chapter font-display text-2xl sm:text-3xl" style="font-weight:700">Relic builds</h2>
-        <p class="mt-1 max-w-2xl text-fog">Numbered as the guide numbers them. Only go slow on a 1/5 speed miscrit with under 7 speed bonus; otherwise a standard bruiser or tank is worth more.</p>
+        <h2 id="builds-h" class="chapter font-display text-2xl sm:text-3xl font-bold">Relic builds</h2>
+        <p class="mt-1 max-w-2xl text-fog">Builds 1 to 11. Only go slow on a 1/5 speed miscrit with under 7 speed bonus; otherwise a standard bruiser or tank is worth more.</p>
         <div class="mt-4 space-y-8">
           <ul class="flex flex-wrap gap-x-4 gap-y-2 text-sm" aria-label="Build colours">
             <li v-for="l in LEAN" :key="l.stat" class="flex items-center gap-1.5">
@@ -448,7 +446,7 @@ onMounted(() => {
             </li>
           </ul>
           <div v-for="g in GROUPS" :key="g.k">
-            <h3 class="font-display text-sm uppercase tracking-wide text-fog">{{ g.title }}</h3>
+            <h3 class="font-display text-sm text-fog">{{ g.title }}</h3>
             <div class="mt-2 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               <RelicBuildCard v-for="b in BUILDS.filter(x => x.group === g.k)" :key="b.n" :b="b" :tiles="tilesOf(b)" anchor />
             </div>
@@ -457,7 +455,7 @@ onMounted(() => {
       </section>
 
       <section aria-labelledby="rules-h" class="mt-14">
-        <h2 id="rules-h" class="chapter font-display text-2xl sm:text-3xl" style="font-weight:700">Choosing between builds</h2>
+        <h2 id="rules-h" class="chapter font-display text-2xl sm:text-3xl font-bold">Choosing between builds</h2>
         <ul class="mt-4 grid gap-3 md:grid-cols-2">
           <li class="rounded-2xl bg-card p-4"><p class="font-display text-xl">Lots of true damage</p><p class="mt-1 text-sm text-fog">Lean toward a defensive tank, builds 5 to 8.</p></li>
           <li class="rounded-2xl bg-card p-4"><p class="font-display text-xl">Lots of raw damage or healing</p><p class="mt-1 text-sm text-fog">Lean toward a bruiser stat check, builds 1 to 4.</p></li>

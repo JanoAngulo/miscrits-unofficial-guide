@@ -21,6 +21,11 @@ export default defineNuxtConfig({
   app: {
     head: {
       htmlAttrs: { lang: 'en' },
+      // Pages add " - Miscripedia" to their titles through the titleTemplate in app.vue (a function can't live here).
+      meta: [
+        { property: 'og:site_name', content: 'Miscripedia' },
+        { property: 'og:description', content: 'Where every miscrit spawns in Miscrits, the weekdays it doesn\'t, and its evolutions, stats and moves, plus guides for teams, relics, breeding and catching. An unofficial fan guide.' },
+      ],
       link: [
         { rel: 'icon', type: 'image/png', href: '/favicon.png' },
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },

@@ -17,6 +17,8 @@ input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px
 .press { transition: transform 160ms var(--ease-out), border-color 150ms ease, background-color 150ms ease; }
 .press:active { transform: scale(0.98); }
 .press:focus-visible:active { transform: none; }
+/* Nothing animates on a keyboard action: the layout marks <html data-input="key"> after a key. */
+[data-input="key"] .press { transition: none; }
 
 /* Theme switch: the pressed pick takes ink, like a pressed chip. */
 .theme-btn[aria-pressed="true"] { background: var(--ink); color: var(--on); }

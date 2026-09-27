@@ -78,7 +78,7 @@ const label = (p: Parent, i: number) => {
 }
 const score = (stats: Stats<BreedWant>) => STATS.reduce((t, s) => t + (stats[s.k] as number), 0)
 
-// ---------- Maths ----------
+// Maths
 
 const gcd = (a: number, b: number): number => b ? gcd(b, a % b) : a
 function frac(n: number, d: number) { const g = gcd(n, d) || 1; return [n / g, d / g] as const }
@@ -117,7 +117,7 @@ function solve(b: Breed) {
   return { same, pWant, pStats, p, hits, set, statN, statD, dist, blocked: hits.filter(h => !h.n) }
 }
 
-// ---------- Parents ----------
+// Parents
 
 const slots = computed(() => {
   const s = state.value
@@ -143,7 +143,7 @@ function search(q: string): Entry[] {
   return (q ? [...ENTRIES.filter(e => e.key.startsWith(q)), ...ENTRIES.filter(e => !e.key.startsWith(q) && e.key.includes(q))] : ENTRIES).slice(0, 40)
 }
 
-// ---------- Target ----------
+// Target
 
 // One option per distinct miscrit: two slots holding the same one are one choice with a better chance.
 const wantGroups = computed(() => {
@@ -163,7 +163,7 @@ function preset(p: 'green' | 'redspd' | 'any') {
   state.value.target = p === 'green' ? allOf<BreedWant>(2) : p === 'redspd' ? { ...allOf<BreedWant>(2), spd: 0 } : allOf<BreedWant>('any')
 }
 
-// ---------- Answer ----------
+// Answer
 
 const r = computed(() => solve(state.value))
 const answer = computed(() => {
@@ -191,17 +191,25 @@ const answer = computed(() => {
 // Per stat: which parents can hand the wanted colour down.
 const who3 = (from: number[]) => from.length === 3 ? 'Every parent' : from.length ? `Parent${from.length > 1 ? 's' : ''} ${from.map(i => i + 1).join(' and ')}` : 'No parent'
 
-// The answer settles in on each change, as the static page's redraw did; the key remounts it.
+// The answer settles in on each change; the key remounts it.
 const version = ref(0)
-watch(state, () => { version.value++ }, { deep: true })
 
-// ---------- Examples ----------
+// Examples
 
 const examples = EXAMPLES.map((ex) => {
   const s = fromExample(ex)
   return { ...ex, s, p: solve(s).p }
 })
 
+// Worth the shot: an S+ Legendary in the wild is a Legendary encounter times the share of caught Legendaries that
+// are S+, both from the catching guide's tables. Legendary and Legendary+ spots give the low and high ends.
+const huntPer = CATCH_ENCOUNTER.filter(e => e.r === 'legendary').map(e => e.pct / 100 * Number(CATCH_SPLUS.legendary) / 100)
+const hunt = { lo: Math.min(...huntPer), hi: Math.max(...huntPer) }
+const huntText = (p: number) => `${(p * 100).toFixed(2)}%`
+const bred = examples[0]!.p
+const SPLUS_FILL = breedTierFill(12)
+
+const input = useInputMode()
 const calcH = ref<HTMLElement>()
 function load(n: number) {
   state.value = fromExample(EXAMPLES[n]!)
@@ -211,14 +219,10 @@ function load(n: number) {
   h.focus({ preventScroll: true })
 }
 
-// ---------- Input, peek, status, storage ----------
+// Peek, status, storage
 
-// Track the last input, so keyboard changes skip motion.
-const input = ref<'pointer' | 'key'>()
-const onPointer = () => { input.value = 'pointer' }
-const onKey = () => { input.value = 'key' }
-
-// On small screens the answer sits below all three parents; keep the chance in view while editing them.
+// On small screens the answer sits below all three parents; keep the chance in view while editing them. The parents
+// grid gives its controls a bottom scroll margin, so keyboard focus never lands under the bar.
 const parentsEl = ref<HTMLElement>()
 const answerEl = ref<HTMLElement>()
 const peekShown = ref(false)
@@ -235,13 +239,12 @@ const statusText = computed(() => {
 let statusTimer: ReturnType<typeof setTimeout> | undefined
 
 onMounted(() => {
-  addEventListener('pointerdown', onPointer, true)
-  addEventListener('keydown', onKey, true)
-
   let saved: unknown = null
   try { saved = JSON.parse(localStorage.getItem(KEY) ?? 'null') }
   catch { saved = null }
   if (valid(saved)) state.value = saved
+  // Registered after the saved breed is in, so restoring it doesn't replay the settle.
+  watch(state, () => { version.value++ }, { deep: true })
   watch(state, () => {
     try { localStorage.setItem(KEY, JSON.stringify(state.value)) }
     catch {}
@@ -263,39 +266,36 @@ onMounted(() => {
   }
 })
 onBeforeUnmount(() => {
-  removeEventListener('pointerdown', onPointer, true)
-  removeEventListener('keydown', onKey, true)
   io?.disconnect()
   clearTimeout(statusTimer)
 })
 </script>
 
 <template>
-  <div class="breed-page" :data-input="input">
+  <div class="breed-page">
     <div class="border-b border-ink/10">
       <div class="mx-auto max-w-7xl px-4 pt-6 pb-6 sm:px-6">
-        <h1 class="chapter font-display text-3xl tracking-tight sm:text-4xl" style="font-weight:700">Breeding guide</h1>
+        <h1 class="chapter font-display text-3xl tracking-tight sm:text-4xl font-bold">Breeding guide</h1>
         <p class="mt-2 max-w-2xl text-fog">Three miscrits go in and one of them comes back, each of its six stats copied from a parent at random. Set your three below and mark what you want to see the odds before you pay.</p>
       </div>
     </div>
 
     <main class="mx-auto max-w-7xl px-4 pt-8 pb-14 sm:px-6">
-      <!-- Calculator -->
       <section aria-labelledby="calc-h">
         <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-          <h2 id="calc-h" ref="calcH" tabindex="-1" class="chapter font-display text-2xl focus:outline-hidden sm:text-3xl" style="font-weight:700">Work out a breed</h2>
-          <button id="clear" type="button" class="press rounded-lg px-2 py-1 text-sm font-bold text-moss underline decoration-moss/40 underline-offset-4" @click="state = BLANK()">Start over</button>
+          <h2 id="calc-h" ref="calcH" tabindex="-1" class="chapter font-display text-2xl focus:outline-hidden sm:text-3xl font-bold">Work out a breed</h2>
+          <button id="clear" type="button" class="press min-h-11 rounded-lg px-2 py-1 text-sm font-bold text-moss underline decoration-moss/40 underline-offset-4" @click="state = BLANK()">Start over</button>
         </div>
         <p class="mt-1 text-sm text-fog">Set each parent's stats as the game colours them. Naming a parent is optional; the same miscrit twice raises its chance of coming back.</p>
 
-        <div id="parents" ref="parentsEl" class="mt-4 grid items-stretch gap-2 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_auto_minmax(0,1fr)] lg:gap-3">
+        <div id="parents" ref="parentsEl" class="mt-4 grid items-stretch gap-2 max-lg:[&_*]:scroll-mb-24 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_auto_minmax(0,1fr)] lg:gap-3">
           <template v-for="(p, i) in state.parents" :key="i">
             <div v-if="i" class="flex justify-center lg:items-center" aria-hidden="true">
               <span class="grid h-8 w-8 place-items-center rounded-full bg-card text-ink shadow-[0_1px_2px_rgb(var(--shade)/.08)]">
                 <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14" /></svg>
               </span>
             </div>
-            <article class="rounded-3xl bg-card p-4 shadow-[0_1px_2px_rgb(var(--shade)/.06)]" :style="{ boxShadow: slots[i]!.shadow }" :aria-labelledby="`pname-${i}`">
+            <article class="rounded-3xl bg-card p-4" :style="{ boxShadow: slots[i]!.shadow }" :aria-labelledby="`pname-${i}`">
               <div class="flex items-center gap-3">
                 <span><BreedFace :m="slots[i]!.m" :name="p.name" :slot="i" /></span>
                 <div class="min-w-0 flex-1">
@@ -322,14 +322,15 @@ onBeforeUnmount(() => {
               </div>
               <div class="mt-4 flex items-center justify-between gap-2 border-t border-ink/10 pt-3">
                 <p class="text-sm"><span class="sr-only">Rating: </span><span><BreedRating :s="slots[i]!.score" class="h-8 text-base" /></span> <span class="text-xs text-fog">{{ slots[i]!.score }}/12</span></p>
-                <div class="flex items-center gap-1" role="group" :aria-label="`Set every stat of parent ${i + 1}`">
-                  <span class="mr-1 text-xs text-fog" aria-hidden="true">All</span>
+                <div class="-my-2 flex items-center" role="group" :aria-label="`Set every stat of parent ${i + 1}`">
+                  <span class="text-xs text-fog" aria-hidden="true">All</span>
+                  <!-- A 28px swatch in a 44px button: the taps land and the row doesn't grow. -->
                   <button
                     v-for="q in ([0, 1, 2] as const)" :key="q" type="button" :aria-label="`Make every stat ${COLOURS[q]}`" :title="`All ${COLOURS[q]}`"
-                    class="press grid h-7 w-7 place-items-center rounded-lg" :class="breedRollButton(q)"
+                    class="press grid h-11 w-11 place-items-center rounded-lg"
                     @click="p.stats = allOf(q)"
                   >
-                    <BreedGlyph :q="q" />
+                    <span class="grid h-7 w-7 place-items-center rounded-lg" :class="breedRollButton(q)"><BreedGlyph :q="q" /></span>
                   </button>
                 </div>
               </div>
@@ -345,7 +346,7 @@ onBeforeUnmount(() => {
 
         <div class="grid overflow-hidden rounded-3xl border border-ink/10 bg-card shadow-[0_1px_2px_rgb(var(--shade)/.06)] lg:grid-cols-[minmax(0,23rem)_minmax(0,1fr)]">
           <form class="border-b border-ink/10 p-4 sm:p-5 lg:border-b-0 lg:border-r" autocomplete="off" @submit.prevent>
-            <h3 class="font-display text-xl" style="font-weight:700">What you want back</h3>
+            <h3 class="font-display text-xl font-bold">What you want back</h3>
             <fieldset class="mt-3">
               <legend class="text-sm font-bold">Miscrit</legend>
               <div class="mt-1 grid gap-1.5">
@@ -370,9 +371,9 @@ onBeforeUnmount(() => {
               </div>
             </fieldset>
             <div class="mt-4 flex flex-wrap gap-1.5" role="group" aria-label="Quick targets">
-              <button type="button" class="press rounded-full border border-line bg-card px-3 py-1.5 text-sm font-bold" @click="preset('green')">All green</button>
-              <button type="button" class="press rounded-full border border-line bg-card px-3 py-1.5 text-sm font-bold" @click="preset('redspd')">Red speed, rest green</button>
-              <button type="button" class="press rounded-full border border-line bg-card px-3 py-1.5 text-sm font-bold" @click="preset('any')">Anything</button>
+              <button type="button" class="press min-h-11 rounded-full border border-line bg-card px-3 py-1.5 text-sm font-bold" @click="preset('green')">All green</button>
+              <button type="button" class="press min-h-11 rounded-full border border-line bg-card px-3 py-1.5 text-sm font-bold" @click="preset('redspd')">Red speed, rest green</button>
+              <button type="button" class="press min-h-11 rounded-full border border-line bg-card px-3 py-1.5 text-sm font-bold" @click="preset('any')">Anything</button>
             </div>
           </form>
 
@@ -380,16 +381,16 @@ onBeforeUnmount(() => {
             <div :key="version" class="settle">
               <h3 class="sr-only">The odds</h3>
               <template v-if="r.p > 0">
-                <p class="font-display text-6xl leading-none tracking-tight sm:text-7xl" style="font-weight:700">{{ pct(r.p) }}</p>
+                <p class="font-display text-6xl leading-none tracking-tight sm:text-7xl font-bold">{{ pct(r.p) }}</p>
                 <p class="mt-2 text-fog">chance a breed gives you</p>
               </template>
               <template v-else>
-                <p class="font-display text-4xl leading-none text-rust sm:text-5xl" style="font-weight:700">Can't happen</p>
+                <p class="font-display text-4xl leading-none text-rust sm:text-5xl font-bold">Can't happen</p>
                 <p class="mt-2 text-fog">No parent has {{ answer.blockedText }}, so no breed can hand {{ answer.them }} down. Put in a parent that has {{ answer.them }}.</p>
               </template>
               <div class="mt-2 flex flex-wrap items-center gap-3">
                 <BreedFace :m="slots[state.want]!.m" :name="answer.w.name" :slot="state.want" size="sm" />
-                <p class="font-display text-2xl leading-tight" style="font-weight:700">{{ answer.name }} <BreedRating v-if="answer.all" :s="answer.tScore" class="ml-1 h-9 rounded-lg text-lg" /></p>
+                <p class="font-display text-2xl leading-tight font-bold">{{ answer.name }} <BreedRating v-if="answer.all" :s="answer.tScore" class="ml-1 h-9 rounded-lg text-lg" /></p>
                 <BreedStrip v-if="r.set.length" :stats="state.target" class="w-28" />
               </div>
 
@@ -417,9 +418,9 @@ onBeforeUnmount(() => {
               <template v-if="r.p > 0">
                 <!-- sm:leading-7 keeps the line height the larger size gave these under Tailwind v3. -->
                 <dl class="mt-6 grid grid-cols-3 divide-x divide-ink/10 rounded-2xl bg-leaf py-3 text-center">
-                  <div class="px-2"><dt class="text-xs text-fog">On average</dt><dd class="mt-0.5 font-display text-lg leading-tight sm:text-xl sm:leading-7" style="font-weight:700">{{ r.p >= 1 ? 'Every' : `1 in ${oneIn(r.p)}` }}</dd><dd class="text-xs text-fog">{{ r.p >= 1 ? 'breed' : 'breeds' }}</dd></div>
-                  <div class="px-2"><dt class="text-xs text-fog">Average cost</dt><dd class="mt-0.5 font-display text-lg leading-tight sm:text-xl sm:leading-7" style="font-weight:700">{{ Math.round(GOLD / r.p).toLocaleString('en-US') }}</dd><dd class="text-xs text-fog">gold</dd></div>
-                  <div class="px-2"><dt class="text-xs text-fog">90% sure within</dt><dd class="mt-0.5 font-display text-lg leading-tight sm:text-xl sm:leading-7" style="font-weight:700">{{ answer.sure.toLocaleString('en-US') }}</dd><dd class="text-xs text-fog">breed{{ answer.sure === 1 ? '' : 's' }}, {{ (answer.sure * GOLD).toLocaleString('en-US') }} gold</dd></div>
+                  <div class="px-2"><dt class="text-xs text-fog">On average</dt><dd class="mt-0.5 font-display text-lg leading-tight sm:text-xl sm:leading-7 font-bold">{{ r.p >= 1 ? 'Every' : `1 in ${oneIn(r.p)}` }}</dd><dd class="text-xs text-fog">{{ r.p >= 1 ? 'breed' : 'breeds' }}</dd></div>
+                  <div class="px-2"><dt class="text-xs text-fog">Average cost</dt><dd class="mt-0.5 font-display text-lg leading-tight sm:text-xl sm:leading-7 font-bold">{{ Math.round(GOLD / r.p).toLocaleString('en-US') }}</dd><dd class="text-xs text-fog">gold</dd></div>
+                  <div class="px-2"><dt class="text-xs text-fog">90% sure within</dt><dd class="mt-0.5 font-display text-lg leading-tight sm:text-xl sm:leading-7 font-bold">{{ answer.sure.toLocaleString('en-US') }}</dd><dd class="text-xs text-fog">breed{{ answer.sure === 1 ? '' : 's' }}, {{ (answer.sure * GOLD).toLocaleString('en-US') }} gold</dd></div>
                 </dl>
                 <p class="mt-2 text-xs text-fog">Each breed uses up all three parents, so each try also needs a fresh set.</p>
               </template>
@@ -438,7 +439,7 @@ onBeforeUnmount(() => {
                     >{{ RATINGS[n] }} &middot; {{ v ? pct(v) : 'not possible' }}</span>
                     <span
                       v-if="v" class="bar-fill block rounded-t-sm" aria-hidden="true"
-                      :style="{ height: `${Math.max((v / answer.max) * 100, 2)}%`, background: breedTierFill(n), boxShadow: n > answer.wScore ? '0 0 0 2px var(--card), 0 0 0 4px var(--ink)' : 'inset 0 0 0 1px rgb(27 46 42 / .2)' }"
+                      :style="{ height: `${Math.max((v / answer.max) * 100, 2)}%`, background: breedTierFill(n), boxShadow: n > answer.wScore ? '0 0 0 2px var(--card), 0 0 0 4px var(--ink)' : 'inset 0 0 0 1px color-mix(in srgb, var(--color-ink-fixed) 20%, transparent)' }"
                     />
                     <span v-else class="never block h-3 rounded-t-sm" aria-hidden="true" />
                   </li>
@@ -457,9 +458,8 @@ onBeforeUnmount(() => {
         </div>
       </section>
 
-      <!-- Rules -->
       <section aria-labelledby="rules-h" class="mt-16">
-        <h2 id="rules-h" class="chapter font-display text-2xl sm:text-3xl" style="font-weight:700">How breeding works</h2>
+        <h2 id="rules-h" class="chapter font-display text-2xl sm:text-3xl font-bold">How breeding works</h2>
         <dl class="mt-4 grid gap-x-10 gap-y-5 rounded-3xl bg-card p-5 sm:grid-cols-2 sm:p-6">
           <div>
             <dt class="font-display text-lg">Where</dt>
@@ -484,36 +484,35 @@ onBeforeUnmount(() => {
         </dl>
       </section>
 
-      <!-- Why take the shot -->
       <section aria-labelledby="why-h" class="mt-16">
-        <h2 id="why-h" class="chapter font-display text-2xl sm:text-3xl" style="font-weight:700">Worth the shot</h2>
-        <p class="mt-1 max-w-2xl text-fog">A 1 in 7 chance sounds poor until you set it next to hunting. For an S+ Blighted Flowerpiller:</p>
+        <h2 id="why-h" class="chapter font-display text-2xl sm:text-3xl font-bold">Worth the shot</h2>
+        <p class="mt-1 max-w-2xl text-fog">A 1 in {{ Math.round(1 / bred) }} chance sounds poor until you set it next to hunting. For an S+ Blighted Flowerpiller:</p>
         <div class="mt-4 space-y-4 rounded-3xl bg-card p-5 sm:p-6">
           <div>
             <div class="flex flex-wrap items-baseline justify-between gap-x-3">
               <p class="font-bold">Hunting one in the wild</p>
-              <p class="text-sm"><strong>0.12% to 0.24%</strong> <span class="text-fog">a catch</span></p>
+              <p class="text-sm"><strong>about {{ huntText(hunt.lo) }} to {{ huntText(hunt.hi) }}</strong> <span class="text-fog">an encounter</span></p>
             </div>
-            <div class="mt-1.5 h-4 rounded-full bg-leaf" aria-hidden="true"><div class="odds-fill h-4 rounded-full" style="width:max(0.24%, 4px);background:#FE5B00;box-shadow:inset 0 0 0 1px rgb(27 46 42 / .2)" /></div>
+            <div class="mt-1.5 h-4 rounded-full bg-leaf" aria-hidden="true"><div class="odds-fill h-4 rounded-full" :style="{ width: `max(${hunt.hi * 100}%, 4px)`, background: SPLUS_FILL, boxShadow: 'inset 0 0 0 1px color-mix(in srgb, var(--color-ink-fixed) 20%, transparent)' }" /></div>
+            <p class="mt-1 text-xs text-fog">Worked out from the <NuxtLink to="/catch" class="font-bold text-moss underline decoration-moss/40 underline-offset-4">catching guide</NuxtLink>: a Legendary encounter, times the share of caught Legendaries that are S+.</p>
           </div>
           <div>
             <div class="flex flex-wrap items-baseline justify-between gap-x-3">
               <p class="font-bold">Breeding the A+ one you already have</p>
-              <p class="text-sm"><strong>14.8%</strong> <span class="text-fog">a breed</span></p>
+              <p class="text-sm"><strong>{{ pct(bred) }}</strong> <span class="text-fog">a breed</span></p>
             </div>
-            <div class="mt-1.5 h-4 rounded-full bg-leaf" aria-hidden="true"><div class="odds-fill h-4 rounded-full" style="width:14.8%;background:#FE5B00;box-shadow:inset 0 0 0 1px rgb(27 46 42 / .2)" /></div>
+            <div class="mt-1.5 h-4 rounded-full bg-leaf" aria-hidden="true"><div class="odds-fill h-4 rounded-full" :style="{ width: `${bred * 100}%`, background: SPLUS_FILL, boxShadow: 'inset 0 0 0 1px color-mix(in srgb, var(--color-ink-fixed) 20%, transparent)' }" /></div>
           </div>
           <p class="text-xs text-fog">Both bars on one scale, 0 to 100%.</p>
-          <p class="max-w-2xl text-sm text-fog">An A+ Blighted Flowerpiller isn't a PvP pick anyway, so breeding it risks little. You won't win every breed, but the more you breed the more it pays off.</p>
+          <p class="max-w-2xl text-sm text-fog">An A+ Blighted Flowerpiller isn't a PvP pick anyway, so breeding it risks little. Each breed is a fresh 1 in {{ Math.round(1 / bred) }} roll, so budget for several.</p>
         </div>
       </section>
 
-      <!-- Worked examples -->
       <section aria-labelledby="ex-h" class="mt-16">
-        <h2 id="ex-h" class="chapter font-display text-2xl sm:text-3xl" style="font-weight:700">Two ways to use it</h2>
+        <h2 id="ex-h" class="chapter font-display text-2xl sm:text-3xl font-bold">Two ways to use it</h2>
         <div class="mt-4 grid gap-4 lg:grid-cols-2">
           <article v-for="(ex, n) in examples" :key="n" class="flex flex-col rounded-3xl bg-card p-5 sm:p-6" :aria-labelledby="`ex-${n}`">
-            <h3 :id="`ex-${n}`" class="font-display text-xl" style="font-weight:700">{{ ex.title }}</h3>
+            <h3 :id="`ex-${n}`" class="font-display text-xl font-bold">{{ ex.title }}</h3>
             <div class="mt-4 flex flex-wrap items-end gap-x-2 gap-y-3" aria-hidden="true">
               <div v-for="(p, i) in ex.s.parents" :key="i" class="flex items-end gap-2">
                 <span v-if="i" class="pb-0.5 font-bold text-fog">+</span>
@@ -529,7 +528,7 @@ onBeforeUnmount(() => {
               </div>
             </div>
             <p class="mt-4 text-fog">{{ ex.body }}</p>
-            <p class="mt-3 text-sm"><span class="text-fog">{{ ex.math }} =</span> <strong class="font-display text-xl" style="font-weight:700">{{ pct(ex.p) }}</strong></p>
+            <p class="mt-3 text-sm"><span class="text-fog">{{ ex.math }} =</span> <strong class="font-display text-xl font-bold">{{ pct(ex.p) }}</strong></p>
             <div class="mt-auto pt-4">
               <button type="button" :aria-describedby="`ex-${n}`" class="press rounded-xl bg-ink px-4 py-2.5 text-sm font-bold text-on" @click="load(n)">Load into calculator</button>
             </div>
@@ -539,10 +538,10 @@ onBeforeUnmount(() => {
     </main>
 
     <a
-      href="#answer" class="fixed inset-x-3 bottom-3 z-30 items-center gap-3 rounded-2xl bg-ink px-4 py-3 text-on shadow-[0_12px_32px_-12px_rgb(var(--shade)/.6)] lg:hidden"
+      href="#answer" class="fixed inset-x-3 bottom-[max(.75rem,env(safe-area-inset-bottom))] z-30 items-center gap-3 rounded-2xl bg-ink px-4 py-3 text-on shadow-[0_12px_32px_-12px_rgb(var(--shade)/.6)] lg:hidden"
       :class="peekShown ? 'flex' : 'hidden'"
     >
-      <span class="font-display text-2xl leading-none" :class="{ 'text-(--warn-on-ink)': !(r.p > 0) }" style="font-weight:700">{{ r.p > 0 ? pct(r.p) : "Can't happen" }}</span>
+      <span class="font-display text-2xl leading-none font-bold" :class="{ 'text-(--warn-on-ink)': !(r.p > 0) }">{{ r.p > 0 ? pct(r.p) : "Can't happen" }}</span>
       <span class="min-w-0 flex-1 truncate text-sm text-(--count-on-ink)">{{ answer.name }}, {{ pct(r.pWant) }} × {{ pct(r.pStats) }}</span>
       <span class="shrink-0 text-sm font-bold underline decoration-on/40 underline-offset-4">Breakdown</span>
     </a>

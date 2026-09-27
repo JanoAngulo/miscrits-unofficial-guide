@@ -1,24 +1,24 @@
 <script setup lang="ts">
+import type { CatchRarity } from '~/utils/catch'
+
 // The catching guide: a wild miscrit's catch rate at full health gives away its score, so tapping the rate seen
 // reads its rating, its likely stat colours and how rare the roll is. Everything here is the game's published
-// tables; nothing comes from data.js.
+// catch, stat and encounter tables, not the miscrit feed.
 definePageMeta({ chapter: 'catch' })
 useSeoMeta({
   title: 'Catching Guide',
   description: 'Read a wild miscrit\'s stats from its catch rate at full health, before you spend a capture.',
 })
 
-type RarityKey = 'common' | 'rare' | 'epic' | 'exotic' | 'legendary'
+type RarityKey = CatchRarity
 type Hp = 'full' | 'low'
 
 const RATINGS = ['F-', 'F', 'F+', 'D', 'D+', 'C', 'C+', 'B', 'B+', 'A', 'A+', 'S', 'S+']
-const RARITIES: { k: RarityKey, name: string, ring: string, text: string, wash: string }[] = [
-  { k: 'common', name: 'Common', ring: '#9AA5A0', text: 'var(--r-common-text)', wash: 'var(--r-common-wash)' },
-  { k: 'rare', name: 'Rare', ring: '#2E8BC0', text: 'var(--r-rare-text)', wash: 'var(--r-rare-wash)' },
-  { k: 'epic', name: 'Epic', ring: '#3BA55C', text: 'var(--r-epic-text)', wash: 'var(--r-epic-wash)' },
-  { k: 'exotic', name: 'Exotic', ring: '#9B4DCA', text: 'var(--r-exotic-text)', wash: 'var(--r-exotic-wash)' },
-  { k: 'legendary', name: 'Legendary', ring: '#E0A21B', text: 'var(--r-legendary-text)', wash: 'var(--r-legendary-wash)' },
-]
+const RARITIES = (['common', 'rare', 'epic', 'exotic', 'legendary'] as const).map((k) => {
+  const name = k[0]!.toUpperCase() + k.slice(1)
+  const look = rarityLook(name)
+  return { k: k as RarityKey, name, ring: look.ring, text: look.text, wash: look.bg }
+})
 const R = Object.fromEntries(RARITIES.map(r => [r.k, r])) as Record<RarityKey, typeof RARITIES[number]>
 
 // Catch rate (%) for scores 0 to 12, from the catch rate table. null: the table gives none.
@@ -38,14 +38,8 @@ const RATE: Record<Hp, Partial<Record<RarityKey, (number | null)[]>>> = {
 const STAT_ODDS: Record<RarityKey, [number, number, number]> = {
   common: [32, 27, 41], rare: [16, 27, 57], epic: [11, 26, 63], exotic: [8, 24, 68], legendary: [0, 28, 72],
 }
-const SPLUS: Record<RarityKey, string> = { common: '0.48', rare: '3.43', epic: '6.25', exotic: '9.89', legendary: '13.93' }
-const ENCOUNTER: { label: string, r: RarityKey, pct: number }[] = [
-  { label: 'Rare', r: 'rare', pct: 6 },
-  { label: 'Epic', r: 'epic', pct: 2 },
-  { label: 'Exotic', r: 'exotic', pct: 1 },
-  { label: 'Legendary', r: 'legendary', pct: 0.175 },
-  { label: 'Legendary+', r: 'legendary', pct: 0.35 },
-]
+const SPLUS = CATCH_SPLUS
+const ENCOUNTER = CATCH_ENCOUNTER
 const HP: [Hp, string][] = [['full', 'Full health'], ['low', '1% health']]
 
 // Every way six stats can land on a score: g green, w white, r red, weighted by the stat odds.
@@ -72,16 +66,7 @@ function pct(p: number) {
   if (v < 10) return `${v.toFixed(1)}%`
   return `${Math.round(v)}%`
 }
-// Rating tiers: A to S+, B to B+, C to C+, D to D+, and the F tier.
-const TIERS = [
-  { min: 9, fill: '#FE5B00' },
-  { min: 7, fill: '#37DA31' },
-  { min: 5, fill: '#FF6BFF' },
-  { min: 3, fill: '#E0D854' },
-  { min: 0, fill: '#B7C0C8' },
-]
-const tier = (s: number) => TIERS.find(t => s >= t.min)!
-const range = (scores: number[]) => scores.length === 1 ? RATINGS[scores[0]!] : `${RATINGS[scores[0]!]}–${RATINGS[scores.at(-1)!]}`
+const tier = (s: number) => ({ fill: catchTierFill(s) })
 const rangeWords = (scores: number[]) => scores.length === 1 ? RATINGS[scores[0]!]! : `${RATINGS[scores[0]!]} to ${RATINGS[scores.at(-1)!]}`
 const spoken = (t: string) => t.replace(/\+/g, ' plus').replace(/-/g, ' minus')
 const pluralName = (n: string) => n === 'Legendary' ? 'Legendaries' : `${n}s`
@@ -104,7 +89,6 @@ const KEY = 'miscripedia.catch'
 const state = reactive<{ rarity: RarityKey, hp: Hp, rate: number | null }>({ rarity: 'rare', hp: 'full', rate: null })
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)) } catch {} }
 
-// Controls
 const rateKeys = computed(() => keys(state.rarity, state.hp))
 const hpHelp = computed(() => state.rarity === 'legendary'
   ? 'Legendary rates are only listed at 1% health.'
@@ -122,7 +106,6 @@ function pickHp(hp: Hp) {
   state.rate = null
 }
 
-// Verdict
 const splitWords = (s: Split) => ([[s.g, 'green'], [s.w, 'white'], [s.r, 'red']] as [number, string][])
   .filter(([n]) => n).map(([n, w]) => `${n} ${w}`).join(', ')
 const strip = (s: Split) => [...Array(s.g).fill(2), ...Array(s.w).fill(1), ...Array(s.r).fill(0)] as number[]
@@ -158,13 +141,15 @@ const reading = computed(() => {
     pBetter: ps.slice(scores[0]).reduce((t, p) => t + p, 0),
     note: scoreNote(scores),
     perfect: scores.length === 1 && scores[0] === 12,
-    oneTier: tier(scores[0]!) === tier(scores.at(-1)!),
+    oneTier: catchTierFill(scores[0]!) === catchTierFill(scores.at(-1)!),
     // A rate several ratings share points at the other health, where they come apart.
     narrow: scores.length > 1 ? (rarity === 'exotic' && hp === 'full' ? 'low' : 'full') as Hp : null,
     // The chart: each score's chance, scaled to the likeliest.
     ps,
     max: Math.max(...ps),
     on: new Set(scores),
+    // The same chances as a list, best rating first, so every value shows without hovering a bar.
+    shares: ps.map((p, s) => ({ p, s })).filter(x => x.p).reverse(),
   }
 })
 
@@ -173,7 +158,7 @@ const live = computed(() => {
   return v ? `${v.r.name} at ${v.hpWords}, ${state.rate}%: ${spoken(rangeWords(v.scores))}, ${scoreLine(v.scores).toLowerCase()}.` : ''
 })
 
-// A new reading swaps the card, so it settles in again the way the static page's rebuilt card did.
+// A new reading swaps the card, so it settles in again.
 const readingKey = computed(() => `${state.rarity}-${state.hp}-${state.rate}`)
 
 const form = ref<HTMLFormElement>()
@@ -184,7 +169,6 @@ async function readAt(hp: Hp) {
   form.value?.querySelector<HTMLInputElement>('input[name=rate]')?.focus({ preventScroll: false })
 }
 
-// Reference table
 const COLS: { hp: Hp, r: RarityKey }[] = [
   { hp: 'full', r: 'common' }, { hp: 'full', r: 'rare' }, { hp: 'full', r: 'epic' }, { hp: 'full', r: 'exotic' },
   { hp: 'low', r: 'exotic' }, { hp: 'low', r: 'legendary' },
@@ -227,10 +211,6 @@ function placeTable() {
 watch(() => [state.rarity, state.hp, state.rate], placeTable, { flush: 'post' })
 watch(state, save)
 
-// Track the last input, so keyboard changes skip motion.
-const onPointer = () => { document.documentElement.dataset.input = 'pointer' }
-const onKeyInput = () => { document.documentElement.dataset.input = 'key' }
-
 onMounted(() => {
   // Read after hydration: the prerendered page shows the default reading.
   let saved: { rarity?: unknown, hp?: unknown, rate?: unknown } | null = null
@@ -238,14 +218,10 @@ onMounted(() => {
   const rarity = saved?.rarity as RarityKey, hp = saved?.hp as Hp
   if (saved && Object.hasOwn(R, rarity) && (hp === 'full' || hp === 'low') && hasHp(rarity, hp))
     Object.assign(state, { rarity, hp, rate: typeof saved.rate === 'number' ? saved.rate : null })
-  addEventListener('pointerdown', onPointer, true)
-  addEventListener('keydown', onKeyInput, true)
   addEventListener('resize', onResize)
   nextTick(placeTable)
 })
 onBeforeUnmount(() => {
-  removeEventListener('pointerdown', onPointer, true)
-  removeEventListener('keydown', onKeyInput, true)
   removeEventListener('resize', onResize)
 })
 </script>
@@ -254,20 +230,20 @@ onBeforeUnmount(() => {
   <div class="catch-page">
     <div class="border-b border-ink/10">
       <div class="mx-auto max-w-7xl px-4 pt-6 pb-6 sm:px-6">
-        <h1 class="chapter font-display text-3xl tracking-tight sm:text-4xl" style="font-weight:700">Catching guide</h1>
+        <h1 class="chapter font-display text-3xl tracking-tight sm:text-4xl font-bold">Catching guide</h1>
         <p class="mt-2 max-w-2xl text-fog">A wild miscrit's catch rate at full health gives away its stats: the better they are, the harder it is to catch. Tap the rate you see to read its rating before you spend a capture.</p>
+        <p class="mt-1 max-w-2xl text-sm text-fog">Rates are from the game's published catch, stat and encounter tables.</p>
       </div>
     </div>
 
     <main class="mx-auto max-w-7xl px-4 pt-8 pb-14 sm:px-6">
-      <!-- Reader -->
       <section aria-labelledby="read-h" class="grid gap-6 lg:grid-cols-[minmax(0,27rem)_minmax(0,1fr)]">
         <form ref="form" class="rounded-3xl border border-ink/10 bg-card p-4 shadow-[0_1px_2px_rgb(var(--shade)/.06)] sm:p-5" autocomplete="off" @submit.prevent>
-          <h2 id="read-h" class="chapter font-display text-2xl sm:text-3xl" style="font-weight:700">Read a wild miscrit</h2>
+          <h2 id="read-h" class="chapter font-display text-2xl sm:text-3xl font-bold">Read a wild miscrit</h2>
 
           <fieldset class="mt-4">
             <legend class="text-sm font-bold">Rarity</legend>
-            <div class="mt-1 grid grid-cols-3 gap-1.5 sm:grid-cols-5 lg:grid-cols-3">
+            <div class="mt-1 grid grid-cols-2 gap-1.5 min-[400px]:grid-cols-3 sm:grid-cols-5 lg:grid-cols-3">
               <label v-for="r in RARITIES" :key="r.k" class="seg block cursor-pointer">
                 <input type="radio" name="rarity" :value="r.k" class="sr-only" :checked="state.rarity === r.k" @change="pickRarity(r.k)">
                 <span class="press flex h-11 items-center justify-center gap-1.5 rounded-xl border border-line px-2 text-sm font-bold">
@@ -302,7 +278,7 @@ onBeforeUnmount(() => {
                 >
                 <span class="press flex h-14 flex-col items-center justify-center rounded-xl border border-line leading-tight">
                   <span class="text-base font-bold">{{ k.v }}%</span>
-                  <span class="mt-0.5 text-xs"><span class="rtag" :style="{ background: tier(k.scores[0]!).fill }">{{ RATINGS[k.scores[0]!] }}</span><template v-if="k.scores.length > 1"><span class="sub px-0.5 text-fog">&ndash;</span><span class="rtag" :style="{ background: tier(k.scores.at(-1)!).fill }">{{ RATINGS[k.scores.at(-1)!] }}</span></template></span>
+                  <span class="mt-0.5 whitespace-nowrap text-xs"><span class="rtag" :style="{ background: tier(k.scores[0]!).fill }">{{ RATINGS[k.scores[0]!] }}</span><template v-if="k.scores.length > 1"><span class="sub px-0.5 text-fog">to</span><span class="rtag" :style="{ background: tier(k.scores.at(-1)!).fill }">{{ RATINGS[k.scores.at(-1)!] }}</span></template></span>
                 </span>
               </label>
             </div>
@@ -321,16 +297,16 @@ onBeforeUnmount(() => {
           <div v-else :key="readingKey" class="settle rounded-3xl bg-card p-4 shadow-[0_1px_2px_rgb(var(--shade)/.06)] sm:p-5">
             <div class="flex items-center gap-4">
               <span
-                class="grid h-24 w-24 shrink-0 place-items-center rounded-[1.25rem] font-display"
+                class="grid h-24 w-24 shrink-0 place-items-center rounded-[1.25rem] font-display font-bold"
                 :class="[reading.oneTier ? 'text-ink-fixed' : 'bg-ink text-on', reading.multi ? 'text-2xl leading-none' : 'text-5xl']"
-                :style="reading.oneTier ? { fontWeight: 700, background: tier(reading.scores[0]!).fill, boxShadow: 'inset 0 0 0 1px rgb(27 46 42 / .18)' } : { fontWeight: 700 }"
+                :style="reading.oneTier ? { background: tier(reading.scores[0]!).fill, boxShadow: 'inset 0 0 0 1px color-mix(in srgb, var(--color-ink-fixed) 18%, transparent)' } : undefined"
               >
                 <span v-if="reading.multi" class="text-center">{{ RATINGS[reading.scores[0]!] }}<span class="block py-0.5 font-body text-xs font-bold">to</span>{{ RATINGS[reading.scores.at(-1)!] }}</span>
-                <template v-else>{{ range(reading.scores) }}</template>
+                <template v-else>{{ RATINGS[reading.scores[0]!] }}</template>
               </span>
               <div class="min-w-0">
                 <p class="text-sm text-fog"><span class="rounded-full px-2 py-0.5 text-xs font-bold" :style="{ background: reading.r.wash, color: reading.r.text }">{{ reading.r.name }}</span> at {{ reading.hpWords }}, {{ state.rate }}%</p>
-                <p class="mt-1 font-display text-2xl leading-tight sm:text-3xl sm:leading-9" style="font-weight:700">{{ scoreLine(reading.scores) }}</p>
+                <p class="mt-1 font-display text-2xl leading-tight sm:text-3xl sm:leading-9 font-bold">{{ scoreLine(reading.scores) }}</p>
                 <p v-if="reading.note" class="mt-0.5 flex items-center gap-1.5 text-sm" :class="reading.perfect ? 'font-bold text-[var(--q-green-text)]' : 'text-fog'">
                   <svg v-if="reading.perfect" class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>{{ reading.note }}
                 </p>
@@ -352,7 +328,7 @@ onBeforeUnmount(() => {
             <p class="text-xs text-fog">The rate gives the total only, not which stat is which colour.</p>
             <ul class="mt-2 max-w-md space-y-2">
               <li v-for="(s, i) in reading.top" :key="i" class="flex items-center gap-3">
-                <span class="grid w-40 shrink-0 grid-cols-6 gap-1" aria-hidden="true"><span v-for="(q, j) in strip(s)" :key="j" class="q" :class="`q-${q}`" /></span>
+                <span class="grid w-28 shrink-0 grid-cols-6 gap-1 sm:w-40" aria-hidden="true"><span v-for="(q, j) in strip(s)" :key="j" class="q" :class="`q-${q}`" /></span>
                 <span class="min-w-0 flex-1 text-sm">{{ splitWords(s) }}<template v-if="reading.multi">{{ ' ' }}<span class="rtag text-xs" :style="{ background: tier(2 * s.g + s.w).fill }">{{ RATINGS[2 * s.g + s.w] }}</span></template></span>
                 <span class="text-sm font-bold">{{ pct(s.p / reading.total) }}</span>
               </li>
@@ -372,7 +348,7 @@ onBeforeUnmount(() => {
                   >{{ RATINGS[s] }} &middot; {{ p ? pct(p) : 'not possible' }}</span>
                   <span
                     v-if="p" class="bar-fill block rounded-t-sm" aria-hidden="true"
-                    :style="{ height: `${Math.max((p / reading.max) * 100, 1.5)}%`, background: tier(s).fill, boxShadow: reading.on.has(s) ? '0 0 0 2px var(--card), 0 0 0 4px var(--ink)' : 'inset 0 0 0 1px rgb(27 46 42 / .2)' }"
+                    :style="{ height: `${Math.max((p / reading.max) * 100, 1.5)}%`, background: tier(s).fill, boxShadow: reading.on.has(s) ? '0 0 0 2px var(--card), 0 0 0 4px var(--ink)' : 'inset 0 0 0 1px color-mix(in srgb, var(--color-ink-fixed) 20%, transparent)' }"
                   />
                   <span v-else class="never block h-3 rounded-t-sm" aria-hidden="true" />
                 </li>
@@ -383,6 +359,9 @@ onBeforeUnmount(() => {
                   :class="[reading.on.has(s) ? 'text-ink' : 'text-fog', reading.ps[s] ? '' : 'line-through']"
                 >{{ n }}</li>
               </ol>
+              <ul class="mt-3 flex flex-wrap gap-1.5" aria-hidden="true">
+                <li v-for="x in reading.shares" :key="x.s" class="flex items-center gap-1.5 rounded-lg py-1 pl-1 pr-2.5 text-xs font-bold" :class="reading.on.has(x.s) ? 'bg-ink text-on' : 'bg-leaf'"><span class="rtag" :style="{ background: tier(x.s).fill }">{{ RATINGS[x.s] }}</span> {{ pct(x.p) }}</li>
+              </ul>
               <figcaption class="mt-2 text-xs text-fog">Chance of each rating on a caught {{ reading.r.name }}. Computed from the stat odds.</figcaption>
             </figure>
           </div>
@@ -390,9 +369,8 @@ onBeforeUnmount(() => {
         <p class="sr-only" aria-live="polite">{{ live }}</p>
       </section>
 
-      <!-- How the rating works -->
       <section aria-labelledby="table-h" class="mt-14">
-        <h2 id="table-h" class="chapter font-display text-2xl sm:text-3xl" style="font-weight:700">Catch rate by rating</h2>
+        <h2 id="table-h" class="chapter font-display text-2xl sm:text-3xl font-bold">Catch rate by rating</h2>
         <p class="mt-1 max-w-2xl text-fog">Each of a miscrit's six stats rolls red, white or green, worth 0, 1 or 2 points. The total, 0 to 12, is its score. <strong class="text-ink">12/12 is S+, every stat green.</strong></p>
         <p class="mt-4 text-xs font-bold text-fog" :hidden="hintHidden">Swipe the table sideways for more rarities.</p>
         <div
@@ -437,9 +415,8 @@ onBeforeUnmount(() => {
         <p class="mt-3 max-w-2xl text-sm text-fog">Four Exotic ratings share 1% at full health; bring it down to 1% health to tell them apart. Legendaries never roll a red stat, so none scores below C+, and their rates are only listed at 1% health.</p>
       </section>
 
-      <!-- Stat odds -->
       <section aria-labelledby="odds-h" class="mt-14">
-        <h2 id="odds-h" class="chapter font-display text-2xl sm:text-3xl" style="font-weight:700">Stat odds on a caught miscrit</h2>
+        <h2 id="odds-h" class="chapter font-display text-2xl sm:text-3xl font-bold">Stat odds on a caught miscrit</h2>
         <p class="mt-1 max-w-2xl text-fog">How often each stat comes out red, white or green, and the chance that all six are green.</p>
         <ul class="mt-4 divide-y divide-ink/10 overflow-hidden rounded-3xl border border-ink/10 bg-card">
           <li v-for="r in RARITIES" :key="r.k" class="grid gap-x-6 gap-y-2 p-4 sm:grid-cols-[8rem_minmax(0,1fr)_10rem] sm:items-center">
@@ -464,14 +441,13 @@ onBeforeUnmount(() => {
         </ul>
       </section>
 
-      <!-- Encounter rate -->
       <section aria-labelledby="enc-h" class="mt-14">
-        <h2 id="enc-h" class="chapter font-display text-2xl sm:text-3xl" style="font-weight:700">Encounter rate</h2>
+        <h2 id="enc-h" class="chapter font-display text-2xl sm:text-3xl font-bold">Encounter rate</h2>
         <p class="mt-1 max-w-2xl text-fog">How often a wild encounter turns out to be each rarity.</p>
         <ul class="mt-4 max-w-2xl divide-y divide-ink/10 overflow-hidden rounded-3xl border border-ink/10 bg-card">
           <li v-for="e in ENCOUNTER" :key="e.label" class="grid grid-cols-[minmax(0,1fr)_auto_6.5rem] items-baseline gap-x-4 px-4 py-3">
             <p class="flex items-center gap-2 font-display text-xl"><span class="h-2.5 w-2.5 shrink-0 rounded-full" :style="{ background: R[e.r].ring }" aria-hidden="true" />{{ e.label }}</p>
-            <p class="text-right font-display text-xl" style="font-weight:700">{{ e.pct }}%</p>
+            <p class="text-right font-display text-xl font-bold">{{ e.pct }}%</p>
             <p class="text-right text-sm text-fog">1 in {{ Math.round(100 / e.pct) }}</p>
           </li>
         </ul>

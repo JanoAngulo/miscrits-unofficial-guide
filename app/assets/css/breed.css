@@ -1,5 +1,5 @@
 /* The breed page. Imported like chrome.css, ahead of Tailwind's utilities. Rules sit under the page's root class,
-   since other pages draw their own .seg, .q and .rtag; :where keeps the specificity the static page had. */
+   since other pages draw their own .seg, .q and .rtag; :where keeps the page class out of the specificity. */
 /* The wanted-miscrit choice: a pressed pick takes ink, like a pressed chip. */
 :where(.breed-page) .seg input:checked + span { background: var(--ink); color: var(--on); border-color: var(--ink); }
 :where(.breed-page) .seg input:checked + span .sub { color: var(--count-on-ink); }
@@ -9,13 +9,19 @@
    with its colour, so a parent reads as a strip of colour, and the glyph still says which. */
 :where(.breed-page) .sw { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 8px; background: var(--leaf); color: var(--fog); }
 :where(.breed-page) .sw-any { width: auto; padding: 0 8px; font-size: 12px; font-weight: 700; }
-:where(.breed-page) input:checked + .sw-0 { background: var(--q-red); color: #fff; }
-:where(.breed-page) input:checked + .sw-1 { background: #fff; color: #1B2E2A; box-shadow: inset 0 0 0 1.5px #1B2E2A; }
-:where(.breed-page) input:checked + .sw-2 { background: var(--q-green); color: #fff; }
+:where(.breed-page) input:checked + .sw-0 { background: var(--q-red); color: var(--color-white); }
+:where(.breed-page) input:checked + .sw-1 { background: var(--color-white); color: var(--color-ink-fixed); box-shadow: inset 0 0 0 1.5px var(--color-ink-fixed); }
+:where(.breed-page) input:checked + .sw-2 { background: var(--q-green); color: var(--color-white); }
 :where(.breed-page) input:checked + .sw-any { background: var(--ink); color: var(--on); }
 :where(.breed-page) input:focus-visible + .sw { outline: 3px solid var(--focus); outline-offset: 2px; }
 :where(.breed-page) .sw { transition: background-color 120ms ease, box-shadow 120ms ease, color 120ms ease; }
-@media (pointer: coarse) { :where(.breed-page) .sw { width: 32px; height: 32px; } :where(.breed-page) .sw-any { width: auto; } }
+/* On touch the swatch grows to 32px and its label takes the taps around it: 44px tall, and across the gap to the
+   next swatch, so neighbours never overlap. */
+@media (pointer: coarse) {
+  :where(.breed-page) .sw { width: 32px; height: 32px; } :where(.breed-page) .sw-any { width: auto; }
+  :where(.breed-page) label:has(> .sw) { position: relative; }
+  :where(.breed-page) label:has(> .sw)::after { content: ""; position: absolute; inset: -6px -3px; }
+}
 /* Forced colours drop the fills, so the pick keeps an outline. */
 @media (forced-colors: active) {
   :where(.breed-page) input:checked + .sw, :where(.breed-page) .seg input:checked + span { outline: 2px solid CanvasText; outline-offset: 1px; }
@@ -24,7 +30,7 @@
 @media (hover: hover) and (pointer: fine) {
   :where(.breed-page) .seg input:not(:checked) + span:hover { background: var(--leaf); }
   :where(.breed-page) input:not(:checked) + .sw-0:hover { background: var(--s-elemental-empty); color: var(--s-elemental); }
-  :where(.breed-page) input:not(:checked) + .sw-1:hover { background: #fff; color: #1B2E2A; }
+  :where(.breed-page) input:not(:checked) + .sw-1:hover { background: var(--color-white); color: var(--color-ink-fixed); }
   :where(.breed-page) input:not(:checked) + .sw-2:hover { background: var(--s-core-empty); color: var(--s-core); }
   :where(.breed-page) input:not(:checked) + .sw-any:hover { background: var(--card); color: var(--ink); }
   :where(.breed-page) .bar:hover .tip { opacity: 1; }
@@ -32,29 +38,29 @@
 
 /* One rolled stat, as the catching guide draws it. */
 :where(.breed-page) .q { height: 14px; border-radius: 4px; display: grid; place-items: center; }
-:where(.breed-page) .q-0, :where(.breed-page) .q-2 { color: #fff; } :where(.breed-page) .q-1 { color: #4F605A; }
+:where(.breed-page) .q-0, :where(.breed-page) .q-2 { color: var(--color-white); } :where(.breed-page) .q-1 { color: var(--color-fog-fixed); }
 :where(.breed-page) .q svg { width: 10px; height: 10px; }
-:where(.breed-page) .q-2 { background: var(--q-green); box-shadow: inset 0 0 0 1px #2F6E16; }
-:where(.breed-page) .q-1 { background: #fff; box-shadow: inset 0 0 0 1px var(--line); }
-:where(.breed-page) .q-0 { background: var(--q-red); box-shadow: inset 0 0 0 1px #8F2620; }
+:where(.breed-page) .q-2 { background: var(--q-green); box-shadow: inset 0 0 0 1px var(--color-q-green-deep); }
+:where(.breed-page) .q-1 { background: var(--color-white); box-shadow: inset 0 0 0 1px var(--line); }
+:where(.breed-page) .q-0 { background: var(--q-red); box-shadow: inset 0 0 0 1px var(--color-q-red-edge); }
 /* A stat left open is empty, not a no, so it stays flat (the hatch is kept for ratings that can't happen). */
 :where(.breed-page) .q-any { background: var(--hatch-light); box-shadow: inset 0 0 0 1px var(--hatch-edge); }
 :where(.breed-page) .never { background: repeating-linear-gradient(135deg, var(--hatch-light) 0 3px, var(--hatch-dark) 3px 5px); box-shadow: inset 0 0 0 1px var(--hatch-edge); }
 
 /* Rating tier fills, as the catching guide uses them. Letters on them stay ink; a faint edge holds the pale ones on white. */
-:where(.breed-page) .rtag { display: inline-grid; place-items: center; aspect-ratio: 1; border-radius: 6px; color: #1B2E2A; font-family: Fredoka, system-ui, sans-serif; font-weight: 700; line-height: 1; vertical-align: middle; box-shadow: inset 0 0 0 1px rgb(27 46 42 / .18); }
+:where(.breed-page) .rtag { display: inline-grid; place-items: center; aspect-ratio: 1; border-radius: 6px; color: var(--color-ink-fixed); font-family: var(--font-display); font-weight: 700; line-height: 1; vertical-align: middle; box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-ink-fixed) 18%, transparent); }
 :where(.breed-page) .tip { opacity: 0; transition: opacity 120ms ease; pointer-events: none; }
 :where(.breed-page) .bar-fill { transition: height 300ms var(--ease-out), background-color 150ms ease; }
 
-/* Nothing animates on a keyboard action. The page marks its root with the last input. */
-.breed-page[data-input="key"] .bar-fill, .breed-page[data-input="key"] .press, .breed-page[data-input="key"] .sw { transition: none; }
+/* Nothing animates on a keyboard action: the layout marks <html data-input> with the last input. */
+[data-input="key"] :where(.breed-page) .bar-fill, [data-input="key"] :where(.breed-page) .sw { transition: none; }
 @media (prefers-reduced-motion: no-preference) {
-  .breed-page[data-input="pointer"] .settle { animation: breed-settle 220ms var(--ease-out); }
+  [data-input="pointer"] :where(.breed-page) .settle { animation: breed-settle 220ms var(--ease-out); }
   @keyframes breed-settle { from { opacity: .5; transform: translateY(3px); } }
 }
 @media (prefers-reduced-motion: reduce) {
   :where(.breed-page) .bar-fill, :where(.breed-page) .sw { transition: none; }
-  .breed-page[data-input="pointer"] .settle { animation: breed-fade 150ms ease; }
+  [data-input="pointer"] :where(.breed-page) .settle { animation: breed-fade 150ms ease; }
 }
 /* Named for the page: chrome.css's fade starts from nothing, this one from half. */
 @keyframes breed-fade { from { opacity: .5; } }

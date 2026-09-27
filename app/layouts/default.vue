@@ -1,8 +1,12 @@
 <script setup lang="ts">
 const route = useRoute()
 
-// Each page is a chapter of the guidebook; its headings take the chapter colour.
-useHead({ htmlAttrs: { 'data-chapter': () => route.meta.chapter ?? 'field' } })
+// Each page is a chapter of the guidebook; its headings take the chapter colour. data-input marks how the
+// last action came in, so nothing animates after a key.
+const input = useInputMode()
+useHead({ htmlAttrs: { 'data-chapter': () => route.meta.chapter ?? 'field', 'data-input': () => input.value ?? undefined } })
+const onKey = () => { input.value = 'key' }
+const onPointer = () => { input.value = 'pointer' }
 
 // The site bar sticks. Its height places the field guide's sticky filters under it, and --stick-h keeps
 // scrolled-to focus and jump targets clear of whatever is stuck at the top.
@@ -29,11 +33,15 @@ function observe() {
 onMounted(() => {
   observe()
   addEventListener('resize', measure)
+  addEventListener('keydown', onKey, true)
+  addEventListener('pointerdown', onPointer, true)
 })
 watch(() => route.path, () => nextTick(observe))
 onBeforeUnmount(() => {
   watcher?.disconnect()
   removeEventListener('resize', measure)
+  removeEventListener('keydown', onKey, true)
+  removeEventListener('pointerdown', onPointer, true)
 })
 </script>
 

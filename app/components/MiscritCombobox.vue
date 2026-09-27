@@ -26,7 +26,7 @@ const emit = defineEmits<{
 }>()
 defineSlots<{
   option(p: { item: T, index: number, active: boolean }): unknown
-  // Shown above the options, inside the list (a note on how they are ranked).
+  // Shown above the options, beside the listbox and describing the input while open (a note on how they are ranked).
   note(p: { items: T[] }): unknown
 }>()
 
@@ -36,6 +36,9 @@ const open = ref(false)
 const matches = shallowRef<T[]>([]) as Ref<T[]>
 const active = ref(-1)
 const optId = (i: number) => `${props.id}-opt-${i}`
+const slots = useSlots()
+const noteId = computed(() => `${props.id}-note`)
+const describedBy = computed(() => [props.describedby, open.value && slots.note && noteId.value].filter(Boolean).join(' ') || undefined)
 
 function openList(q = text.value) {
   matches.value = props.search(q)
@@ -96,28 +99,31 @@ defineExpose({ focus: () => input.value?.focus(), openList, closeList })
     <input
       :id="id" ref="input" :value="text" type="text" :placeholder="placeholder" spellcheck="false" autocomplete="off"
       role="combobox" aria-autocomplete="list" :aria-expanded="open" :aria-controls="`${id}-list`"
-      :aria-activedescendant="open && active >= 0 ? optId(active) : undefined" :aria-describedby="describedby"
+      :aria-activedescendant="open && active >= 0 ? optId(active) : undefined" :aria-describedby="describedBy"
       :class="inputClass"
       @input="onInput" @keydown="onKeydown" @click="!open && openList()" @blur="closeList"
       @change="emit('commit', text)"
     >
-    <!-- pointerdown keeps focus in the input while a pointer picks, so blur does not close the list first. -->
-    <ul
-      v-show="open" :id="`${id}-list`" ref="listEl" role="listbox" :aria-label="listLabel"
+    <!-- pointerdown keeps focus in the input while a pointer picks, so blur does not close the list first. The note
+         sits beside the listbox, not in it, since a listbox holds only options. -->
+    <div
+      v-show="open" :id="`${id}-popup`"
       class="combo-list absolute inset-x-0 top-full z-20 mt-1 max-h-80 overflow-y-auto overscroll-contain rounded-2xl border border-line bg-card p-1 shadow-[0_12px_32px_-12px_rgb(var(--shade)/.35)]"
       @pointerdown.prevent
     >
-      <slot name="note" :items="matches" />
-      <template v-if="matches.length">
-        <li
-          v-for="(item, i) in matches" :id="optId(i)" :key="i" role="option" :aria-selected="i === active"
-          class="flex cursor-pointer items-center gap-2.5 rounded-xl px-2 py-1.5"
-          @click="choose(i)" @pointermove="onPointermove(i)"
-        >
-          <slot name="option" :item="item" :index="i" :active="i === active" />
-        </li>
-      </template>
-      <li v-else role="option" aria-disabled="true" aria-selected="false" class="px-3 py-2.5 text-sm text-fog">{{ emptyText }}</li>
-    </ul>
+      <div v-if="$slots.note" :id="noteId"><slot name="note" :items="matches" /></div>
+      <ul :id="`${id}-list`" ref="listEl" role="listbox" :aria-label="listLabel">
+        <template v-if="matches.length">
+          <li
+            v-for="(item, i) in matches" :id="optId(i)" :key="i" role="option" :aria-selected="i === active"
+            class="flex cursor-pointer items-center gap-2.5 rounded-xl px-2 py-1.5"
+            @click="choose(i)" @pointermove="onPointermove(i)"
+          >
+            <slot name="option" :item="item" :index="i" :active="i === active" />
+          </li>
+        </template>
+        <li v-else role="option" aria-disabled="true" aria-selected="false" class="px-3 py-2.5 text-sm text-fog">{{ emptyText }}</li>
+      </ul>
+    </div>
   </div>
 </template>

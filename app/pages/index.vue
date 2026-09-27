@@ -21,6 +21,9 @@ const rich = ref(false)
 // On a miscrit's page the list behind the dialog is left to the browser, so 425 prerendered pages don't each carry
 // the whole grid. The field guide's own page renders it, which is where search engines find every miscrit.
 const listReady = ref(!route.params.slug)
+// A miscrit's page is prerendered with its dialog open, so the detail shows before any script runs. That open
+// dialog is not modal (no focus trap, no Escape), so the first shownDetail() reopens it as a modal.
+const serverOpen = !!route.params.slug
 
 const state = reactive({ q: '', zone: '', element: '', day: '', stat: '', rarities: new Set<string>() })
 
@@ -101,14 +104,7 @@ function leave() {
 function close(animate: boolean) {
   const el = dialog.value
   if (!el?.open) return leave()
-  if (!animate || el.classList.contains('closing')) return el.close()
-  el.classList.add('closing')
-  const done = () => {
-    el.classList.remove('closing')
-    if (el.open) el.close()
-  }
-  el.addEventListener('animationend', done, { once: true })
-  setTimeout(done, 260) // in case no animation runs
+  closeDialog(el, animate)
 }
 
 function step(dir: -1 | 1, fromButton = false) {
@@ -125,7 +121,10 @@ function shownDetail() {
   const el = dialog.value
   if (!el) return
   lastSlug = String(router.currentRoute.value.params.slug ?? '')
-  if (!el.open) el.showModal()
+  if (!el.matches(':modal')) {
+    if (el.open) el.close()
+    el.showModal()
+  }
   el.scrollTop = 0
   // Pressing previous/next again should not need a trip back from the heading.
   const btn = stepFocus !== null && el.querySelector<HTMLButtonElement>(`[data-step="${stepFocus}"]:not(:disabled)`)
@@ -141,13 +140,19 @@ function shownDetail() {
 }
 
 function onClose() {
+  // The close event is queued, so the reopen in shownDetail() fires one after the dialog is open again.
+  if (dialog.value?.open) return
   live.value = ''
   leave()
-  // After stepping with previous/next, return focus to the card of the miscrit last shown.
+  // After stepping with previous/next, return focus to the card of the miscrit last shown; if the filters hide
+  // it, to the search.
   const card = lastSlug && document.querySelector<HTMLElement>(`#grid [data-open="${lastSlug}"]`)
   if (card) {
     card.focus({ preventScroll: true })
     card.scrollIntoView({ block: 'nearest' })
+  }
+  else {
+    search.value?.focus({ preventScroll: true })
   }
 }
 
@@ -161,6 +166,20 @@ function onDialogKey(e: KeyboardEvent) {
 watch(() => route.params.slug, (slug) => {
   if (!slug && dialog.value?.open) dialog.value.close()
 })
+
+// A card's miscrit loads before the dialog opens; the card reads as busy until the page has rendered.
+let busy: HTMLElement | null = null
+function markBusy(el: HTMLElement | null) {
+  busy?.removeAttribute('aria-busy')
+  busy = el
+  busy?.setAttribute('aria-busy', 'true')
+}
+const offBefore = router.beforeEach((to) => {
+  if (import.meta.client && to.params.slug) markBusy(document.querySelector<HTMLElement>(`#grid [data-open="${String(to.params.slug)}"]`))
+})
+const nuxtApp = useNuxtApp()
+const offFinish = nuxtApp.hook('page:finish', () => markBusy(null))
+const offError = nuxtApp.hook('app:error', () => markBusy(null))
 
 provideFieldGuide({ shown, step, close, shownDetail, announce: (text) => { live.value = text } })
 
@@ -182,15 +201,21 @@ onNuxtReady(() => {
   const legacy = location.hash.slice(1)
   if (legacy && MISCRITS.some(m => m.slugs[0] === legacy)) router.replace(`/miscrit/${legacy}`)
 })
-onBeforeUnmount(() => removeEventListener('keydown', onKey))
+onBeforeUnmount(() => {
+  removeEventListener('keydown', onKey)
+  offBefore()
+  offFinish()
+  offError()
+  markBusy(null)
+})
 </script>
 
 <template>
   <div>
-    <div id="filters" class="z-10 border-b border-ink/10 bg-paper/95 backdrop-blur md:sticky md:top-[var(--bar-h,0px)]">
+    <div id="filters" class="z-10 border-b border-ink/10 bg-paper/95 backdrop-blur [@media(min-width:768px)_and_(min-height:700px)]:sticky [@media(min-width:768px)_and_(min-height:700px)]:top-[var(--bar-h,0px)]">
       <div class="mx-auto max-w-7xl px-4 pt-5 pb-4 sm:px-6">
         <div class="flex flex-wrap items-end justify-between gap-x-6 gap-y-1">
-          <h1 class="chapter font-display text-3xl tracking-tight sm:text-4xl" style="font-weight:700">Miscrits field guide</h1>
+          <h1 class="chapter font-display text-3xl font-bold tracking-tight sm:text-4xl">Miscrits field guide</h1>
           <p class="text-sm text-fog">Where each miscrit lives, and the days it doesn't show. <span v-if="today !== null">Today is {{ DAYS[today] }}.</span></p>
         </div>
 
@@ -204,7 +229,7 @@ onBeforeUnmount(() => removeEventListener('keydown', onKey))
             >
           </label>
           <div class="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:flex">
-            <select v-model="state.zone" class="min-w-0 rounded-xl border border-line bg-card px-3 py-2.5 text-sm lg:w-44" aria-label="Location">
+            <select v-model="state.zone" class="min-h-11 min-w-0 rounded-xl border border-line bg-card px-3 py-2.5 text-sm lg:w-44" aria-label="Location">
               <button v-if="rich" type="button"><selectedcontent /></button>
               <option value="">Anywhere</option>
               <!-- Each zone leads with the cards' location pin. -->
@@ -213,7 +238,7 @@ onBeforeUnmount(() => removeEventListener('keydown', onKey))
                 <template v-else>{{ z }}</template>
               </option>
             </select>
-            <select v-model="state.element" class="min-w-0 rounded-xl border border-line bg-card px-3 py-2.5 text-sm lg:w-44" aria-label="Element">
+            <select v-model="state.element" class="min-h-11 min-w-0 rounded-xl border border-line bg-card px-3 py-2.5 text-sm lg:w-44" aria-label="Element">
               <button v-if="rich" type="button"><selectedcontent /></button>
               <option value="">Any element</option>
               <optgroup label="Element">
@@ -232,7 +257,7 @@ onBeforeUnmount(() => removeEventListener('keydown', onKey))
                 </option>
               </optgroup>
             </select>
-            <select v-model="state.day" class="min-w-0 rounded-xl border border-line bg-card px-3 py-2.5 text-sm lg:w-40" aria-label="Findable on">
+            <select v-model="state.day" class="min-h-11 min-w-0 rounded-xl border border-line bg-card px-3 py-2.5 text-sm lg:w-40" aria-label="Findable on">
               <button v-if="rich" type="button"><selectedcontent /></button>
               <option value="">Any day</option>
               <!-- Each day is a lit week-strip cell; the letter is drawn from data-l so plain-text lists read just the day. -->
@@ -244,7 +269,7 @@ onBeforeUnmount(() => removeEventListener('keydown', onKey))
                 <template v-else>{{ d }}</template>
               </option>
             </select>
-            <select v-model="state.stat" class="min-w-0 rounded-xl border border-line bg-card px-3 py-2.5 text-sm lg:w-44" aria-label="Minimum stat">
+            <select v-model="state.stat" class="min-h-11 min-w-0 rounded-xl border border-line bg-card px-3 py-2.5 text-sm lg:w-44" aria-label="Minimum stat">
               <button v-if="rich" type="button"><selectedcontent /></button>
               <option value="">Any stats</option>
               <!-- In the list a row is the bar and the level, under a group head in the stat's colour. The words read
@@ -268,7 +293,7 @@ onBeforeUnmount(() => removeEventListener('keydown', onKey))
           <div class="flex flex-wrap gap-2" role="group" aria-label="Rarity">
             <button
               v-for="{ r, n } in rarityCounts" :key="r" type="button" :aria-pressed="state.rarities.has(r)"
-              class="chip press inline-flex items-center gap-1.5 rounded-full border border-line bg-card px-3 py-1.5 text-sm"
+              class="chip press inline-flex min-h-11 items-center gap-1.5 rounded-full border border-line bg-card px-3 py-1.5 text-sm"
               @click="toggleRarity(r)"
             >
               <span class="h-2.5 w-2.5 shrink-0 rounded-full" :style="{ background: RARITY[r]!.ring }" aria-hidden="true" /><span>{{ r }}</span><span class="chip-count text-fog tabular-nums">{{ n }}</span>
@@ -283,15 +308,16 @@ onBeforeUnmount(() => removeEventListener('keydown', onKey))
       <ul v-if="listReady" id="grid" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         <li v-for="m in shown" :key="m.id"><MiscritCard :m="m" :today="today" /></li>
       </ul>
-      <div v-if="!shown.length" class="py-24 text-center">
+      <p v-else role="status" class="py-24 text-center text-fog">Loading the field guide…</p>
+      <div v-if="listReady && !shown.length" class="py-24 text-center">
         <p class="font-display text-2xl">No miscrit matches that.</p>
         <p class="mt-2 text-fog">Try fewer filters, or search part of a name.</p>
-        <button type="button" class="mt-5 rounded-xl bg-ink px-4 py-2.5 text-sm text-on" @click="reset">Clear filters</button>
+        <button type="button" class="mt-5 min-h-11 rounded-xl bg-ink px-4 py-2.5 text-sm text-on" @click="reset">Clear filters</button>
       </div>
     </main>
 
     <dialog
-      ref="dialog" class="overflow-y-auto bg-card p-0 text-ink shadow-2xl" aria-labelledby="detail-name"
+      id="detail" ref="dialog" class="overflow-y-auto bg-card p-0 text-ink shadow-2xl" aria-labelledby="detail-name" :open="serverOpen || undefined"
       @close="onClose" @keydown="onDialogKey" @click="$event.target === dialog && close($event.detail > 0)"
     >
       <NuxtPage />

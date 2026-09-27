@@ -7,7 +7,7 @@ export interface FieldGuide {
   shown: Ref<ListedMiscrit[]>
   step: (dir: -1 | 1, fromButton?: boolean) => void
   close: (animate: boolean) => void
-  /** Called by the detail once a miscrit is on screen. */
+  /** Opens the dialog, once the detail has rendered something to focus. */
   shownDetail: () => void
   announce: (text: string) => void
 }

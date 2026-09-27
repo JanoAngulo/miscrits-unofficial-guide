@@ -25,7 +25,7 @@
 }
 
 /* margin: auto undoes the v4 preflight reset, which would pin the dialog to the top left. */
-dialog { margin: auto; width: min(100% - 2rem, 56rem); max-width: none; max-height: min(92vh, 900px); border-radius: 1.5rem; }
+dialog { margin: auto; width: min(100% - 2rem, 56rem); max-width: none; max-height: min(92dvh, 900px); border-radius: 1.5rem; }
 dialog::backdrop { background: var(--scrim); }
 body:has(dialog[open]) { overflow: hidden; }
 /* On a phone the detail is a bottom sheet, which is how a tap-to-open reads there. */
@@ -88,3 +88,10 @@ body:has(dialog[open]) { overflow: hidden; }
   select legend { display: flex; align-items: center; gap: 6px; }
   option .opt-tile, option .opt-short, selectedcontent .opt-level, selectedcontent .opt-tag { display: none; }
 }
+/* Opened from the keyboard, the detail appears without its rise (the layout sets data-input). */
+[data-input="key"] dialog[open], [data-input="key"] dialog[open]::backdrop { animation: none; }
+/* The prerendered miscrit page paints its dialog open before the script makes it modal: placed like the modal one,
+   over a drawn scrim. */
+#detail[open]:not(:modal) { position: fixed; inset: 0; z-index: 30; box-shadow: 0 0 0 100vmax var(--scrim); }
+/* A card whose miscrit is loading. */
+#grid [aria-busy="true"] { cursor: progress; opacity: .7; }

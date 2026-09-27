@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { MiscritSummary } from '#shared/types/miscrit'
+import type { Miscrit, MiscritSummary } from '#shared/types/miscrit'
 
 // Platinum Arena team guide: a four-slot builder that checks a team against the guide's rules, over the rules
 // themselves. The team lives in the address bar (#team=...) and localStorage, both read only once mounted: the page
@@ -26,11 +26,9 @@ const rollNote = ref('Random team rolls four that pass every check. Fill the gap
 const report = computed(() => teamReport(team.value, book))
 const strip = computed(() => teamStrip(report.value.es))
 
-// Nothing animates on a keyboard action: note how the last action came in.
-const kbd = ref(false)
-useHead({ htmlAttrs: { class: () => (kbd.value ? 'kbd' : '') } })
-const onKey = () => { kbd.value = true }
-const onPointer = () => { kbd.value = false }
+// Nothing animates on a keyboard action: the layout tracks how the last action came in.
+const input = useInputMode()
+const kbd = computed(() => input.value === 'key')
 
 function load() {
   // A hand-edited or truncated address must not stop the page: a name that won't decode is just empty.
@@ -72,16 +70,10 @@ onMounted(() => {
   syncInputs()
   save()
   addEventListener('hashchange', onHash)
-  addEventListener('keydown', onKey, true)
-  addEventListener('pointerdown', onPointer, true)
 })
-onBeforeUnmount(() => {
-  removeEventListener('hashchange', onHash)
-  removeEventListener('keydown', onKey, true)
-  removeEventListener('pointerdown', onPointer, true)
-})
+onBeforeUnmount(() => removeEventListener('hashchange', onHash))
 
-// ---------------------------------------------------------------- Slots
+// Slots
 const slotContext = (i: number) => teamSlotContext(team.value, i, book)
 const search = (i: number, q: string) => teamOptions(q, slotContext(i), book)
 const slugOf = (e: TeamEntry) => e.m.slugs[e.i] || e.m.slugs[0]!
@@ -105,7 +97,7 @@ function choose(i: number, o: TeamOption) {
 // Keep the list on screen: the last slot's picker sits near the right edge.
 function placeList(i: number) {
   nextTick(() => {
-    const list = document.getElementById(`pick-${i}-list`)
+    const list = document.getElementById(`pick-${i}-popup`)
     if (!list) return
     list.style.left = ''
     const over = list.getBoundingClientRect().right - (document.documentElement.clientWidth - 8)
@@ -149,18 +141,115 @@ function emptyHint(i: number) {
   return i === 0 ? 'Your slowest miscrit usually starts.' : 'Pick the miscrit that covers the one before.'
 }
 
-// ---------------------------------------------------------------- Random builds
-function applyRoll(keep: (TeamEntry | null)[]) {
-  const r = teamRoll(keep, book)
+// Detail
+// A team member opens its full detail over the builder, the dialog a field guide card opens, at the form the team
+// uses. Previous and next step through the team in battle order.
+const dialog = ref<HTMLDialogElement>()
+const detail = shallowRef<{ m: Miscrit, stage: number, slot: number } | null>(null)
+const live = ref('')
+const members = computed(() => report.value.es.flatMap((e, slot) => (e ? [{ e, slot }] : [])))
+const detailAt = computed(() => members.value.findIndex(x => x.slot === detail.value?.slot))
+const memberName = (dir: -1 | 1) => members.value[detailAt.value + dir]?.e.name
+// Set by previous/next, so the next miscrit keeps focus on the button pressed.
+let stepFocus: -1 | 1 | null = null
+// A later pick wins over a slower earlier one.
+let opening = 0
+// The slot whose detail is loading, so its avatar can say so.
+const loadingSlot = ref<number | null>(null)
+
+// Hovering the avatar or the link starts the payload, so the click has little left to wait for.
+const prefetchDetail = (e: TeamEntry) => preloadPayload(`/miscrit/${e.m.slugs[0]}`).catch(() => {})
+
+async function openDetail(slot: number) {
+  const e = report.value.es[slot]
+  if (!e) return
+  const n = ++opening
+  loadingSlot.value = slot
+  const m = await loadMiscrit(e.m.slugs[0]!).finally(() => { if (n === opening) loadingSlot.value = null })
+  if (n !== opening) return
+  // Nothing to show here: the miscrit's own page still has it.
+  if (!m) return navigateTo(`/miscrit/${e.m.slugs[0]}`)
+  detail.value = { m, stage: e.i, slot }
+}
+function stepDetail(dir: -1 | 1, fromButton = false) {
+  const to = members.value[detailAt.value + dir]
+  if (!to) return
+  stepFocus = fromButton ? dir : null
+  openDetail(to.slot)
+}
+function shownDetail() {
+  const el = dialog.value
+  if (!el) return
+  if (!el.open) el.showModal()
+  el.scrollTop = 0
+  const btn = stepFocus !== null && el.querySelector<HTMLButtonElement>(`[data-step="${stepFocus}"]:not(:disabled)`)
+  if (btn) {
+    btn.focus()
+    live.value = `${members.value[detailAt.value]?.e.name}, ${detailAt.value + 1} of ${members.value.length}`
+  }
+  else {
+    el.querySelector<HTMLElement>('#detail-name')?.focus()
+  }
+  stepFocus = null
+}
+function closeDetail(animate: boolean) {
+  if (dialog.value?.open) closeDialog(dialog.value, animate)
+}
+function onDetailClose() {
+  const slot = detail.value?.slot
+  detail.value = null
+  live.value = ''
+  // Back to the slot of the miscrit last shown, which after stepping is not the one opened.
+  document.querySelector<HTMLElement>(`[data-detail="${slot}"]`)?.focus()
+}
+function onDetailKey(e: KeyboardEvent) {
+  if ((e.target as HTMLElement).matches('input, select, textarea') || e.altKey || e.ctrlKey || e.metaKey) return
+  if (e.key === 'ArrowLeft') { e.preventDefault(); stepDetail(-1) }
+  if (e.key === 'ArrowRight') { e.preventDefault(); stepDetail(1) }
+}
+
+// Random builds
+// A roll can take seconds on a slow phone. The busy look waits 150ms so a quick roll doesn't flash it, then stays at
+// least 450ms so it can be read.
+const rolling = ref<{ fill: boolean, slots: number[] } | null>(null)
+const rollBusy = ref(false)
+// The slots of the last roll, briefly, so their new miscrits settle in.
+const landed = ref<number[]>([])
+let rollCtl: AbortController | null = null
+const wait = (ms: number) => new Promise(r => setTimeout(r, ms))
+
+async function applyRoll(keep: (TeamEntry | null)[]) {
+  if (rolling.value) return
   const kept = keep.filter(Boolean).length
+  const slots = keep.flatMap((e, i) => (e ? [] : [i]))
+  const ctl = rollCtl = new AbortController()
+  const byKey = kbd.value
+  rolling.value = { fill: kept > 0, slots }
+  rollNote.value = kept ? 'Filling the empty slots…' : 'Rolling a team…'
+  let shownAt = 0
+  const show = setTimeout(() => { rollBusy.value = true; shownAt = performance.now() }, 150)
+  const r = await teamRoll(keep, book, ctl.signal)
+  clearTimeout(show)
+  if (shownAt && !ctl.signal.aborted) await wait(Math.max(0, 450 - (performance.now() - shownAt)))
+  rolling.value = null
+  rollBusy.value = false
+  rollCtl = null
+  if (ctl.signal.aborted) { rollNote.value = 'Roll stopped: the team changed while it ran.'; return }
   if (!r) { rollNote.value = 'No legal fill fits around these picks. Clear or swap one and try again.'; return }
   setTeam(r.ms.map(m => m.names.at(-1)))
+  if (!byKey) {
+    landed.value = slots
+    setTimeout(() => { landed.value = [] }, 700)
+  }
   const yours = kept === 1 ? 'pick' : `${kept} picks`
   rollNote.value = !kept
     ? (r.perfect ? 'Rolled a team that passes every check. Roll again for another.' : 'Rolled the closest team found. See what\'s left below, or roll again.')
     : r.perfect ? `Kept your ${yours} and filled the rest. Every check passes.`
       : `Kept your ${yours}. No fill passes every check around them, so this is the closest. See what's left below.`
 }
+// A change made while a roll runs wins: typing, removing, loading the example or clearing stops it.
+watch(team, () => rollCtl?.abort(), { deep: true })
+onBeforeUnmount(() => rollCtl?.abort())
 const fillOff = computed(() => !report.value.picked.length || report.value.picked.length === TEAM_SIZE)
 
 function clearAll() {
@@ -174,7 +263,7 @@ function loadTrain() {
   document.getElementById('build-h')?.focus({ preventScroll: true })
 }
 
-// ---------------------------------------------------------------- Guide
+// Guide
 const RARITIES = Object.keys(RARITY)
 const ROLES = [
   { bars: 5, label: 'Sniper', range: '4/5 speed and above', pair: 'Give it 2 or 3 tanks or bruisers to cover. They should be of the element that beats the sniper: a Lightning sniper protects Earth, because Lightning beats the Wind that threatens Earth.' },
@@ -227,7 +316,7 @@ const roleLabel = (m: MiscritSummary) => teamRole(m).label
   <div class="teams-page">
     <div class="border-b border-ink/10">
       <div class="mx-auto max-w-7xl px-4 pt-6 pb-6 sm:px-6">
-        <h1 class="chapter font-display text-3xl tracking-tight sm:text-4xl" style="font-weight:700">Platinum Arena team guide</h1>
+        <h1 class="chapter font-display text-3xl tracking-tight sm:text-4xl font-bold">Platinum Arena team guide</h1>
         <p class="mt-2 max-w-2xl text-fog">Four miscrits, twelve points. Build around one miscrit, cover its weakness, then chain the rest so each one covers the one before it.</p>
       </div>
     </div>
@@ -236,20 +325,31 @@ const roleLabel = (m: MiscritSummary) => teamRole(m).label
       <!-- Builder -->
       <section id="builder" aria-labelledby="build-h" class="rounded-3xl border border-ink/10 bg-card p-4 shadow-[0_1px_2px_rgb(var(--shade)/.06)] sm:p-5">
         <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2">
-          <h2 id="build-h" tabindex="-1" class="chapter font-display text-2xl focus:outline-hidden sm:text-3xl" style="font-weight:700">Build a team</h2>
+          <h2 id="build-h" tabindex="-1" class="chapter font-display text-2xl focus:outline-hidden sm:text-3xl font-bold">Build a team</h2>
           <div class="flex gap-1">
-            <button type="button" class="press ghost rounded-lg px-2.5 py-1.5 text-sm font-bold text-moss underline decoration-moss/40 underline-offset-4" @click="setTeam(TEAM_EXAMPLE)">Load example</button>
-            <button type="button" class="press ghost rounded-lg px-2.5 py-1.5 text-sm font-bold text-fog" @click="clearAll">Clear all</button>
+            <button type="button" class="press ghost min-h-11 rounded-xl px-2.5 py-1.5 text-sm font-bold text-moss underline decoration-moss/40 underline-offset-4" @click="setTeam(TEAM_EXAMPLE)">Load example</button>
+            <button type="button" class="press ghost min-h-11 rounded-xl px-2.5 py-1.5 text-sm font-bold text-fog" @click="clearAll">Clear all</button>
           </div>
         </div>
 
         <!-- Random builds -->
         <div class="mt-3 flex flex-wrap items-center gap-2">
-          <button type="button" class="press inline-flex items-center gap-2 rounded-xl bg-ink px-4 py-2.5 text-sm font-bold text-on" @click="applyRoll(Array(TEAM_SIZE).fill(null))">
-            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4" /><circle cx="8.5" cy="8.5" r="1.3" fill="currentColor" stroke="none" /><circle cx="15.5" cy="15.5" r="1.3" fill="currentColor" stroke="none" /><circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none" /><circle cx="15.5" cy="8.5" r="1.3" fill="currentColor" stroke="none" /><circle cx="8.5" cy="15.5" r="1.3" fill="currentColor" stroke="none" /></svg>
-            Random team
+          <!-- While a roll runs both buttons stay focusable (aria-disabled, not disabled), so a keyboard keeps its place.
+               Each label is stacked over its busy twin, so the button keeps its width when the words change. -->
+          <button
+            type="button" class="roll-btn press inline-flex items-center gap-2 rounded-xl bg-ink px-4 py-2.5 text-sm font-bold text-on"
+            :aria-disabled="!!rolling" :aria-busy="!!rolling && !rolling.fill" @click="applyRoll(Array(TEAM_SIZE).fill(null))"
+          >
+            <svg class="h-4 w-4 shrink-0" :class="{ 'roll-die': rollBusy && !rolling?.fill }" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4" /><circle cx="8.5" cy="8.5" r="1.3" fill="currentColor" stroke="none" /><circle cx="15.5" cy="15.5" r="1.3" fill="currentColor" stroke="none" /><circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none" /><circle cx="15.5" cy="8.5" r="1.3" fill="currentColor" stroke="none" /><circle cx="8.5" cy="15.5" r="1.3" fill="currentColor" stroke="none" /></svg>
+            <span class="grid justify-items-center"><span class="[grid-area:1/1]" :class="{ invisible: rollBusy && !rolling?.fill }">Random team</span><span class="[grid-area:1/1]" :class="{ invisible: !(rollBusy && !rolling?.fill) }" aria-hidden="true">Rolling…</span></span>
           </button>
-          <button type="button" class="press rounded-xl border border-line bg-card px-4 py-2.5 text-sm font-bold disabled:cursor-default disabled:opacity-40" :disabled="fillOff" @click="applyRoll(team.map(find))">Fill the gaps</button>
+          <button
+            type="button" class="roll-btn press inline-flex items-center rounded-xl border border-line bg-card px-4 py-2.5 text-sm font-bold disabled:cursor-default disabled:opacity-40"
+            :disabled="fillOff && !rolling?.fill" :aria-disabled="!!rolling" :aria-busy="!!rolling?.fill" @click="applyRoll(team.map(find))"
+          >
+            <span class="grid justify-items-center"><span class="[grid-area:1/1]" :class="{ invisible: rollBusy && rolling?.fill }">Fill the gaps</span>
+              <span class="inline-flex items-center justify-center gap-2 [grid-area:1/1]" :class="{ invisible: !(rollBusy && rolling?.fill) }" aria-hidden="true"><svg class="h-4 w-4 shrink-0" :class="{ 'roll-die': rollBusy && rolling?.fill }" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4" /><circle cx="8.5" cy="8.5" r="1.3" fill="currentColor" stroke="none" /><circle cx="15.5" cy="15.5" r="1.3" fill="currentColor" stroke="none" /><circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none" /><circle cx="15.5" cy="8.5" r="1.3" fill="currentColor" stroke="none" /><circle cx="8.5" cy="15.5" r="1.3" fill="currentColor" stroke="none" /></svg> Filling…</span></span>
+          </button>
           <p class="text-sm text-fog" aria-live="polite">{{ rollNote }}</p>
         </div>
 
@@ -271,32 +371,44 @@ const roleLabel = (m: MiscritSummary) => teamRole(m).label
         </div>
 
         <!-- Slots, in battle order -->
-        <ol id="slots" class="mt-5 grid gap-3 md:grid-cols-2 lg:grid-cols-4 lg:gap-x-10" aria-label="Team, in battle order">
+        <ol id="slots" class="mt-5 grid gap-3 md:grid-cols-2 lg:grid-cols-4 lg:gap-x-10" aria-label="Team, in battle order" :aria-busy="!!rolling">
           <li
             v-for="(e, i) in report.es" :key="i" class="slot relative flex min-w-0 flex-col rounded-3xl border-2 p-3.5"
-            :class="{ 'border-dashed border-line bg-paper/40': !e }" :style="e ? { borderColor: `${rarityLook(e.m.rarity).ring}66` } : undefined"
+            :class="{ 'border-dashed border-line bg-paper/40': !e, 'slot-rolling': rollBusy && rolling?.slots.includes(i), 'slot-landed': landed.includes(i) }"
+            :style="{ '--n': landed.indexOf(i), ...(e ? { borderColor: `${rarityLook(e.m.rarity).ring}66` } : {}) }"
           >
             <div><TeamsLinkRow :entry="e" :prev="report.es[i - 1] ?? null" :i="i" /></div>
             <div class="flex items-center justify-between gap-2">
-              <p class="flex items-baseline gap-1.5"><span class="font-display text-lg leading-none" style="font-weight:700">{{ i + 1 }}</span><span class="text-xs font-bold text-fog">{{ i === 0 ? 'Starter' : '' }}</span></p>
-              <div class="-mr-1.5 flex">
+              <p class="flex items-baseline gap-1.5"><span class="font-display text-lg leading-none font-bold">{{ i + 1 }}</span><span class="text-xs font-bold text-fog">{{ i === 0 ? 'Starter' : '' }}</span></p>
+              <div class="-mr-2.5 -my-1 flex gap-1">
                 <button
-                  type="button" class="icon-btn press grid h-9 w-9 place-items-center rounded-full text-fog" data-move="-1" :data-i="i"
+                  type="button" class="icon-btn press grid h-11 w-11 place-items-center rounded-full text-fog" data-move="-1" :data-i="i"
                   :aria-label="`Move ${e ? `${e.name}, slot ${i + 1}` : `slot ${i + 1}`}, earlier`" :disabled="i === 0 || (!e && !report.es[i - 1])" @click="move(i, -1)"
                 ><StatusIcon :paths="TEAM_ICON.earlier" class="h-5 w-5 shrink-0" /></button>
                 <button
-                  type="button" class="icon-btn press grid h-9 w-9 place-items-center rounded-full text-fog" data-move="1" :data-i="i"
+                  type="button" class="icon-btn press grid h-11 w-11 place-items-center rounded-full text-fog" data-move="1" :data-i="i"
                   :aria-label="`Move ${e ? `${e.name}, slot ${i + 1}` : `slot ${i + 1}`}, later`" :disabled="i === TEAM_SIZE - 1 || (!e && !report.es[i + 1])" @click="move(i, 1)"
                 ><StatusIcon :paths="TEAM_ICON.later" class="h-5 w-5 shrink-0" /></button>
                 <button
-                  type="button" class="icon-btn press grid h-9 w-9 place-items-center rounded-full text-fog"
+                  type="button" class="icon-btn press grid h-11 w-11 place-items-center rounded-full text-fog"
                   :aria-label="e ? `Remove ${e.name} from slot ${i + 1}` : `Empty slot ${i + 1}`" :disabled="!e && !typed[i]" @click="empty(i)"
                 ><StatusIcon :paths="TEAM_ICON.cross" class="h-5 w-5 shrink-0" /></button>
               </div>
             </div>
             <div class="mt-2 flex items-center gap-3">
               <span>
-                <TeamsFramed v-if="e" :entry="e" :size="52" />
+                <!-- The avatar opens the detail; the corner badge says so without a hover. -->
+                <button
+                  v-if="e" type="button" :data-detail="i" aria-haspopup="dialog" :aria-label="`${e.name}: moves, stats and where to find it`"
+                  class="member press relative block rounded-2xl" :class="{ 'member-loading': loadingSlot === i }" :aria-busy="loadingSlot === i"
+                  :title="`${e.name}: moves and stats`"
+                  @click="openDetail(i)" @pointerenter="prefetchDetail(e)"
+                >
+                  <TeamsFramed :entry="e" :size="52" class="member-frame" />
+                  <span class="member-badge absolute -right-1.5 -bottom-1.5 grid h-6 w-6 place-items-center rounded-full bg-card text-ink">
+                    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M10 20H4v-6M20 4l-6.5 6.5M4 20l6.5-6.5" /></svg>
+                  </span>
+                </button>
                 <span v-else class="grid h-[58px] w-[58px] shrink-0 place-items-center rounded-2xl bg-leaf text-fog"><StatusIcon :paths="TEAM_ICON.plus" class="h-5 w-5 shrink-0" /></span>
               </span>
               <label :for="`pick-${i}`" class="sr-only">Slot {{ i + 1 }} miscrit</label>
@@ -307,7 +419,7 @@ const roleLabel = (m: MiscritSummary) => teamRole(m).label
                 @update:model-value="onType(i, $event)" @choose="choose(i, $event)" @list="placeList(i)"
               >
                 <template #note="{ items }">
-                  <li v-if="items.length && slotContext(i).others.length" role="none" class="px-2 pb-1.5 pt-1 text-xs text-fog">{{ slotNote(i) }}</li>
+                  <p v-if="items.length && slotContext(i).others.length" class="px-2 pb-1.5 pt-1 text-xs text-fog">{{ slotNote(i) }}</p>
                 </template>
                 <template #option="{ item }">
                   <MiscritImg :slug="slugOf(item.e)" class="h-9 w-9 rounded-lg shrink-0 bg-leaf object-cover" />
@@ -329,7 +441,7 @@ const roleLabel = (m: MiscritSummary) => teamRole(m).label
         <div class="mt-5" aria-live="polite">
           <p class="flex items-center gap-2.5 rounded-2xl px-4 py-3" :class="report.summary.tone">
             <StatusIcon :paths="report.summary.icon" class="h-5 w-5 self-start mt-1 sm:mt-0 sm:self-center shrink-0" />
-            <span class="flex flex-wrap items-baseline gap-x-3"><strong class="font-display text-2xl leading-tight" style="font-weight:700">{{ report.summary.head }}</strong>
+            <span class="flex flex-wrap items-baseline gap-x-3"><strong class="font-display text-2xl leading-tight font-bold">{{ report.summary.head }}</strong>
               <span class="text-sm text-ink">{{ report.summary.sub }}</span></span>
           </p>
         </div>
@@ -343,19 +455,18 @@ const roleLabel = (m: MiscritSummary) => teamRole(m).label
         <p class="mt-3 text-xs text-fog">Roles, attacks and defenses are read from base stats. Bonuses and relics move the real numbers, so treat them as a starting point. The address bar keeps this team, so you can bookmark or share it.</p>
       </section>
 
-      <!-- Rules -->
       <section aria-labelledby="rules-h" class="mt-14 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)]">
         <div>
-          <h2 id="rules-h" class="chapter font-display text-2xl sm:text-3xl" style="font-weight:700">How Platinum Arena works</h2>
+          <h2 id="rules-h" class="chapter font-display text-2xl sm:text-3xl font-bold">How Platinum Arena works</h2>
           <p class="mt-2 max-w-2xl">Platinum Arena is the game's main PvP format. A team is four miscrits worth <strong>12 rarity points</strong> or fewer, and potions are banned.</p>
-          <p class="mt-3 max-w-2xl">The cap is there to keep the meta varied. Two Legendaries cost 10 points, which leaves room for only two Commons beside them, so no small group of miscrits can dominate for good.</p>
-          <h3 class="mt-6 font-display text-xl" style="font-weight:700">Leaderboards</h3>
-          <p class="mt-1 max-w-2xl">Every arena has a leaderboard. The most points go to <strong>16/16</strong> teams: four relics on every miscrit, so nobody climbs by farming weaker teams. In Platinum Arena only, the top 200 when the arena resets on Monday get extra rewards. For picking those relics, see the <NuxtLink to="/relics" class="font-bold text-moss underline decoration-moss/40 underline-offset-4">relic and bonus guide</NuxtLink>.</p>
-          <h3 class="mt-6 font-display text-xl" style="font-weight:700">Accuracy</h3>
+          <p class="mt-3 max-w-2xl">The cap forces trade-offs: two Legendaries cost 10 points, which leaves room for only two Commons beside them.</p>
+          <h3 class="mt-6 font-display text-xl font-bold">Leaderboards</h3>
+          <p class="mt-1 max-w-2xl">Every arena has a leaderboard. The most points go to <strong>16/16</strong> teams: four relics on every miscrit, so nobody climbs by farming weaker teams. In Platinum Arena only, the top of the leaderboard gets extra rewards when the arena resets. For picking those relics, see the <NuxtLink to="/relics" class="font-bold text-moss underline decoration-moss/40 underline-offset-4">relic and bonus guide</NuxtLink>.</p>
+          <h3 class="mt-6 font-display text-xl font-bold">Accuracy</h3>
           <p class="mt-1 max-w-2xl">Accuracy is pseudo-random, not a fresh roll each turn. All accuracy is rounded to the nearest 5%, so a 40% move with a 5% accuracy debuff stays at 40%: 38% rounds back up.</p>
         </div>
         <div class="self-start rounded-3xl border border-ink/10 bg-card p-4 sm:p-5">
-          <h3 class="font-display text-xl" style="font-weight:700">Points by rarity</h3>
+          <h3 class="font-display text-xl font-bold">Points by rarity</h3>
           <ul class="mt-3 space-y-2.5">
             <li v-for="k in RARITIES" :key="k" class="flex items-center gap-3">
               <span class="w-24 shrink-0"><TeamsRarity :rarity="k" /></span>
@@ -371,14 +482,13 @@ const roleLabel = (m: MiscritSummary) => teamRole(m).label
         </div>
       </section>
 
-      <!-- Roles -->
       <section aria-labelledby="roles-h" class="mt-14">
-        <h2 id="roles-h" class="chapter font-display text-2xl sm:text-3xl" style="font-weight:700">Start with one miscrit</h2>
+        <h2 id="roles-h" class="chapter font-display text-2xl sm:text-3xl font-bold">Start with one miscrit</h2>
         <p class="mt-2 max-w-2xl">Pick the miscrit you want to build around, because you like it or because it is strong in the current meta. Its speed decides its role, and its role decides who goes with it.</p>
         <ul class="mt-4 divide-y divide-ink/10 overflow-hidden rounded-3xl border border-ink/10 bg-card">
           <li v-for="r in ROLES" :key="r.label" class="grid gap-x-6 gap-y-2 p-4 sm:grid-cols-[13rem_minmax(0,1fr)] sm:p-5">
             <div>
-              <p class="flex items-center gap-2.5"><TeamsSpeedBars :n="r.bars" /><span class="font-display text-xl" style="font-weight:700">{{ r.label }}</span></p>
+              <p class="flex items-center gap-2.5"><TeamsSpeedBars :n="r.bars" /><span class="font-display text-xl font-bold">{{ r.label }}</span></p>
               <p class="mt-0.5 text-sm text-fog">{{ r.range }}</p>
             </div>
             <p class="max-w-2xl">{{ r.pair }}</p>
@@ -387,49 +497,47 @@ const roleLabel = (m: MiscritSummary) => teamRole(m).label
         </ul>
       </section>
 
-      <!-- Speed -->
       <section aria-labelledby="speed-h" class="mt-14">
-        <h2 id="speed-h" class="chapter font-display text-2xl sm:text-3xl" style="font-weight:700">Why speed decides the role</h2>
+        <h2 id="speed-h" class="chapter font-display text-2xl sm:text-3xl font-bold">Why speed decides the role</h2>
         <p class="mt-2 max-w-2xl">At the start of a battle the faster miscrit moves first, and a tie is picked at random. From then on, the player with the slower miscrit holds <strong>speed control</strong>.</p>
         <ul class="mt-4 divide-y divide-ink/10 overflow-hidden rounded-3xl border border-ink/10 bg-card">
           <li class="grid gap-x-6 gap-y-2 p-4 sm:grid-cols-[13rem_minmax(0,1fr)] sm:p-5">
             <div>
-              <p class="font-display text-xl" style="font-weight:700">Sniping</p>
+              <p class="font-display text-xl font-bold">Sniping</p>
               <p class="mt-1 flex items-center gap-2 text-sm text-fog"><span><TeamsSpeedBars :n="5" /></span>Faster than the enemy</p>
             </div>
             <p class="max-w-2xl">While you hold speed control, swapping in a miscrit faster than the enemy's gives you a <strong>double turn</strong>: you swap, then move again before they can. Most often that is a fast elemental attacker landing a strong hit. Speed control then passes to the other player, and you can't snipe again until they use theirs.</p>
           </li>
           <li class="grid gap-x-6 gap-y-2 p-4 sm:grid-cols-[13rem_minmax(0,1fr)] sm:p-5">
             <div>
-              <p class="font-display text-xl" style="font-weight:700">Slow tanks</p>
+              <p class="font-display text-xl font-bold">Slow tanks</p>
               <p class="mt-1 flex items-center gap-2 text-sm text-fog"><span><TeamsSpeedBars :n="1" /></span>Slower than the enemy</p>
             </div>
             <p class="max-w-2xl">A tank is there to take the enemy's snipe. If it is slower than the enemy, speed control comes back to you and your sniper can go next. A tank faster than the enemy can't take it back, which is why players want red (low) speed on their tanks.</p>
           </li>
           <li class="grid gap-x-6 gap-y-2 p-4 sm:grid-cols-[13rem_minmax(0,1fr)] sm:p-5">
             <div>
-              <p class="font-display text-xl" style="font-weight:700">Status timing</p>
+              <p class="font-display text-xl font-bold">Status timing</p>
               <!-- The speed rows borrow the role bars and the game's own move icons. -->
               <p class="mt-1 flex items-center gap-2 text-sm text-fog"><span class="flex gap-1"><FallbackImg v-for="icon in ['nature_poison', 'heal']" :key="icon" :sources="moveIcon(icon)" alt="" class="h-5 w-5 shrink-0 object-contain" /></span>Poison, DoT and HoT</p>
             </div>
             <p class="max-w-2xl">DoT, HoT and Poison tick at the end of the turn of whoever holds speed control. Poison an enemy while they hold it and nothing happens until they move, so they can swap out first. A miscrit that relies on these needs speed control to get value from them.</p>
           </li>
         </ul>
-        <h3 class="mt-8 font-display text-xl" style="font-weight:700">Swapping</h3>
+        <h3 class="mt-8 font-display text-xl font-bold">Swapping</h3>
         <div class="mt-1 grid max-w-2xl gap-3">
           <p>You can swap at any time unless you are Paralyzed. A swap costs your turn, and the miscrit you swap out moves to the end of your party.</p>
           <p>Swapping out clears most status effects. Bleed, Disease and Time-Bombs stay. Swap three times in a row without attacking and you take a damage penalty that keeps growing until you attack.</p>
         </div>
       </section>
 
-      <!-- Cycles -->
       <section aria-labelledby="cycle-h" class="mt-14">
-        <h2 id="cycle-h" class="chapter font-display text-2xl sm:text-3xl" style="font-weight:700">Covering, and the two element cycles</h2>
+        <h2 id="cycle-h" class="chapter font-display text-2xl sm:text-3xl font-bold">Covering, and the two element cycles</h2>
         <p class="mt-2 max-w-2xl">Most Platinum Arena teams play around one cycle. A miscrit <strong>covers</strong> a teammate when it beats the element that beats that teammate: if the enemy sends in a threat, the cover comes in and punishes it. An attack the target is weak to deals double damage, and one it resists deals half.</p>
         <div class="mt-5 grid gap-4 sm:grid-cols-2">
           <TeamsCycle v-for="c in TEAM_CYCLES" :key="c[0]" :cycle="c" />
         </div>
-        <h3 class="mt-8 font-display text-xl" style="font-weight:700">Covering in practice</h3>
+        <h3 class="mt-8 font-display text-xl font-bold">Covering in practice</h3>
         <ul class="mt-3 space-y-3">
           <li v-for="s in stories" :key="s.a.name" class="rounded-2xl bg-card p-4">
             <!-- A label stays on the same line as the chips it introduces when the row wraps. -->
@@ -443,11 +551,10 @@ const roleLabel = (m: MiscritSummary) => teamRole(m).label
         </ul>
       </section>
 
-      <!-- Dual -->
       <section aria-labelledby="dual-h" class="mt-14">
-        <h2 id="dual-h" class="chapter font-display text-2xl sm:text-3xl" style="font-weight:700">Dual-element miscrits</h2>
+        <h2 id="dual-h" class="chapter font-display text-2xl sm:text-3xl font-bold">Dual-element miscrits</h2>
         <div class="mt-2 grid max-w-3xl gap-3">
-          <p>Simpler than it looks. A <strong>dual-element sniper</strong> just needs tanks and bruisers to cover, and maybe one miscrit to cover it back. It can often skip the cover and spend all three other slots on tanks and bruisers.</p>
+          <p>A <strong>dual-element sniper</strong> just needs tanks and bruisers to cover, and maybe one miscrit to cover it back. It can often skip the cover and spend all three other slots on tanks and bruisers.</p>
           <p>A <strong>dual-element tank or bruiser</strong> usually needs a dual-element sniper sharing both elements, or one half covered by the sniper while the other half covers the sniper.</p>
         </div>
         <ul class="mt-4 space-y-3">
@@ -458,36 +565,34 @@ const roleLabel = (m: MiscritSummary) => teamRole(m).label
         </ul>
       </section>
 
-      <!-- Balance -->
       <section aria-labelledby="balance-h" class="mt-14">
-        <h2 id="balance-h" class="chapter font-display text-2xl sm:text-3xl" style="font-weight:700">Don't win only one kind of match</h2>
+        <h2 id="balance-h" class="chapter font-display text-2xl sm:text-3xl font-bold">Cover more than one kind of match</h2>
         <p class="mt-2 max-w-2xl">A team that only works in certain match-ups loses the rest. A good Platinum Arena team has:</p>
         <!-- The balance cards borrow the stat tiles, so the words match the builder. -->
         <ul class="mt-4 divide-y divide-ink/10 overflow-hidden rounded-3xl border border-ink/10 bg-card">
           <li class="grid gap-x-6 gap-y-2 p-4 sm:grid-cols-[13rem_minmax(0,1fr)] sm:p-5">
             <p class="flex items-center gap-2.5">
               <span class="flex gap-1"><StatTile v-for="k in (['physical', 'elemental'] as const)" :key="k" icon="attack" :hue="STAT_HUE[k]" class="grid h-6 w-6 shrink-0 place-items-center rounded-md" svg-class="h-[70%] w-[70%]" /></span>
-              <span class="font-display text-xl" style="font-weight:700">Both attacks</span>
+              <span class="font-display text-xl font-bold">Both attacks</span>
             </p>
             <p class="max-w-2xl">Physical and elemental, so one kind of defense can't wall the whole team.</p>
           </li>
           <li class="grid gap-x-6 gap-y-2 p-4 sm:grid-cols-[13rem_minmax(0,1fr)] sm:p-5">
             <p class="flex items-center gap-2.5">
               <span class="flex gap-1"><StatTile v-for="k in (['physical', 'elemental'] as const)" :key="k" icon="defense" :hue="STAT_HUE[k]" class="grid h-6 w-6 shrink-0 place-items-center rounded-md" svg-class="h-[70%] w-[70%]" /></span>
-              <span class="font-display text-xl" style="font-weight:700">Both defenses</span>
+              <span class="font-display text-xl font-bold">Both defenses</span>
             </p>
             <p class="max-w-2xl">Physical and elemental, so one kind of attack can't run through it.</p>
           </li>
           <li class="grid gap-x-6 gap-y-2 p-4 sm:grid-cols-[13rem_minmax(0,1fr)] sm:p-5">
-            <div><p class="font-display text-xl" style="font-weight:700">Some utility</p><p class="text-sm text-fog">Optional</p></div>
+            <div><p class="font-display text-xl font-bold">Some utility</p><p class="text-sm text-fog">Optional</p></div>
             <p class="max-w-2xl">Tools to play around: {{ TEAM_UTILITY.map(u => u.label.toLowerCase()).join(', ') }}.</p>
           </li>
         </ul>
       </section>
 
-      <!-- Order -->
       <section aria-labelledby="order-h" class="mt-14">
-        <h2 id="order-h" class="chapter font-display text-2xl sm:text-3xl" style="font-weight:700">Put them in order like a train</h2>
+        <h2 id="order-h" class="chapter font-display text-2xl sm:text-3xl font-bold">Put them in order like a train</h2>
         <div class="mt-2 grid max-w-3xl gap-3">
           <p><strong>Slowest first.</strong> Leading with your slowest miscrit makes you more likely to have the second turn, so you start with <a href="#speed-h" class="font-bold text-moss underline decoration-moss/40 underline-offset-4">speed control</a>.</p>
           <p><strong>Then its cover.</strong> Second goes the miscrit that covers the first one's weakness, by element or by being strong where it is weak. Keep going the same way down the line.</p>
@@ -495,7 +600,7 @@ const roleLabel = (m: MiscritSummary) => teamRole(m).label
         </div>
         <div class="mt-5 rounded-3xl border border-ink/10 bg-card p-4 sm:p-5">
           <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2">
-            <h3 class="font-display text-xl" style="font-weight:700">Example: an Earth, Lightning and Wind train</h3>
+            <h3 class="font-display text-xl font-bold">Example: an Earth, Lightning and Wind train</h3>
             <button type="button" class="press rounded-xl bg-ink px-4 py-2.5 text-sm font-bold text-on" @click="loadTrain">Load into the builder</button>
           </div>
           <ol class="mt-4 grid gap-3 md:grid-cols-2 lg:grid-cols-4">
@@ -503,7 +608,7 @@ const roleLabel = (m: MiscritSummary) => teamRole(m).label
               <div class="flex items-center gap-3">
                 <TeamsFramed :entry="t.e" :size="48" />
                 <div class="min-w-0">
-                  <p class="flex items-baseline gap-1.5"><span class="font-display text-sm text-fog" style="font-weight:700">{{ t.i + 1 }}</span><span class="truncate font-display text-lg leading-tight" style="font-weight:700">{{ t.e.name }}</span></p>
+                  <p class="flex items-baseline gap-1.5"><span class="font-display text-sm text-fog font-bold">{{ t.i + 1 }}</span><span class="truncate font-display text-lg leading-tight font-bold">{{ t.e.name }}</span></p>
                   <p class="mt-0.5 flex flex-wrap items-center gap-1.5"><ElementIcon :element="t.e.m.element" class="h-4 w-4" /><TeamsRarity :rarity="t.e.m.rarity" /><span class="text-xs font-bold text-fog">{{ roleLabel(t.e.m) }}</span></p>
                 </div>
               </div>
@@ -514,8 +619,20 @@ const roleLabel = (m: MiscritSummary) => teamRole(m).label
             </li>
           </ol>
         </div>
-        <p class="mt-4 max-w-2xl text-sm text-fog">This is one way to think a team through. There are other valid and effective ways to build one.</p>
+        <p class="mt-4 max-w-2xl text-sm text-fog">This is one way to think a team through, not the only one.</p>
       </section>
     </main>
+
+    <dialog
+      ref="dialog" class="overflow-y-auto bg-card p-0 text-ink shadow-2xl" aria-labelledby="detail-name"
+      @close="onDetailClose" @keydown="onDetailKey" @click="$event.target === dialog && closeDetail($event.detail > 0)"
+    >
+      <MiscritDetail
+        v-if="detail" :key="detail.slot" :m="detail.m" :stage="detail.stage" :at="detailAt" :total="members.length"
+        :prev="memberName(-1)" :next="memberName(1)"
+        @step="stepDetail" @close="closeDetail" @announce="live = $event" @shown="shownDetail"
+      />
+      <p class="sr-only" aria-live="polite">{{ live }}</p>
+    </dialog>
   </div>
 </template>

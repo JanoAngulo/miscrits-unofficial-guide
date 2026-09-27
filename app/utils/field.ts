@@ -1,4 +1,4 @@
-import type { MiscritSummary, Move, Spot, StatKey } from '#shared/types/miscrit'
+import type { Miscrit, MiscritSummary, Move, Spot, StatKey } from '#shared/types/miscrit'
 
 export const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 export const WEEK = [0, 1, 2, 3, 4, 5, 6]
@@ -91,7 +91,7 @@ export function moveFacts(a: Move): { text: string, key?: boolean }[] {
   // Buffs raise or lower a stat by their amount; everything else deals or heals that much.
   const signed = a.type === 'Buff' || a.type === 'Bot'
   if (a.ap !== undefined) facts.push({ text: signed ? (a.ap > 0 ? `+${a.ap}` : `−${-a.ap}`) : `${a.ap} AP`, key: true })
-  if (a.true_dmg) facts.push({ text: 'Fixed damage' })
+  if (a.true_dmg) facts.push({ text: 'True damage' })
   if (a.accuracy !== undefined) facts.push({ text: `${a.accuracy}% accuracy` })
   if ((a.times ?? 0) > 1) facts.push({ text: `Hits ${a.times} times` })
   // Block moves carry turns -1, which is no turn count to show.
@@ -103,4 +103,28 @@ export function moveFacts(a: Move): { text: string, key?: boolean }[] {
   if (a.immunity) facts.push({ text: `${a.immunity}-turn immunity` })
   if (a.target === 'Self') facts.push({ text: 'On self' })
   return facts
+}
+
+// Detail dialog
+/** The key the field guide's detail fetches a miscrit under, so its prerendered payload can be read elsewhere. */
+export const miscritPayloadKey = (slug: string) => `miscrit-${slug}`
+
+/** A miscrit's full record, for a detail opened outside the field guide. A generated site has no API to call, so it
+ *  comes from the prerendered payload of the miscrit's own page; the dev server has no payloads and serves the API. */
+export async function loadMiscrit(slug: string): Promise<Miscrit | null> {
+  const payload = await loadPayload(`/miscrit/${slug}`).catch(() => null)
+  const cached = payload?.data?.[miscritPayloadKey(slug)] as Miscrit | undefined
+  return cached ?? $fetch<Miscrit>(`/api/miscrits/${slug}`).catch(() => null)
+}
+
+/** A pointer close plays a short exit; a keyboard close (detail 0, or Escape) is instant. */
+export function closeDialog(el: HTMLDialogElement, animate: boolean) {
+  if (!animate || el.classList.contains('closing')) return el.close()
+  el.classList.add('closing')
+  const done = () => {
+    el.classList.remove('closing')
+    if (el.open) el.close()
+  }
+  el.addEventListener('animationend', done, { once: true })
+  setTimeout(done, 260) // in case no animation runs
 }

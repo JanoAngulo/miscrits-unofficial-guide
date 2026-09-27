@@ -82,7 +82,7 @@ export function makeTeamBook(lines: MiscritSummary[]): TeamBook {
   }
 }
 
-// ---------------------------------------------------------------- Slot pickers
+// Slot pickers
 /** What the rest of the team asks of slot i: its neighbours, the points left, the kinds already covered. */
 export interface TeamSlotContext {
   i: number
@@ -149,7 +149,7 @@ export function teamOptions(q: string, c: TeamSlotContext, book: TeamBook): Team
   return scored.slice(0, 50)
 }
 
-// ---------------------------------------------------------------- Random builds
+// Random builds
 // Scored on the same checks the builder shows: slowest starter, no Legendary starter,
 // three cover links, both attacks, both defenses. Seven is a team that passes them all.
 const PERFECT = 7
@@ -173,14 +173,38 @@ function pickSpread(pool: MiscritSummary[]) {
   const tier = pick([...new Set(pool.map(m => m.rarity))])
   return pick(pool.filter(m => m.rarity === tier))
 }
+// Lets the page paint and run its timers between batches of tries. A message task: scheduler.yield() resumes ahead
+// of queued timers, so the busy look never showed, and setTimeout's 4ms nesting clamp halved the roll's speed.
+function yieldToMain() {
+  return new Promise<void>((r) => {
+    const ch = new MessageChannel()
+    ch.port1.onmessage = () => r()
+    ch.port2.postMessage(null)
+  })
+}
 /**
  * Fills every empty slot left to right, preferring miscrits that link to both neighbours, and keeps the best of many
- * tries. Kept slots are never changed. Random, so only ever run from a click, never while rendering.
+ * tries. Kept slots are never changed. Random, so only ever run from a click, never while rendering. The tries take
+ * a second or more on a slow phone, so they run in slices of a frame; an aborted roll resolves to null.
  */
-export function teamRoll(keep: (TeamEntry | null)[], book: TeamBook) {
+export async function teamRoll(keep: (TeamEntry | null)[], book: TeamBook, signal?: AbortSignal) {
   const fixed = keep.filter((e): e is TeamEntry => !!e)
   let best: MiscritSummary[] | null = null, bestS = -Infinity
+  // Whether a covers b depends only on their elements, and the feed has a couple of dozen, so ask each pair once.
+  const coverMemo = new Map<string, boolean>()
+  const covers = (a: MiscritSummary, b: MiscritSummary) => {
+    const k = `${a.element}|${b.element}`
+    let v = coverMemo.get(k)
+    if (v === undefined) coverMemo.set(k, v = teamCover(a, b).length > 0)
+    return v
+  }
+  let slice = performance.now()
   for (let t = 0; t < 3000 && bestS < PERFECT + 0.25; t++) {
+    if (performance.now() - slice > 12) {
+      await yieldToMain()
+      if (signal?.aborted) return null
+      slice = performance.now()
+    }
     const ms: (MiscritSummary | null)[] = keep.map(e => e && e.m)
     const used = new Set(fixed.map(e => e.m.id))
     let pts = fixed.reduce((n, e) => n + teamPoints(e.m.rarity), 0)
@@ -191,7 +215,7 @@ export function teamRoll(keep: (TeamEntry | null)[], book: TeamBook) {
       const budget = TEAM_CAP - pts - left
       let pool = book.lines.filter(m => !used.has(m.id) && teamPoints(m.rarity) <= budget && (i || m.rarity !== 'Legendary'))
       const prev = ms[i - 1], next = ms[i + 1]
-      const linked = pool.filter(m => (!prev || teamCover(m, prev).length) && (!next || teamCover(next, m).length))
+      const linked = pool.filter(m => (!prev || covers(m, prev)) && (!next || covers(next, m)))
       pool = linked.length ? linked : pool
       if (!pool.length) { dead = true; break }
       const m = pickSpread(pool)
@@ -206,7 +230,7 @@ export function teamRoll(keep: (TeamEntry | null)[], book: TeamBook) {
   return best && { ms: best, perfect: bestS >= PERFECT }
 }
 
-// ---------------------------------------------------------------- Checks
+// Checks
 export type TeamCheckState = 'ok' | 'no' | 'bad' | 'wait' | 'info'
 export interface TeamCheck { state: TeamCheckState, title: string, lines: string[] }
 interface CheckLook { cls: string, icon: string, word: string }
@@ -282,8 +306,8 @@ export function teamReport(team: string[], book: TeamBook) {
       ? { head: `${n} to go`, sub: `${TEAM_CAP - pts} points left for ${n} ${n === 1 ? 'slot' : 'slots'}.`, tone: 'bg-leaf text-fog', icon: TEAM_ICON.dash }
       : { head: 'Start with one miscrit', sub: 'Pick the miscrit you want to build around, then cover it.', tone: 'bg-leaf text-fog', icon: TEAM_ICON.dash }
   }
-  else if (!misses) summary = { head: 'Ready for Platinum Arena', sub: 'Legal, and it follows every rule of thumb in the guide.', tone: 'bg-wash-yes text-moss', icon: TEAM_ICON.check }
-  else summary = { head: 'Legal team', sub: `${misses} ${misses === 1 ? 'thing' : 'things'} to look at below. The guide is a way of thinking, not a law.`, tone: 'bg-wash-some text-some', icon: TEAM_ICON.warn }
+  else if (!misses) summary = { head: 'Ready for Platinum Arena', sub: 'Legal, and it follows every rule of thumb below.', tone: 'bg-wash-yes text-moss', icon: TEAM_ICON.check }
+  else summary = { head: 'Legal team', sub: `${misses} ${misses === 1 ? 'thing' : 'things'} to look at below. A legal team can still skip them.`, tone: 'bg-wash-some text-some', icon: TEAM_ICON.warn }
 
   return { es, picked, pts, over, checks, summary }
 }

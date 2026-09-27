@@ -30,7 +30,7 @@ const label = computed(() => [name.value, elementName.value, props.m.rarity, zon
       <div class="min-w-0">
         <div class="flex min-w-0 items-center gap-1.5">
           <span class="inline-flex shrink-0 items-center" :title="elementName"><ElementIcon :element="m.element" class="h-5 w-5" /><span class="sr-only">{{ elementName }}</span></span>
-          <h2 class="truncate font-display text-xl leading-tight" style="font-weight:700">{{ name }}</h2>
+          <h2 class="truncate font-display text-xl leading-tight font-bold">{{ name }}</h2>
         </div>
         <div class="mt-1 text-xs"><RarityBadge :rarity="m.rarity" /></div>
       </div>

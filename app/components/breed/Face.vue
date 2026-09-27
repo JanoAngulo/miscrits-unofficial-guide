@@ -13,8 +13,8 @@ const slug = computed(() => {
 
 <template>
   <span
-    v-if="!m" class="grid shrink-0 place-items-center bg-leaf font-display text-fog"
-    :class="size === 'lg' ? 'h-12 w-12 rounded-2xl text-xl' : 'h-8 w-8 rounded-xl text-sm'" style="font-weight:700" aria-hidden="true"
+    v-if="!m" class="grid shrink-0 place-items-center bg-leaf font-display font-bold text-fog"
+    :class="size === 'lg' ? 'h-12 w-12 rounded-2xl text-xl' : 'h-8 w-8 rounded-xl text-sm'" aria-hidden="true"
   >{{ slot + 1 }}</span>
   <span
     v-else class="grid shrink-0 p-[3px]" :class="size === 'lg' ? 'h-12 w-12 rounded-2xl' : 'h-8 w-8 rounded-xl'"

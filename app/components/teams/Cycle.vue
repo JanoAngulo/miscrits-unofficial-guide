@@ -32,7 +32,7 @@ const arrows = computed(() => [[0, 1], [1, 2], [2, 0]].map(([a, b]) => {
           class="grid h-14 w-14 place-items-center rounded-full shadow-[0_1px_2px_rgb(var(--shade)/.1)]"
           :style="{ background: `color-mix(in srgb, ${TEAM_ELEMENT_HUE[el]} 16%, var(--card))`, boxShadow: `inset 0 0 0 2px ${TEAM_ELEMENT_HUE[el]}` }"
         ><ElementIcon :element="el" class="h-10 w-10" /></span>
-        <span class="mt-1 font-display text-base" style="font-weight:600">{{ el }}</span>
+        <span class="mt-1 font-display text-base">{{ el }}</span>
       </div>
     </div>
     <figcaption class="mt-3 flex flex-wrap justify-center gap-x-3 gap-y-1 text-sm">

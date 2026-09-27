@@ -5,7 +5,7 @@ import type { Move } from '../types/miscrit'
 export interface TeamUtility { k: string, label: string, types: string[], re?: RegExp }
 export const TEAM_UTILITY: TeamUtility[] = [
   { k: 'cc', label: 'Crowd control', types: ['Confuse', 'Sleep', 'Paralyze'] },
-  { k: 'antiheal', label: 'Antiheal', types: ['Antiheal'], re: /anti-?heal/i },
+  { k: 'antiheal', label: 'Anti-heal', types: ['Antiheal'], re: /anti-?heal/i },
   { k: 'switch', label: 'Switch curse', types: ['SwitchCurse'], re: /switch curse/i },
   { k: 'bleed', label: 'Bleed', types: ['Bleed'], re: /\bbleed/i },
   { k: 'dot', label: 'Damage over time', types: ['Dot', 'TimeBomb'] },
