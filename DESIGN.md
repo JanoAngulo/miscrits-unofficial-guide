@@ -325,7 +325,7 @@ Each page is a chapter of the guidebook with its own colour: Field guide teal, R
 ### Named Rules
 **The Yes/No Rule.** Moss means present, Rust means absent. Neither is used for anything else, and neither appears without a word, icon or pattern backing it.
 
-**The Underlined Link Exception.** One use of Moss sits outside yes/no, and it is documented rather than hidden: an in-guide text link or text action ("relic and bonus guide", "Load example") is bold Moss with a 40%-Moss underline at 4px offset. The underline is what separates it from a "yes"; Moss text without an underline always means present. It ships this way on relics.html, teams.html and breed.html. Extend it to nothing else: no Moss buttons, fills, icons or headings.
+**The Underlined Link Exception.** One use of Moss sits outside yes/no, and it is documented rather than hidden: an in-guide text link or text action ("relic and bonus guide", "Load example") is bold Moss with a 40%-Moss underline at 4px offset. The underline is what separates it from a "yes"; Moss text without an underline always means present. It ships this way on the relics, teams and breed pages. Extend it to nothing else: no Moss buttons, fills, icons or headings.
 
 **The Hatch Means No Rule.** A hatch always marks a "no": a missing day, a score that can't roll, a broken cover link, points over the cap. Anything merely empty or unspent stays flat (Hatch Light with a Hatch Edge hairline, no stripe).
 

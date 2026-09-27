@@ -1,5 +1,4 @@
 import { existsSync } from 'node:fs'
-import { fileURLToPath } from 'node:url'
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineNuxtConfig({
@@ -33,14 +32,18 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      // build-data downloads the game's 50px avatars and full art into assets/, which is gitignored. Where they are
-      // missing (a fresh clone, the hosted build) images go straight to the game's CDN instead of 404ing first.
-      localImages: existsSync('assets/avatars') && existsSync('assets/art'),
+      // build-data downloads the game's 50px avatars and full art into public/assets/, which is gitignored. Where they
+      // are missing (a fresh clone, the hosted build) images go straight to the game's CDN instead of 404ing first.
+      localImages: existsSync('public/assets/avatars') && existsSync('public/assets/art'),
     },
   },
 
-  // assets/ stays at the repo root while the static pages still read it; it moves to public/ when they are retired.
-  nitro: {
-    publicAssets: [{ dir: fileURLToPath(new URL('./assets', import.meta.url)), baseURL: '/assets', maxAge: 60 * 60 * 24 * 7 }],
+  // Links to the old static pages. A server redirect keeps the fragment, so teams.html#team=... still loads its team.
+  // index.html needs no rule: it is the home page's own file, and index.vue turns its old #<slug> into that miscrit's page.
+  routeRules: {
+    '/relics.html': { redirect: { to: '/relics', statusCode: 301 } },
+    '/catch.html': { redirect: { to: '/catch', statusCode: 301 } },
+    '/breed.html': { redirect: { to: '/breed', statusCode: 301 } },
+    '/teams.html': { redirect: { to: '/teams', statusCode: 301 } },
   },
 })

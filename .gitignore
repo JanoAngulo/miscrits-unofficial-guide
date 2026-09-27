@@ -1,7 +1,7 @@
-# Re-downloaded by build.py; the pages fall back to the game's CDN without them.
+# Re-downloaded by `npm run data`; the site falls back to the game's CDN without them.
 # avatars-hd, brand, elements and abilities stay in the repo.
-assets/avatars/
-assets/art/
+public/assets/avatars/
+public/assets/art/
 __pycache__/
 # The Real-ESRGAN and libwebp builds upscale.py downloads.
 tools/

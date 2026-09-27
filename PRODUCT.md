@@ -31,17 +31,17 @@ What the official Miscripedia does not do well:
 
 ## Operating Context
 
-Used alongside the game while hunting. Opened straight from disk today; may be
-hosted later (for example GitHub Pages). Unofficial fan tool, not affiliated
-with the game.
+Used alongside the game while hunting. A static site on Vercel; every miscrit
+has its own shareable page. Unofficial fan tool, not affiliated with the game.
 
 ## Capabilities and Constraints
 
-- One static page (`index.html`), no server, no bundler; works from `file://`,
-  so data loads via a `<script>` tag (`data.js`), not `fetch()`.
+- Nuxt, generated to static files: the field guide, one prerendered page per
+  miscrit, and the teams, relics, breed and catch guides.
 - Data is the game's own feed (`worldofmiscrits.com/miscrits.json`) kept
-  verbatim in `data/miscrits.json`; `build.py` (stdlib Python) regenerates
-  `data.js` and downloads art. Images fall back to the game's CDN.
+  verbatim in `data/miscrits.json`; `scripts/build-data.ts` rebuilds the site's
+  data from it before every build and downloads art. Images fall back to the
+  game's CDN.
 - Feed rules: an empty weekday list means every day; 17 miscrits are not in the
   wild; stats are words (Weak < Moderate < Strong < Max < Elite).
 - Never show a value the feed does not give (no assumed accuracy).

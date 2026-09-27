@@ -7,8 +7,7 @@
  * The feed is https://www.worldofmiscrits.com/miscrits.json - the file the
  * official Miscripedia page renders. It is kept verbatim in data/miscrits.json so
  * a rebuild never needs the network, and slimmed into server/data/miscrits.json
- * for the Nuxt app's detail pages, shared/data/list.json for its lists (no moves
- * or lore), and data.js for the static pages until they are retired.
+ * for the detail pages and shared/data/list.json for the lists (no moves or lore).
  *
  * Images are only downloaded when missing, so re-running is cheap. The site falls
  * back to the CDN for any image that is not on disk.
@@ -25,8 +24,7 @@ const FEED_URL = 'https://www.worldofmiscrits.com/miscrits.json'
 const FEED = join(ROOT, 'data', 'miscrits.json')
 const OUT = join(ROOT, 'server', 'data', 'miscrits.json')
 const LIST = join(ROOT, 'shared', 'data', 'list.json')
-const DATA_JS = join(ROOT, 'data.js')
-const ASSETS = join(ROOT, 'assets')
+const ASSETS = join(ROOT, 'public', 'assets')
 const AVATAR_URL = (s: string) => `https://cdn.worldofmiscrits.com/avatars/${s}_avatar.png`
 const ART_URL = (s: string) => `https://cdn.worldofmiscrits.com/miscrits/${s}_back.png`
 // The site has no Misc element icon; the page draws a plain dot for that element.
@@ -132,7 +130,6 @@ async function main() {
     ({ id, names, slugs, element, rarity, stats, spots, util: teamUtilityKeys(moves) }))
   mkdirSync(dirname(LIST), { recursive: true })
   writeFileSync(LIST, JSON.stringify(list))
-  writeFileSync(DATA_JS, `window.MISCRITS = ${json};\n`)
   console.log(`data: ${entries.length} miscrits`)
   if (!offline) await fetchImages(entries)
 }
