@@ -1,0 +1,102 @@
+/* tailwindcss/index.css, split so chrome.css can sit in the utilities layer before the generated utilities. */
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "./chrome.css" layer(utilities);
+@import "./field.css" layer(utilities);
+@import "./relics.css" layer(utilities);
+@import "./breed.css" layer(utilities);
+@import "./catch.css" layer(utilities);
+@import "./teams.css" layer(utilities);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+/* Colours are theme tokens, so opacity modifiers like border-ink/10 follow the theme. */
+@theme inline {
+  --font-display: Fredoka, system-ui, sans-serif;
+  --font-body: "Atkinson Hyperlegible", system-ui, sans-serif;
+  --color-paper: var(--paper);
+  --color-card: var(--card);
+  --color-leaf: var(--leaf);
+  --color-ink: var(--ink);
+  --color-on: var(--on);
+  --color-moss: var(--moss);
+  --color-fog: var(--fog);
+  --color-line: var(--line);
+  --color-rust: var(--rust);
+  --color-wash-yes: var(--wash-yes);
+  --color-wash-some: var(--wash-some);
+  --color-some: var(--some);
+  --color-wash-no: var(--wash-no);
+  /* Text on the game's fixed fills (tier colours, a white rolled stat) stays dark in both themes. */
+  --color-ink-fixed: #1B2E2A;
+  /* Edges and glyphs on the rolled red / white / green stat, fixed like the fills. */
+  --color-q-green-deep: #2F6E16;
+  --color-q-red-edge: #8F2620;
+  --color-fog-fixed: #4F605A;
+}
+
+@layer base {
+  /* Keeps Tailwind v3 defaults the layouts rely on: a faint themed hairline for bare borders, a pointer on buttons. */
+  *, ::after, ::before, ::backdrop, ::file-selector-button { border-color: color-mix(in srgb, var(--ink) 12%, transparent); }
+  button:not(:disabled), [role="button"]:not(:disabled) { cursor: pointer; }
+  /* v4's preflight gives fields font: inherit, which would carry the body's tabular numerals into them and buttons; v3 did not. */
+  input, select, textarea, button { font-variant-numeric: normal; }
+
+  :root {
+    color-scheme: light;
+    /* Chapter colours: each page is a chapter of the guidebook, tabbed in its own colour. Text values clear 4.5:1 on
+       paper and card in both themes; the fills mark the nav tabs only. Moss and rust stay out: they mean yes and no. */
+    --ch-field: #1C6A6E; --ch-relics: #8A5E00; --ch-catch: #1D628A; --ch-teams: #6E2E96; --ch-breed: #A12F63;
+    --chf-field: #2A9D9F; --chf-relics: #E0A21B; --chf-catch: #2E8BC0; --chf-teams: #9B4DCA; --chf-breed: #E0508F;
+    --chapter: var(--ch-field);
+    --paper: #EEF3EF; --card: #FFFFFF; --leaf: #E1EAE4; --ink: #1B2E2A; --on: #FFFFFF; --moss: #3E6B57;
+    /* fog clears 4.5:1 on leaf; line clears 3:1 against paper, leaf and card for control edges. */
+    --fog: #4F605A; --line: #78867F; --rust: #A0422A; --rust-hatch: #C7735D;
+    --wash-yes: #DDEDE3; --wash-some: #E4ECF4; --some: #2B587A; --wash-no: #F7E4DE;
+    --hatch-light: #F7F9F8; --hatch-dark: #E3E9E6; --hatch-edge: #C9D3CE;
+    --focus: #2E8BC0; --select: #CFE3D7; --scroll: #A9BAB3; --count-on-ink: #B8C9C2; --warn-on-ink: #F2B8A8;
+    --shade: 27 46 42; --scrim: rgb(27 46 42 / .55);
+    --r-common-text: #4E5A56; --r-common-wash: #EEF1EF; --r-rare-text: #1D628A; --r-rare-wash: #E3F1F9;
+    --r-epic-text: #237140; --r-epic-wash: #E4F4E9; --r-exotic-text: #6E2E96; --r-exotic-wash: #F2E8F8;
+    --r-legendary-text: #8A5E00; --r-legendary-wash: #FCF1D6;
+    /* Stat colours: the fills are the game's and never change; the text and unfilled tints follow the theme. */
+    --s-core: #2F6E16; --s-speed: #8A5E00; --s-physical: #1D4F94; --s-elemental: #9E1F24;
+    --s-core-empty: #DDEFD3; --s-speed-empty: #FCEDC8; --s-physical-empty: #D9E5F5; --s-elemental-empty: #F7DADB;
+    --q-green-text: #2F6E16;
+    /* The game's stat colours for a rolled stat. Red and green clear 3:1 on white; white takes a line edge. */
+    --q-red: #CC3B32; --q-green: #3D9A2E;
+    --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234F605A' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  /* Night trail: near-black pine ground, pine surfaces a step up. Every text pair still clears 4.5:1, edges 3:1. */
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --ch-field: #7FD0CB; --ch-relics: #F0C766; --ch-catch: #8CCBF0; --ch-teams: #D6ACF2; --ch-breed: #F4A3C4;
+    --paper: #070E0C; --card: #0F1A17; --leaf: #172622; --ink: #E2ECE6; --on: #070E0C; --moss: #7FC49F;
+    --fog: #9FB3AA; --line: #5F766D; --rust: #F0927B; --rust-hatch: #B35F4B;
+    --wash-yes: #11291E; --wash-some: #0E1F2C; --some: #9CC6E8; --wash-no: #2A1611;
+    --hatch-light: #111D1A; --hatch-dark: #1B2B26; --hatch-edge: #2C3F37;
+    --focus: #5FB4E6; --select: #264436; --scroll: #344943; --count-on-ink: #4A6159; --warn-on-ink: #9A3A24;
+    --shade: 0 0 0; --scrim: rgb(0 0 0 / .72);
+    --r-common-text: #B7C3BE; --r-common-wash: #18241F; --r-rare-text: #8CCBF0; --r-rare-wash: #0B2333;
+    --r-epic-text: #86D6A0; --r-epic-wash: #0D2819; --r-exotic-text: #D6ACF2; --r-exotic-wash: #241634;
+    --r-legendary-text: #F0C766; --r-legendary-wash: #271E07;
+    --s-core: #8FD66A; --s-speed: #F5C84E; --s-physical: #8DB6F2; --s-elemental: #F58F93;
+    --s-core-empty: #16280F; --s-speed-empty: #2C240B; --s-physical-empty: #121E33; --s-elemental-empty: #301114;
+    --q-green-text: #8FD66A;
+    --chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239FB3AA' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  }
+  /* Each page is a chapter; the layout names it on <html> from the page's meta. */
+  :root[data-chapter="relics"] { --chapter: var(--ch-relics); }
+  :root[data-chapter="catch"] { --chapter: var(--ch-catch); }
+  :root[data-chapter="teams"] { --chapter: var(--ch-teams); }
+  :root[data-chapter="breed"] { --chapter: var(--ch-breed); }
+
+  /* The site bar sticks (and on the field guide the filters under it); --stick-h is their height, set by the layout,
+     so focus and jumps land clear of them. */
+  html { scroll-padding-top: calc(var(--stick-h, 0px) + 1rem); }
+  body { background: var(--paper); color: var(--ink); caret-color: var(--moss); font-variant-numeric: tabular-nums; }
+  ::selection { background: var(--select); color: var(--ink); }
+  * { scrollbar-color: var(--scroll) transparent; }
+}

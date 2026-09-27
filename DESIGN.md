@@ -7,7 +7,7 @@ colors:
   pine-ink: "#1B2E2A"
   moss: "#3E6B57"
   fog: "#4F605A"
-  trail-line: "#83928C"
+  trail-line: "#78867F"
   rust: "#A0422A"
   rust-hatch: "#C7735D"
   white: "#FFFFFF"
@@ -28,6 +28,7 @@ colors:
   stat-elemental-empty: "#F7DADB"
   quality-red: "#CC3B32"
   quality-red-edge: "#8F2620"
+  fog-fixed: "#4F605A"
   quality-green: "#3D9A2E"
   quality-green-deep: "#2F6E16"
   hatch-light: "#F7F9F8"
@@ -314,7 +315,7 @@ A cool green-grey notebook palette with one moss accent, set against saturated c
 - **Leaf Wash** (`leaf-wash`): recessed panels: day-limited place rows, avatar wells, evolution tiles, hover fills on icon buttons.
 - **Pine Ink** (`pine-ink`): all primary text, selected chips, the primary button, the dialog backdrop (55% alpha).
 - **Fog** (`fog`): secondary text such as counts, evolution lines, stat labels and move metadata. Sized to clear 4.5:1 even on Leaf Wash.
-- **Trail Line** (`trail-line`): control edges for search, selects and chips. Clears 3:1 against white.
+- **Trail Line** (`trail-line`): control edges for search, selects and chips. Clears 3:1 against Field Paper, Leaf Wash and white.
 - **Hatch** (`hatch-light`, `hatch-dark`, `hatch-edge`): the 135° stripe and hairline edge on missing days.
 - **Selection Mint** (`selection-mint`): text selection.
 - **Count on Ink** (`count-on-ink`): the count inside a selected (Pine Ink) chip.
@@ -325,11 +326,11 @@ Each page is a chapter of the guidebook with its own colour: Field guide teal, R
 ### Named Rules
 **The Yes/No Rule.** Moss means present, Rust means absent. Neither is used for anything else, and neither appears without a word, icon or pattern backing it.
 
-**The Underlined Link Exception.** One use of Moss sits outside yes/no, and it is documented rather than hidden: an in-guide text link or text action ("relic and bonus guide", "Load example") is bold Moss with a 40%-Moss underline at 4px offset. The underline is what separates it from a "yes"; Moss text without an underline always means present. It ships this way on relics.html, teams.html and breed.html. Extend it to nothing else: no Moss buttons, fills, icons or headings.
+**The Underlined Link Exception.** One use of Moss sits outside yes/no, and it is documented rather than hidden: an in-guide text link or text action ("relic and bonus guide", "Load example") is bold Moss with a 40%-Moss underline at 4px offset. The underline is what separates it from a "yes"; Moss text without an underline always means present. It ships this way on the relics, teams and breed pages. Extend it to nothing else: no Moss buttons, fills, icons or headings.
 
 **The Hatch Means No Rule.** A hatch always marks a "no": a missing day, a score that can't roll, a broken cover link, points over the cap. Anything merely empty or unspent stays flat (Hatch Light with a Hatch Edge hairline, no stripe).
 
-**The Contrast Floor Rule.** Fog and Trail Line are sized to their ratios (4.5:1 text on Leaf Wash, 3:1 edges on white). Never lighten them or fade them with opacity; use a different token if you need less weight.
+**The Contrast Floor Rule.** Fog and Trail Line are sized to their ratios (4.5:1 text on Leaf Wash, 3:1 edges on paper, Leaf Wash and white). Never lighten them or fade them with opacity; use a different token if you need less weight.
 
 **The Frame And Word Rule.** Rarity is shown by the avatar frame colour and the badge word together, so it never relies on colour alone. No tier pips or collectible-card ornaments: the owner rejected diamonds as reading like trading cards.
 
@@ -353,7 +354,7 @@ Tokens are CSS variables on `:root` (light) and `:root[data-theme="dark"]`. Tail
 | Moss (yes) | `#3E6B57` | `#7FC49F` |
 | Rust (no) | `#A0422A` | `#F0927B` |
 | Fog | `#4F605A` | `#9FB3AA` |
-| Trail Line | `#83928C` | `#5F766D` |
+| Trail Line | `#78867F` | `#5F766D` |
 | Focus Sky | `#2E8BC0` | `#5FB4E6` |
 
 Washes, hatch, rarity text/wash pairs, stat value text and unfilled stat tints all have dark counterparts in the same block. Every text pair clears 4.5:1 and every control edge 3:1 in both themes (dark minimums: Trail Line 3.2:1 on Leaf, Rust 6.8:1 on Leaf).
@@ -383,11 +384,11 @@ Washes, hatch, rarity text/wash pairs, stat value text and unfilled stat tints a
 
 ## Layout
 
-The page is a centred column (max 1280px) with 16px gutters on phones and 24px from 640px up. Every page opens with the same site bar, its own band above the page header with a hairline under it, sticky at the top on Field Paper at 95% with a backdrop blur (the field guide's filter header sticks under it from 768px up; the page measures the bar into `--bar-h` and the stuck height into `--stick-h`, which `scroll-padding-top` uses so focus never lands under it): the game's own Miscrits logo at 36px tall linking home (from `assets/brand/`, the game site as fallback), the chapter tabs, and the theme switch. Below 768px the logo and switch share the top row and the tabs fill a second row as five equal 44px cells, each the chapter dot over a short name (Guide, Relics, Catch, Teams, Breed), the current one a 12px-radius Pine Ink cell. From 768px it is one row on a three-column grid, logo left, switch right and the tabs centred on the page, as pills with the short names, and from 1024px the full names (Field guide, Relics and bonus, Catching, Teams and PvP, Breeding). Below 1024px the switch shows its sun and moon only, the words kept for screen readers. Every page closes with the same quiet footer over a hairline: the official Miscripedia's book icon at 40px tall (from `assets/brand/`, the game site as fallback), then Fog body-small text saying Miscripedia (Fredoka 700, ink) is an unofficial fan guide, not affiliated with the Miscrits game, and crediting the data and art to worldofmiscrits.com as an underlined Moss link. It is what keeps the game's logo in the site bar from reading as the official site. The site bar is the page's one banner landmark; the page header under it is a plain block. On the field guide that header is sticky from 768px up and holds search, four selects (location, element with a Mixed group, findable day, minimum stat; from 1024px up 160px for day, 176px for location, element and stat), and the rarity chips with a live result count.
+The page is a centred column (max 1280px) with 16px gutters on phones and 24px from 640px up. Every page opens with the same site bar, its own band above the page header with a hairline under it, sticky at the top on Field Paper at 95% with a backdrop blur (the field guide's filter header sticks under it from 768px wide and 700px tall; the page measures the bar into `--bar-h` and the stuck height into `--stick-h`, which `scroll-padding-top` uses so focus never lands under it): the game's own Miscrits logo linking home (28px tall below 768px, 36px from 768px) (from `assets/brand/`, the game site as fallback), the chapter tabs, and the theme switch. Below 480px the logo and switch share the top row and the tabs fill a second row as five equal 44px cells, each the chapter dot over a short name (Guide, Relics, Catch, Teams, Breed), the current one a 12px-radius Pine Ink cell. From 480px it is one row with the same cells between the logo and the switch. From 768px it is one row on a three-column grid, logo left, switch right and the tabs centred on the page, as pills with the short names, and from 1024px the full names (Field guide, Relics and bonus, Catching, Teams and PvP, Breeding). Below 1024px the switch shows its sun and moon only, the words kept for screen readers. Every page closes with the same quiet footer over a hairline: the official Miscripedia's book icon at 40px tall (from `assets/brand/`, the game site as fallback), then Fog body-small text saying Miscripedia (Fredoka 700, ink) is an unofficial fan guide, not affiliated with the Miscrits game, and crediting the data and art to worldofmiscrits.com as an underlined Moss link. It is what keeps the game's logo in the site bar from reading as the official site. The site bar is the page's one banner landmark; the page header under it is a plain block. On the field guide that header is sticky from 768px wide and 700px tall and holds search, four selects (location, element with a Mixed group, findable day, minimum stat; from 1024px up 160px for day, 176px for location, element and stat), and the rarity chips with a live result count.
 
 The grid runs 1, 2, 3 and 4 columns at 0 / 640 / 1024 / 1280px with a 16px gap. Cards stretch to equal row height. The location line is pinned to the card bottom, so rows align even when evolution lines differ.
 
-The detail is a centred dialog up to 896px wide and 92vh tall, with a sticky header (name, rarity, the position in the filtered list, previous/next, copy link from 640px up, close). A full-width today answer opens the body. From 768px up the body then splits into art (with an element label) and evolutions on the left, and Lore, Where to find and Stats on the right, with Moves full width below in two columns. Below 640px the dialog becomes a full-width bottom sheet with top-only 24px corners, and the art stage drops to 4:3. The dialog's width and radius live in CSS, not Tailwind classes, so the phone sheet rule can override them.
+The detail is a centred dialog up to 896px wide and 92dvh tall, with a sticky header (name, rarity, the position in the filtered list, previous/next, copy link from 640px up, close). A full-width today answer opens the body. From 768px up the body then splits into art (with an element label) and evolutions on the left, and Lore, Where to find and Stats on the right, with Moves full width below in two columns. Below 640px the dialog becomes a full-width bottom sheet with top-only 24px corners, and the art stage drops to 4:3. The dialog's width and radius live in CSS, not Tailwind classes, so the phone sheet rule can override them.
 
 Spacing sits on a 4px base. Tight groups use 8px, card and panel internals 12–16px, dialog padding 20px, and sections 24px apart.
 
@@ -477,10 +478,10 @@ Ratings are colour-coded by tier, the owner's choice: A to S+ `tier-s`, B to B+ 
 The reader is three radio groups on one white sheet: rarity (pills with the ring dot), health (full or 1%; a health the rarity has no rates for is disabled with a dashed edge and a help line), and the catch rate. Each rate key is a 56px tile with the rate on top and the rating it means below in Fog, so the answer can be read straight off the key. The checked key takes Pine Ink.
 
 ### Verdict Tile (catching guide)
-The rating in Fredoka 700, Pine Ink on its tier fill, as a 96px tile with 20px corners and the faint ink edge (a range that crosses tiers falls back to Pine Ink with on-ink text). It has no rarity frame: the rarity badge beside it already names the rarity. It sits beside the rarity badge, the rate and "Score n of 12". A reading that covers several ratings shows the range ("A–S+") and a Leaf Wash panel that says how to narrow it, with a primary button that switches health.
+The rating in Fredoka 700, Pine Ink on its tier fill, as a 96px tile with 20px corners and the faint ink edge (a range that crosses tiers falls back to Pine Ink with on-ink text). It has no rarity frame: the rarity badge beside it already names the rarity. It sits beside the rarity badge, the rate and "Score n of 12". A reading that covers several ratings shows the range, stacked as "A / to / S+" and a Leaf Wash panel that says how to narrow it, with a primary button that switches health.
 
 ### Rating Chart (catching guide)
-Thirteen bars, F- to S+, for one rarity, computed from the stat odds and captioned as computed. Bars take their rating's tier fill with a faint ink edge; the bars for the current reading get a 2px white gap and 2px Pine Ink ring and carry a direct % label. The caption names the rarity. A score the rarity cannot roll is a short hatched stub, and its axis letter is struck through. Hover (fine pointer) shows an ink tooltip; each bar has a screen-reader line.
+Thirteen bars, F- to S+, for one rarity, computed from the stat odds and captioned as computed. Bars take their rating's tier fill with a faint ink edge; the bars for the current reading get a 2px white gap and 2px Pine Ink ring and carry a direct % label. The caption names the rarity. A score the rarity cannot roll is a short hatched stub, and its axis letter is struck through. Hover (fine pointer) shows an ink tooltip; each bar has a screen-reader line. Under the axis, a visible list gives each rating's chance, best first, the current reading on ink, as on the breeding guide, so touch and keyboard readers see every value.
 
 ### Points Strip (team builder)
 The 12-point budget, one cell per point, in a single row with 4px gaps. Cells are 24px tall with 6px corners.

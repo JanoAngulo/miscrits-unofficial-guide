@@ -1,4 +1,4 @@
-"""Upscale the 50px avatars 4x into assets/avatars-hd/.
+"""Upscale the 50px avatars 4x into public/assets/avatars-hd/.
 
     python upscale.py          # upscale every avatar without an HD copy
     python upscale.py --all    # redo them all
@@ -7,7 +7,7 @@ The game only publishes 50x50 avatars, which blur once a card draws them at
 58px on a 2x screen. Real-ESRGAN's anime model (realesrgan-x4plus-anime) turns
 each into 200x200 with the line art kept crisp, and cwebp stores that as a
 lossy WebP at quality 80: about 7KB, a sixth of the lossless file, with no loss
-you can see at card size. Run it after build.py has fetched new avatars; the
+you can see at card size. Run it after `npm run data` has fetched new avatars; the
 page uses an HD avatar when there is one and the 50px file, then the CDN, when
 there is not.
 
@@ -28,8 +28,8 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-AVATARS = HERE / "assets" / "avatars"
-HD = HERE / "assets" / "avatars-hd"
+AVATARS = HERE / "public" / "assets" / "avatars"
+HD = HERE / "public" / "assets" / "avatars-hd"
 EXT = ".exe" if sys.platform == "win32" else ""
 TOOL = HERE / "tools" / "realesrgan"
 EXE = TOOL / f"realesrgan-ncnn-vulkan{EXT}"
@@ -75,7 +75,7 @@ def encode(job: tuple[Path, Path, Path]) -> bool:
 
 def main() -> int:
     if not AVATARS.is_dir():
-        print("no assets/avatars/ - run build.py first")
+        print("no public/assets/avatars/ - run `npm run data` first")
         return 1
     if not EXE.exists():
         fetch(RELEASE.format(PLATFORM), TOOL)
@@ -88,7 +88,7 @@ def main() -> int:
     if not todo:
         return 0
     # The upscaler takes a folder, so the ones still to do are copied into one;
-    # its lossless PNGs are then encoded into assets/avatars-hd/.
+    # its lossless PNGs are then encoded into public/assets/avatars-hd/.
     with tempfile.TemporaryDirectory() as tmp:
         src, big = Path(tmp, "in"), Path(tmp, "out")
         src.mkdir(), big.mkdir()

@@ -1,0 +1,63 @@
+/* The teams page. Imported like chrome.css, ahead of Tailwind's utilities. Scoped under .teams-page with :where(),
+   so the names stay the page's own without outweighing a utility. */
+@media (hover: hover) and (pointer: fine) {
+  :where(.teams-page) .ghost:hover { background: var(--leaf); }
+}
+:where(.teams-page) .icon-btn:disabled { opacity: .3; cursor: default; }
+
+/* A team member's avatar opens its detail. It carries a corner badge at rest, since a touch has no hover to find it
+   by. On a fine pointer the avatar lifts on a shadow and the badge takes ink; keyboard focus inks the badge too. */
+:where(.teams-page) .member-badge { box-shadow: 0 0 0 1px var(--line), 0 1px 3px rgb(var(--shade) / .18); }
+@media (hover: hover) and (pointer: fine) {
+  :where(.teams-page) .member:hover .member-frame { transform: translateY(-1px); box-shadow: 0 6px 14px -6px rgb(var(--shade) / .35); }
+  :where(.teams-page) .member:hover .member-badge { background: var(--ink); color: var(--on); box-shadow: none; }
+}
+:where(.teams-page) .member:focus-visible .member-badge { background: var(--ink); color: var(--on); box-shadow: none; }
+
+/* The points strip: one cell per point, filled in the rarity colour of the miscrit spending it. */
+:where(.teams-page) .cell { height: 1.5rem; border-radius: 6px; background: var(--hatch-light); box-shadow: inset 0 0 0 1px var(--hatch-edge); }
+/* Over the cap: Rust, hatched, so it reads without colour too. */
+:where(.teams-page) .cell-over { background: repeating-linear-gradient(135deg, var(--rust) 0 3px, var(--rust-hatch) 3px 5px); box-shadow: none; }
+/* A link in the chain that does not hold: the same hatch the field guide uses for a missing day. */
+:where(.teams-page) .link-off {
+  background: repeating-linear-gradient(135deg, var(--hatch-light) 0 3px, var(--hatch-dark) 3px 5px);
+  box-shadow: inset 0 0 0 1.5px var(--line);
+}
+#slots input { text-overflow: ellipsis; }
+/* A slot's picker list is wider than its field and hangs from the field's left edge; from 768px the right-hand
+   column's hangs from its right edge instead. The page nudges it back on screen where it would still spill. */
+#slots .combo-list { right: auto; width: min(18rem, calc(100vw - 3rem)); }
+@media (min-width: 48rem) {
+  #slots > li:nth-child(even) .combo-list { left: auto; right: 0; }
+}
+
+/* A roll in progress: the other button reads as unavailable, and the slots being filled dim until it lands. */
+:where(.teams-page) .roll-btn[aria-disabled="true"]:not([aria-busy="true"]) { opacity: .4; cursor: default; }
+:where(.teams-page) .roll-btn[aria-busy="true"] { cursor: progress; }
+:where(.teams-page) .roll-btn[aria-disabled="true"]:active { transform: none; }
+:where(.teams-page) .slot-rolling { opacity: .6; }
+/* A member's detail is loading. */
+:where(.teams-page) .member-loading { opacity: .6; cursor: progress; }
+
+@media (prefers-reduced-motion: no-preference) {
+  /* The slots being filled breathe. */
+  :where(.teams-page) .slot-rolling { animation: slot-breathe 900ms ease-in-out infinite alternate; }
+  @keyframes slot-breathe { from { opacity: 1; } to { opacity: .45; } }
+  /* The die tumbles a quarter turn at a time, settling on each face, the way a thrown one does. */
+  :where(.teams-page) .roll-die { animation: die-tumble 1.2s var(--ease-out) infinite; }
+  @keyframes die-tumble {
+    0% { transform: rotate(0); } 25% { transform: rotate(90deg); } 50% { transform: rotate(180deg); }
+    75% { transform: rotate(270deg); } 100% { transform: rotate(360deg); }
+  }
+  /* The new team settles in left to right, the order it battles in. */
+  :where(.teams-page) .slot-landed .member-frame { animation: slot-land 320ms var(--ease-out) both; animation-delay: calc(var(--n, 0) * 50ms); }
+  @keyframes slot-land { from { opacity: 0; transform: scale(.9); } }
+  :where(.teams-page) :is(.cell, .link) { transition: background-color 220ms ease, box-shadow 220ms ease, color 220ms ease; }
+  :where(.teams-page) .slot { transition: border-color 200ms ease; }
+  :where(.teams-page) .member-frame { transition: box-shadow 180ms var(--ease-out), transform 180ms var(--ease-out); }
+  :where(.teams-page) .member-badge { transition: background-color 150ms ease, color 150ms ease; }
+}
+/* Nothing animates on a keyboard action: after a key the roll shows the static busy state, the dimmed slots and the
+   still die, as reduced motion does. The detail dialog's rise is dropped by field.css. */
+:where([data-input="key"] .teams-page) :is(.cell, .link, .slot, .press, .member-frame, .member-badge) { transition: none; }
+:where([data-input="key"] .teams-page) :is(.slot-rolling, .roll-die) { animation: none; }

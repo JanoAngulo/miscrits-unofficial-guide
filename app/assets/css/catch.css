@@ -1,0 +1,51 @@
+/* The catch page. Imported like chrome.css, ahead of Tailwind's utilities. Its generic class names sit under
+   :where(.catch-page), so they stay off the other pages without outranking a utility. */
+
+/* Segmented controls and rate keys are radio groups; the checked one takes ink, like a pressed chip. */
+:where(.catch-page) .seg input:checked + span { background: var(--ink); color: var(--on); border-color: var(--ink); }
+:where(.catch-page) .seg input:checked + span .sub { color: var(--count-on-ink); }
+:where(.catch-page) .seg input:focus-visible + span { outline: 3px solid var(--focus); outline-offset: 2px; }
+:where(.catch-page) .seg input:disabled + span { cursor: not-allowed; border-style: dashed; color: var(--fog); background: transparent; }
+@media (hover: hover) and (pointer: fine) {
+  :where(.catch-page) .seg input:not(:checked):not(:disabled) + span:hover { background: var(--leaf); }
+  :where(.catch-page) .bar:hover .tip { opacity: 1; }
+  /* A disabled health option takes no hover, whatever another page's .seg rule says. */
+  :where(.catch-page) .seg input:disabled:not(:checked) + span:hover { background: transparent; }
+}
+
+/* One rolled stat: green, white or red, always next to the words for it. */
+:where(.catch-page) .q { height: 22px; border-radius: 6px; }
+:where(.catch-page) .q-2 { background: var(--q-green); box-shadow: inset 0 0 0 1px var(--color-q-green-deep); }
+:where(.catch-page) .q-1 { background: var(--color-white); box-shadow: inset 0 0 0 1px var(--line); }
+:where(.catch-page) .q-0 { background: var(--q-red); box-shadow: inset 0 0 0 1px var(--color-q-red-edge); }
+
+/* Rating tier fills. Letters on them stay ink (4.5:1 or better); a faint edge holds the pale ones on white. */
+:where(.catch-page) .rtag { display: inline-block; border-radius: 6px; padding: 0 6px; color: var(--color-ink-fixed); font-weight: 700; box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-ink-fixed) 18%, transparent); }
+:where(.catch-page) .tip { opacity: 0; transition: opacity 120ms ease; pointer-events: none; }
+:where(.catch-page) .bar-fill { transition: height 300ms var(--ease-out), background-color 150ms ease; }
+/* Nothing animates on a keyboard action. */
+[data-input="key"] :where(.catch-page) .bar-fill, [data-input="key"] :where(.catch-page) .press { transition: none; }
+@media (prefers-reduced-motion: no-preference) {
+  [data-input="pointer"] :where(.catch-page) .settle { animation: catch-settle 220ms var(--ease-out); }
+}
+@media (prefers-reduced-motion: reduce) {
+  :where(.catch-page) .bar-fill { transition: none; }
+  [data-input="pointer"] :where(.catch-page) .settle { animation: catch-fade 150ms ease; }
+}
+/* Named for this page: chrome.css already has a `fade` from nothing. */
+@keyframes catch-settle { from { opacity: .4; transform: translateY(4px); } }
+@keyframes catch-fade { from { opacity: .4; } }
+
+/* The reference table: the row that matches the reading is marked, and so is the column it came from. */
+#rate-table tr.hit td, #rate-table tr.hit th { background: var(--leaf); }
+#rate-table td.col-on { font-weight: 700; }
+#rate-table tr.hit td.col-on { background: var(--ink); color: var(--on); }
+#rate-table .sticky-col { position: sticky; left: 0; background: var(--card); }
+/* Once the table scrolls, the pinned column gets an edge so nothing reads as sliding under it unseen. */
+#table-wrap.scrolled .sticky-col { box-shadow: 1px 0 0 rgb(var(--shade) / .12), 6px 0 8px -6px rgb(var(--shade) / .3); }
+/* More columns to the right fade out, so a cut-off figure never reads as a real one. */
+#table-wrap.more { -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 3rem), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 3rem), transparent); }
+/* Group labels stay readable beside the sticky Rating column while the table scrolls sideways. */
+#rate-table .group-label { position: sticky; left: calc(var(--stick, 0px) + .75rem); }
+/* A score the rarity cannot roll: the field guide's hatch for a missing day. */
+:where(.catch-page) .never { background: repeating-linear-gradient(135deg, var(--hatch-light) 0 3px, var(--hatch-dark) 3px 5px); box-shadow: inset 0 0 0 1px var(--hatch-edge); }
