@@ -55,7 +55,7 @@ official Miscripedia; credit data and art to worldofmiscrits.com.
 
 ## Evidence on Hand
 
-- Full feed for 425 miscrits in `data/miscrits.json`.
+- Full feed for 429 miscrits in `data/miscrits.json`.
 - Game art and element icons via `assets/` (gitignored) or the game's CDN.
 - No users, testimonials or usage data; none to be invented.
 

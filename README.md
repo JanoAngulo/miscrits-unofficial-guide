@@ -11,7 +11,7 @@ and moves, plus guides for teams, relics, breeding and catching.
 
 | Page | What it does |
 | --- | --- |
-| `/` | Field guide: search all 425 miscrits by name, place, element and rarity; see which days each one is missing and open its four evolutions, stats and twelve moves. |
+| `/` | Field guide: search all 429 miscrits by name, place, element and rarity; see which days each one is missing and open its four evolutions, stats and twelve moves. |
 | `/miscrit/<name>` | One miscrit's own page, opened over the field guide: a link you can share. |
 | `/teams` | Platinum Arena team builder: four slots, 12-point cap, roles from speed, cover links from the element cycles, and random legal team rolls. |
 | `/relics` | Relic and bonus guide: check a rebonus roll against the stop lines and pick a relic build. |
