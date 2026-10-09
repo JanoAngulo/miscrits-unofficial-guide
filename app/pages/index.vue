@@ -18,7 +18,7 @@ const today = useToday()
 // Select options with icons and bars need a browser that parses them (appearance: base-select); a server-rendered
 // option would lose its markup in any other browser and fail hydration. They are plain words until mount.
 const rich = ref(false)
-// On a miscrit's page the list behind the dialog is left to the browser, so 425 prerendered pages don't each carry
+// On a miscrit's page the list behind the dialog is left to the browser, so 429 prerendered pages don't each carry
 // the whole grid. The field guide's own page renders it, which is where search engines find every miscrit.
 const listReady = ref(!route.params.slug)
 // A miscrit's page is prerendered with its dialog open, so the detail shows before any script runs. That open
